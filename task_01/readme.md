@@ -97,12 +97,11 @@ the results.
   ay_{\tau} + bu_{\tau-k}$$
 - **Model 1.3 (Second-Order Oscillatory/Inertial System):** $$\Large y_{\tau+1}
   = a_1y_{\tau} + a_2y_{\tau-1} + bu_{\tau}$$
-- **Model 1.4 (Discrete Integrator with Loss):** $$\Large y_{\tau+1} = ay_{\tau}
-  + b(u_{\tau} - u_{\tau-1})$$
+- **Model 1.4 (Discrete Integrator with Loss):** $$\Large y_{\tau+1} = ay_{\tau} + b(u_{\tau} - u_{\tau-1})$$
 - **Model 1.5 (System with State Delay):** $$\Large y_{\tau+1} = a_1y_{\tau} +
   a_2y_{\tau-k} + bu_{\tau}$$
-- **Model 1.6 (Third-Order Dynamic System):** $$\Large y_{\tau+1} = a_1y_{\tau}
-  + a_2y_{\tau-1} + a_3y_{\tau-2} + bu_{\tau}$$
+- **Model 1.6 (Third-Order Dynamic System):**
+$$\Large y_{\tau+1} = a_1y_{\tau} + a_2y_{\tau-1} + a_3y_{\tau-2} + bu_{\tau}$$
 - **Model 1.7 (System with Multi-Step Control History):** $$\Large y_{\tau+1} =
   ay_{\tau} + b_1u_{\tau} + b_2u_{\tau-1} + b_3u_{\tau-2}$$
 - **Model 1.8 (Generalized Autoregressive Linear Model):** $$\Large y_{\tau+1} =
@@ -140,8 +139,7 @@ u + \delta, & u < -\delta \end{cases} $$
   ay_{\tau} + b \cdot \text{sign}(u_{\tau}) \cdot (1 - e^{-|u_{\tau}|})$$
 - **Model 2.6 (Asymmetric Polynomial Backlash Simulation):** $$\Large y_{\tau+1}
   = a_1y_{\tau}^3 - a_2y_{\tau-1} + bu_{\tau}^2$$
-- **Model 2.7 (Relay with Hysteresis Element):** $$\Large y_{\tau+1} = ay_{\tau}
-  + b \cdot \text{relay}(u_{\tau}, y_{\tau})$$
+- **Model 2.7 (Relay with Hysteresis Element):** $$\Large y_{\tau+1} = ay_{\tau} + b \cdot \text{relay}(u_{\tau}, y_{\tau})$$
 
 $$ \text{where } \text{relay}(u, y) = \begin{cases} 1, & u > \epsilon \text{ or
 } (u \ge -\epsilon \text{ and } y_{\tau} > 0) \\
@@ -150,8 +148,7 @@ $$ \text{where } \text{relay}(u, y) = \begin{cases} 1, & u > \epsilon \text{ or
 
 - **Model 2.8 (Chaotic Logistic Map Disturbance):** $$\Large y_{\tau+1} =
   ay_{\tau}(1 - y_{\tau}) + bu_{\tau} + c\sin(y_{\tau-1} \cdot u_{\tau})$$
-- **Model 2.9 (Square Root Modulated Action):** $$\Large y_{\tau+1} = ay_{\tau}
-  + b\sqrt{|u_{\tau}|} \cdot \text{sign}(u_{\tau})$$
+- **Model 2.9 (Square Root Modulated Action):** $$\Large y_{\tau+1} = ay_{\tau} + b\sqrt{|u_{\tau}|} \cdot \text{sign}(u_{\tau})$$
 - **Model 2.10 (Hyperbolic Tangent Smoothing):** $$\Large y_{\tau+1} = a \cdot
   \tanh(y_{\tau}) + b \cdot u_{\tau}^3$$
 
@@ -191,8 +188,7 @@ _Continuous equations solved via Euler's method with time step_ $$\Delta t$$ _:_
   <!--
   $$ \implies y_{\tau+1} = y_{\tau} + \Delta t (a y_{\tau}^3 + b u_{\tau})$$
   -->
-- **Model 3.7 (Exponential Scaling Process):** $$\Large \frac{dy}{dt} = -e^{a}y
-  + bu$$
+- **Model 3.7 (Exponential Scaling Process):** $$\Large \frac{dy}{dt} = -e^{a}y + bu$$
   <!--
   $$ \implies y_{\tau+1} = y_{\tau} + \Delta t (-e^{a}y_{\tau} + b u_{\tau})$$
   -->
@@ -206,8 +202,7 @@ _Continuous equations solved via Euler's method with time step_ $$\Delta t$$ _:_
   <!--
   $$ \implies y_{\tau+1} = y_{\tau} + \Delta t \cdot b \tanh(u_{\tau})$$
   -->
-- **Model 3.10 (Basic External Constant Offset):** $$\Large \frac{dy}{dt} = -ay
-  + b + u$$
+- **Model 3.10 (Basic External Constant Offset):** $$\Large \frac{dy}{dt} = -ay + b + u$$
   <!--
   $$\implies y_{\tau+1} = y_{\tau} + \Delta t (-a y_{\tau} + b + u_{\tau})$$
   -->
