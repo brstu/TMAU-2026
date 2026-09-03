@@ -1,0 +1,5 @@
+- name: Check for duplicate code
+  uses: platisd/duplicate-code-detection-tool@master
+  with:
+    ignore_directories: "build,_deps,trunk/ii02719,trunk/ii02803,trunk/ii02825"
+    fail_above: 90  # Повысить порог
