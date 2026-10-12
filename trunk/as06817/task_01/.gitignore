@@ -1,0 +1,23 @@
+# Build files
+
+build/
+cmake-build-*/
+
+# Compiled files
+
+*.exe
+*.obj
+*.o
+*.dll
+*.lib
+*.pdb
+*.ilk
+
+# Visual Studio
+
+.vs/
+
+# Temporary files
+
+*.tlog
+*.lastbuildstate
