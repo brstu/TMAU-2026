@@ -1,4 +1,6 @@
-
+#pragma once
 class IModel{
-    virtual void next_step() = 0;
+    public:
+        virtual double next_step(double yCurr, double yPrev, double u, double uPrev) = 0;
+        virtual ~IModel() = default;
 };
