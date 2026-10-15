@@ -16,13 +16,13 @@ template<typename T>
 concept Number = std::is_integral_v<T> || std::is_floating_point_v<T>;
 
 
-enum SignalType {
+enum class SignalType {
     STEP = 1,
     IMPULSE = 2,
     HARMONIC = 3
 };
 
-enum ModelType {
+enum class ModelType {
     LINEAR = 1,
     NONE_LINEAR = 2,
     SIMPLE_DIFF = 3
@@ -61,7 +61,7 @@ void printResult(std::vector<IterationData>& result, ModelType model, SignalType
     std::cout << "Название модели: " << modelTypeToString(model) << std::endl;
     std::cout << "Тип сигнала: " << signalTypeToString(signal) << std::endl << std::endl;
     std::cout << std::setw(5) << "tau" << std::setw(3) << "u" << std::setw(10) << "y" << std::endl;
-    for (auto &i : result)
+    for (const auto &i : result)
         std::cout << std::setw(5) << i.tau << std::setw(3) << i.u << std::setw(10) << std::setprecision(2) << i.y << std::endl;
 }
 
@@ -147,11 +147,11 @@ static std::unique_ptr<IModel> createModel(ModelType type){
             return std::make_unique<SimpleDifferentialModel>(a, b, dt);
         }
     default:
-        break;
+         return std::make_unique<LinearModel>(0.0, 0.0, 0.0, 0.0);
     }
 }
 
-bool saveToCsv(std::vector<IterationData>& result, ModelType model, SignalType signal){
+bool saveToCsv(const std::vector<IterationData>& result, ModelType model, SignalType signal){
     std::ofstream resultFile("./result_data.csv");
     if (!resultFile.is_open()){
         std::cerr << "Не удалось создать файл!" << std::endl;
@@ -159,7 +159,7 @@ bool saveToCsv(std::vector<IterationData>& result, ModelType model, SignalType s
     }
 
     resultFile << modelTypeToString(model) << ";" << signalTypeToString(signal) << std::endl;
-    for (auto& i : result)
+    for (const auto& i : result)
         resultFile << i.tau << ";" << i.u << ";" << i.y << std::endl;
     
     resultFile.close();
@@ -178,19 +178,13 @@ int main(){
                 ); 
         };
     
-    const SignalType signalChoise = static_cast<SignalType>(readNumber<int>(
-            "Выберите тип сигнала:\n \
-            1. Ступенчатый\n \
-            2. Импульсный\n \
-            3. Гармонический.\n>",
+    const auto signalChoise = static_cast<SignalType>(readNumber<int>(
+            "Выберите тип сигнала: \n 1. Ступенчатый \n 2. Импульсный \n 3. Гармонический.\n>",
             fromOneToThreeChoise)
         );
 
-    const ModelType modelChoise = static_cast<ModelType>(readNumber<int>(
-            "Выберите тип модели:\n \
-            1. Линейная\n \
-            2. Нелинейная\n \
-            3. Простая дифференциальная.\n>",
+    const auto modelChoise = static_cast<ModelType>(readNumber<int>(
+            "Выберите тип модели: \n1. Линейная \n 2. Нелинейная \n 3. Простая дифференциальная.\n>",
             fromOneToThreeChoise)
         );
     
@@ -203,9 +197,10 @@ int main(){
     std::cout << "============================" <<std::endl;
     size_t iterationsNumber = readNumber<size_t>("Введите количество шагов симуляции: ");
     
-    double y = 0.0 , yPrev = 0.0;
-    y = yPrev = readNumber<double>("Введите начальное значение y: ");
-    
+    double y = 0.0;
+    double yPrev = 0.0;
+    y = readNumber<double>("Введите начальное значение y: ");
+    yPrev = y;
     double u = 0.0;
     double uPrev = 0.0;
     
@@ -217,7 +212,7 @@ int main(){
         double nextY = model.get()->next_step(y, yPrev, u, uPrev);
         uPrev = u; u = nextU;
         yPrev = y; y = nextY;
-        iterations.push_back(IterationData{tau, u, y});
+        iterations.emplace_back(IterationData{tau, u, y});
     }
     printResult(iterations, modelChoise, signalChoise);
     if (saveToCsv(iterations, modelChoise, signalChoise))

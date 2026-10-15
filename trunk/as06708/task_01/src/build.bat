@@ -18,13 +18,13 @@ echo ЭТАП 2: Компиляция Release сборки
 cmake --build build --config Release
 if errorlevel 1 goto error
 
-if not exist "%~dp0src/plot.py" (
+if not exist "%~dp0/plot.py" (
 	echo ОШИБКА plot.py не был найден в папке src/
 	pause
 	exit /b 1
 )
 
-copy /Y "%~dp0src\plot.py" "%~dp0build\Release"
+copy /Y "%~dp0\plot.py" "%~dp0build\Release"
 
 if not exist "%~dp0build/Release/plot.py" (
 	echo Внимание!: plot.py не был скопирован в build/Release/
