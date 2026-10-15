@@ -16,7 +16,7 @@ double NoneLinearModel::next_step(double yCurr, double /*yPrev*/, double u, doub
     return a * yCurr + b * sat(u); 
 }
 
-double NoneLinearModel::sat(double u){
+const double NoneLinearModel::sat(double u) const {
     if (u > uMax) return uMax;
     else if (u < uMin) return uMin;
     return u;

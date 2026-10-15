@@ -54,7 +54,7 @@ std::string_view modelTypeToString(ModelType type){
     }
 }
 
-void printResult(std::vector<IterationData>& result, ModelType model, SignalType signal){
+void printResult(const std::vector<IterationData>& result, ModelType model, SignalType signal){
     std::cout << "===============================" <<std::endl;
     std::cout << "  Результаты работы программы  " <<std::endl;
     std::cout << "===============================" <<std::endl;
@@ -65,7 +65,7 @@ void printResult(std::vector<IterationData>& result, ModelType model, SignalType
         std::cout << std::setw(5) << i.tau << std::setw(3) << i.u << std::setw(10) << std::setprecision(2) << i.y << std::endl;
 }
 
-double generateSignal(SignalType type, uint16_t tau){
+double generateSignal(SignalType type, const size_t tau){
     switch (type)
     {
         case SignalType::STEP: return 1.;
@@ -171,7 +171,7 @@ int main(){
     std::cout << "===========================" <<std::endl;
     std::cout << "  Начало работы программы  " <<std::endl;
     std::cout << "===========================" <<std::endl;
-    std::function<bool(int)> fromOneToThreeChoise = [](int value) -> bool {
+    std::function<bool(int)> fromOneToThreeChoise = [](int value) {
                 return value == std::clamp(value,
                     static_cast<int>(SignalType::STEP),
                     static_cast<int>(SignalType::HARMONIC)
@@ -212,7 +212,7 @@ int main(){
         double nextY = model.get()->next_step(y, yPrev, u, uPrev);
         uPrev = u; u = nextU;
         yPrev = y; y = nextY;
-        iterations.emplace_back(IterationData{tau, u, y});
+        iterations.emplace_back(IterationData(tau, u, y));
     }
     printResult(iterations, modelChoise, signalChoise);
     if (saveToCsv(iterations, modelChoise, signalChoise))

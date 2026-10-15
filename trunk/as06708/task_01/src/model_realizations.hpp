@@ -22,7 +22,7 @@ class NoneLinearModel : public IModel{
     double next_step(double yCurr, double yPrev, double u, double uPrev) override;
 
     private:
-    double sat(double u);
+    const double sat(double u) const;
 };
 
 class SimpleDifferentialModel : public IModel{
