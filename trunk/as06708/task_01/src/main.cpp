@@ -35,21 +35,23 @@ struct IterationData{
 };
 
 std::string_view signalTypeToString(SignalType type){
+    using enum SignalType;
     switch (type)
     {
-    case SignalType::STEP: return "Ступенчатый";
-    case SignalType::IMPULSE: return "Импульсный";
-    case SignalType::HARMONIC: return "Гармонический";
+    case STEP: return "Ступенчатый";
+    case IMPULSE: return "Импульсный";
+    case HARMONIC: return "Гармонический";
     default: return "";
     }
 }
 
 std::string_view modelTypeToString(ModelType type){
+    using enum ModelType;
     switch (type)
     {
-    case ModelType::LINEAR: return "Линейная модель";
-    case ModelType::NONE_LINEAR: return "Нелинейная модель";
-    case ModelType::SIMPLE_DIFF: return "Простая дифференциальная";
+    case LINEAR: return "Линейная модель";
+    case NONE_LINEAR: return "Нелинейная модель";
+    case SIMPLE_DIFF: return "Простая дифференциальная";
     default: return "";
     }
 }
@@ -66,11 +68,12 @@ void printResult(const std::vector<IterationData>& result, ModelType model, Sign
 }
 
 double generateSignal(SignalType type, const size_t tau){
+    using enum SignalType;
     switch (type)
     {
-        case SignalType::STEP: return 1.;
-        case SignalType::IMPULSE: return (tau == 0u) ? 1. : 0.;
-        case SignalType::HARMONIC: return std::sin(tau);
+        case STEP: return 1.;
+        case IMPULSE: return (tau == 0u) ? 1. : 0.;
+        case HARMONIC: return std::sin(tau);
         default: return -1.0;
     }
 }
@@ -118,9 +121,10 @@ T readNumber(std::string_view prompt, std::function<bool(T)> checkCondition = nu
 }
 
 static std::unique_ptr<IModel> createModel(ModelType type){
+    using enum ModelType;
     switch (type)
     {
-        case ModelType::LINEAR:
+        case LINEAR:
         {
             std::cout << "Создание линейной модели:" << std::endl;
             const double a1 = readNumber<double>("a1 = ");
@@ -129,7 +133,7 @@ static std::unique_ptr<IModel> createModel(ModelType type){
             const double b2 = readNumber<double>("b2 = ");
             return std::make_unique<LinearModel>(a1, a2, b1, b2);
         }
-        case ModelType::NONE_LINEAR:
+        case NONE_LINEAR:
         {
             std::cout << "Создание нелинейной модели:" << std::endl;
             const double a    = readNumber<double>("a = ");
@@ -138,7 +142,7 @@ static std::unique_ptr<IModel> createModel(ModelType type){
             const double uMax = readNumber<double>("uMax = ");
             return std::make_unique<NoneLinearModel>(a, b, uMin, uMax);
         }
-        case ModelType::SIMPLE_DIFF:
+        case SIMPLE_DIFF:
         {
             std::cout << "Создание дифференциальной модели:" << std::endl;
             const double a  = readNumber<double>("a = ");
@@ -212,7 +216,7 @@ int main(){
         double nextY = model.get()->next_step(y, yPrev, u, uPrev);
         uPrev = u; u = nextU;
         yPrev = y; y = nextY;
-        iterations.emplace_back(IterationData(tau, u, y));
+        iterations.emplace_back(tau, u, y);
     }
     printResult(iterations, modelChoise, signalChoise);
     if (saveToCsv(iterations, modelChoise, signalChoise))
