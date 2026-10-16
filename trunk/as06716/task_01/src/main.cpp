@@ -46,9 +46,10 @@ int readSteps() {
 
     int n = 0;
     const char* end = line.data() + line.size();
-    const auto result = std::from_chars(line.data(), end, n);
 
-    if (result.ec == std::errc() && result.ptr == end && n > 0) {
+    if (const auto result = std::from_chars(line.data(), end, n);
+        result.ec == std::errc() && result.ptr == end && n > 0) {
+
         return n;
     }
 
