@@ -30,7 +30,10 @@ public:
     double output() const override { return y0_; }
 
 private:
-    double a1_, a2_, a3_, b_;
+    double a1_;
+    double a2_;
+    double a3_;
+    double b_;
     double y0_ = 0.0;   // y[t]
     double y1_ = 0.0;   // y[t-1]
     double y2_ = 0.0;   // y[t-2]
@@ -51,7 +54,8 @@ public:
     double output() const override { return y_; }
 
 private:
-    double a_, b_;
+    double a_;
+    double b_;
     double y_ = 0.0;
 };
 
@@ -63,13 +67,14 @@ public:
 
     double step(double /*u*/) override {
         y_ -= dt_ * a_ * y_ * y_;
-        
+
         return y_;
     }
 
     double output() const override { return y_; }
 
 private:
-    double a_, dt_;
+    double a_;
+    double dt_;
     double y_;
 };
