@@ -1,3 +1,4 @@
+#include <charconv>
 #include <cmath>
 #include <filesystem>
 #include <fstream>
@@ -35,23 +36,23 @@ double inputValue(InputType type, int tau) {
 }
 
 int readSteps() {
-    std::cout << "Кол-во шагов симуляции n [" << DEFAULT_STEPS << "]: ";
+    std::cout << "Количество шагов симуляции n [" << DEFAULT_STEPS << "]: ";
     std::string line;
     std::getline(std::cin, line);
-    
+
     if (line.empty()) {
         return DEFAULT_STEPS;
     }
 
-    try {
-        const int n = std::stoi(line);
-        
-        if (n > 0) {
-            return n;
-        }
+    int n = 0;
+    const char* end = line.data() + line.size();
+    const auto result = std::from_chars(line.data(), end, n);
 
-    } catch (const std::exception&) {}
-    std::cout << "Некорректный ввод, используется " << DEFAULT_STEPS << "\n";
+    if (result.ec == std::errc() && result.ptr == end && n > 0) {
+        return n;
+    }
+
+    std::cout << "Некорректный ввод, используется " << DEFAULT_STEPS << ".\n";
     return DEFAULT_STEPS;
 }
 
@@ -91,10 +92,9 @@ bool simulate(InputType type, int steps) {
 
 }  // namespace
 
-
 int main() {
     const int steps = readSteps();
     const bool ok = simulate(InputType::Step, steps) && simulate(InputType::Impulse, steps) && simulate(InputType::Harmonic, steps);
-
+    
     return ok ? 0 : 1;
 }
