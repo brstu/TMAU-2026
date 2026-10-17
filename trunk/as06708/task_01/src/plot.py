@@ -17,8 +17,9 @@ with open("./result_data.csv", 'r', encoding="UTF-8") as file:
 
     fig, ax = plt.subplots()
     ax.plot(time, y)
-    ax.set_xlabel("Время")
+    ax.set_xlabel("Шаги")
     ax.set_ylabel("Значений функции")
 
     plt.title("Тип модели: " + model + ".\n Тип сигнала: " + signal)
+    plt.xticks(range(0, len(time), 5))
     plt.show()

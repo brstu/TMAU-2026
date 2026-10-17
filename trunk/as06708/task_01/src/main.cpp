@@ -62,9 +62,9 @@ void printResult(const std::vector<IterationData>& result, ModelType model, Sign
     std::cout << "===============================" <<std::endl;
     std::cout << "Название модели: " << modelTypeToString(model) << std::endl;
     std::cout << "Тип сигнала: " << signalTypeToString(signal) << std::endl << std::endl;
-    std::cout << std::setw(5) << "tau" << std::setw(3) << "u" << std::setw(10) << "y" << std::endl;
+    std::cout << std::setw(10) << "tau" << std::setw(15) << "u" << std::setw(15) << "y" << std::endl;
     for (const auto &i : result)
-        std::cout << std::setw(5) << i.tau << std::setw(3) << i.u << std::setw(10) << std::setprecision(2) << i.y << std::endl;
+        std::cout << std::setw(10) << i.tau << std::setw(15) << i.u << std::setw(15) << std::setprecision(2) << i.y << std::endl;
 }
 
 double generateSignal(SignalType type, const size_t tau){
@@ -183,12 +183,12 @@ int main(){
         };
     
     const auto signalChoise = static_cast<SignalType>(readNumber<int>(
-            "Выберите тип сигнала: \n 1. Ступенчатый \n 2. Импульсный \n 3. Гармонический.\n>",
+            "Выберите тип сигнала: \n 1. Ступенчатый \n 2. Импульсный \n 3. Гармонический.\nВвод: ",
             fromOneToThreeChoise)
         );
 
     const auto modelChoise = static_cast<ModelType>(readNumber<int>(
-            "Выберите тип модели: \n1. Линейная \n 2. Нелинейная \n 3. Простая дифференциальная.\n>",
+            "Выберите тип модели: \n 1. Линейная \n 2. Нелинейная \n 3. Простая дифференциальная.\nВвод: ",
             fromOneToThreeChoise)
         );
     
@@ -199,7 +199,7 @@ int main(){
     std::cout << "============================" <<std::endl;
     std::cout << "  Этап настройки симуляции  " <<std::endl;
     std::cout << "============================" <<std::endl;
-    size_t iterationsNumber = readNumber<size_t>("Введите количество шагов симуляции: ");
+    size_t iterationsNumber = readNumber<size_t>("Введите количество шагов симуляции n: ");
     
     double y = 0.0;
     double yPrev = 0.0;
