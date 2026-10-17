@@ -20,33 +20,44 @@
 
 ## Вариант 1
 
-- Линейная модель: **Model 1.1**
-- Нелинейная модель: **Model 2.3**
-- Дифференциальное уравнение: **Model 3.5**
+- Линейная модель: **Model 1.1 (Standard First-Order Inertial System)**
+- Нелинейная модель: **Model 2.3 (Dead-Zone Non-linearity)**
+- Дифференциальное уравнение: **Model 3.5 (Harmonic Driving Force)**
 
 ## Реализованные модели
 
-### Model 1.1
+### Model 1.1 (Standard First-Order Inertial System)
 
-`y(t+1) = a*y(t) + b*u(t)`
+```math
+y_{\tau+1} = a\,y_\tau + b\,u_\tau
+```
 
-### Model 2.3
+### Model 2.3 (Dead-Zone Non-linearity)
 
-`y(t+1) = a*y(t) + b*deadzone(u(t))`
+```math
+y_{\tau+1} = a\,y_\tau + b\cdot \mathrm{deadzone}(u_\tau)
+```
 
-где `deadzone(u)` — зона нечувствительности:
+```math
+\mathrm{deadzone}(u) =
+\begin{cases}
+u - \delta, & u > \delta \\
+0, & -\delta \le u \le \delta \\
+u + \delta, & u < -\delta
+\end{cases}
+```
 
-- `u - δ`, если `u > δ`;
-- `0`, если `-δ <= u <= δ`;
-- `u + δ`, если `u < -δ`.
+### Model 3.5 (Harmonic Driving Force)
 
-### Model 3.5
+```math
+\frac{dy}{dt} = b\,\sin(u)
+```
 
-`dy/dt = b*sin(u)`
+Для данной модели используется Метод Эйлера:
 
-Для Model 3.5 используется метод Эйлера:
-
-`y(t+1) = y(t) + dt*b*sin(u(t))`
+```math
+y_{\tau+1} = y_\tau + dt \cdot b\,\sin(u_\tau)
+```
 
 ## Входные воздействия
 
@@ -64,86 +75,7 @@
 - `Model2_3`
 - `Model3_5`
 
-## Результат
-
-Программа:
-
-- позволяет выбрать модель;
-- принимает коэффициенты;
-- позволяет выбрать входное воздействие;
-- позволяет задать количество шагов `n`;
-- выводит результаты в табличном виде;
-- сохраняет результаты в `results.csv`;
-- позволяет построить график через Python/Matplotlib.
-
-## Пример работы программы:
-
-### Сборка
-
-На Windows build.bat:
-
-```bat
-@echo off
-setlocal
-cd /d "%~dp0"
-
-if not exist CMakeLists.txt (
-    echo ERROR: CMakeLists.txt not found
-    pause
-    exit /b 1
-)
-
-echo ===== STARTING BUILD PROCESS =====
-echo [STAGE 1/3] Configuration
-cmake -S . -B build -G "MinGW Makefiles" ^
-      -DCMAKE_BUILD_TYPE=Release ^
-      -DCMAKE_C_COMPILER=gcc ^
-      -DCMAKE_CXX_COMPILER=g++ ^
-      -DCMAKE_MAKE_PROGRAM=mingw32-make
-if errorlevel 1 goto error
-
-echo [STAGE 2/3] Compilation
-cmake --build build
-if errorlevel 1 goto error
-
-echo [STAGE 3/3] Launch
-if exist build\src\tmau_task_01.exe (
-    cd build\src
-) else (
-    cd build
-)
-tmau_task_01.exe
-echo ===== DONE =====
-pause
-goto end
-
-:error
-echo ERROR: Build failed
-pause
-exit /b 1
-
-:end
-endlocal
-```
-
-### Демонстрация исполняемого файла tmau_task_01.exe:
-
-![](work.png)
-
-При запуске исполняемого файла мы получаем результат файл .csv, после чего автоматически запускается plot.py для визуализации ответа.
-
-Пример для Model 1.1 (`a = 0.8`, `b = 0.5`, `A = 1`, `n = 30`, `y0 = 0`):
-
-## Демонстрация ступенчатого воздействия
-![Результат выполнения файла plot.py](plot.png)
-## Демонстрация импульсного воздействия
-![](plot2.png)
-## Демонстрация гармонического воздействия
-![](plot3.png)
-
-
-## UML
-
+### UML:
 ```mermaid
 classDiagram
     class Model {
@@ -172,3 +104,28 @@ classDiagram
     Model <|-- Model2_3
     Model <|-- Model3_5
 ```
+
+## Функционал программы
+
+Программа:
+
+- позволяет выбрать модель;
+- принимает коэффициенты;
+- позволяет выбрать входное воздействие;
+- позволяет задать количество шагов `n`;
+- выводит результаты в табличном виде;
+- сохраняет результаты в `results.csv`;
+- позволяет построить график через Python/Matplotlib.
+
+## Пример работы программы:
+
+### Демонстрация исполняемого файла tmau_task_01.exe:
+
+![](work.png)
+
+### Демонстрация ступенчатого воздействия
+![Результат выполнения файла plot.py](plot.png)
+### Демонстрация импульсного воздействия
+![](plot2.png)
+### Демонстрация гармонического воздействия
+![](plot3.png)
