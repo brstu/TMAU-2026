@@ -50,15 +50,15 @@
 
 График линейной модели со ступенчатым сигналом:
 
-![alt text](work_1.png)
+![alt text](Model1.3.png)
 
 График нелинейной модели с гармоническим сигналом:
 
-![alt text](work_2.png)
+![alt text](Model2.7.png)
 
 График дифференциальной модели с импульсным сигналом:
 
-![alt text](work_3.png)
+![alt text](Model3.1.png)
 
 ## UML
-![alt text](<UML tmau lr_1.webp>)
+![alt text](uml.png)
