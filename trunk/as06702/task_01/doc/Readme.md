@@ -22,7 +22,7 @@
 * **Линейная модель: "Model 1.3 (Linear Autoregressive Model)"**
   * $y_{\tau+1} = a_1 y_{\tau} + a_2 y_{\tau-1} + b u_{\tau}$
 
-* **Нелинейная модель: "Model 2.7 (Relay with Hysteresis)"**
+* Нелинейная модель: "Model 2.7 (Relay with Hysteresis)"
   * $y_{\tau+1} = a y_{\tau} + b \cdot \mathrm{relay}(u_{\tau})$
   * Функция реле:
 
@@ -31,7 +31,7 @@ $$
 \begin{cases} 
 +1, & u > \varepsilon \\ 
 -1, & u < -\varepsilon \\ 
-\operatorname{sign}(y_{\tau}), & |u| \le \varepsilon 
+\mathrm{sign}(y_{\tau}), & |u| \le \varepsilon 
 \end{cases}
 $$
 
