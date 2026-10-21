@@ -1,0 +1,10 @@
+^C:\3KURC\TIMAY\TMAU-2026\TRUNK\AS06702\TASK_01\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/3kurc/TiMAY/TMAU-2026/trunk/as06702/task_01 -BC:/3kurc/TiMAY/TMAU-2026/trunk/as06702/task_01/out/build-bat --check-stamp-file C:/3kurc/TiMAY/TMAU-2026/trunk/as06702/task_01/out/build-bat/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

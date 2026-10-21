@@ -1,0 +1,3 @@
+C:/3kurc/TiMAY/TMAU-2026/trunk/as06702/task_01/out/build-bat/CMakeFiles/controlled_object.dir
+C:/3kurc/TiMAY/TMAU-2026/trunk/as06702/task_01/out/build-bat/CMakeFiles/ALL_BUILD.dir
+C:/3kurc/TiMAY/TMAU-2026/trunk/as06702/task_01/out/build-bat/CMakeFiles/ZERO_CHECK.dir
