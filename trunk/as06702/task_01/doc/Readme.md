@@ -19,19 +19,30 @@
 
 ## Вариант задания 13
 
-- Линейная модель: "Model 1.3 (Linear Autoregressive Model)"
-    - $y_{\tau+1} = a_1 y_{\tau} + a_2 y_{\tau-1} + b u_{\tau}$
-- Нелинейная модель: "Model 2.7 (Relay with Hysteresis)"
-    - $y_{\tau+1} = a y_{\tau} + b \cdot \mathrm{relay}(u_{\tau})$
-    - $$ \mathrm{relay}(u) = \begin{cases} +1, & u > \varepsilon \\ -1, & u < -\varepsilon \\ \operatorname{sign}(y_{\tau}), & |u| \le \varepsilon \end{cases} $$
-- Дифференциальное уравнение: Model 3.1 "(Exponential Decay)"
-    - $\frac{dy}{dt} = -ay$
-    - для этой модели используется метод Эйлера: $y_{\tau+1} = y_{\tau} + dt \cdot (-a y_{\tau})$
+* **Линейная модель: "Model 1.3 (Linear Autoregressive Model)"**
+  * $y_{\tau+1} = a_1 y_{\tau} + a_2 y_{\tau-1} + b u_{\tau}$
+
+* **Нелинейная модель: "Model 2.7 (Relay with Hysteresis)"**
+  * $y_{\tau+1} = a y_{\tau} + b \cdot \mathrm{relay}(u_{\tau})$
+  * Функция реле:
+
+$$
+\mathrm{relay}(u) = 
+\begin{cases} 
++1, & u > \varepsilon \\ 
+-1, & u < -\varepsilon \\ 
+\operatorname{sign}(y_{\tau}), & |u| \le \varepsilon 
+\end{cases}
+$$
+
+* **Дифференциальное уравнение: Model 3.1 "(Exponential Decay)"**
+  * $\frac{dy}{dt} = -ay$
+  * Для этой модели используется метод Эйлера: $y_{\tau+1} = y_{\tau} + dt \cdot (-a y_{\tau})$
 
 Была создана программа, реализующая интерфейс класс "*Model*" с помощью классов-наследников:
-- *LinearModel13*
-- *RelayModel27*
-- *DifferentialModel31*
+* *LinearModel13*
+* *RelayModel27*
+* *DifferentialModel31*
 
 ## Функционал программы:
 - Выбор типа генерируемого сигнала
