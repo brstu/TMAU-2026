@@ -43,8 +43,7 @@ int main() {
         return 1;
     }
 
-    SignalType signalType =
-        static_cast<SignalType>(signalChoice);
+    auto signalType = static_cast<SignalType>(signalChoice);
 
     Model17 model17(0.7, 0.5, 0.2, 0.1);
     Model21 model21(0.5, 0.05, 0.8, 0.2);
