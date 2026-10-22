@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_executable(controlled_object src/main.cpp)
+add_executable(controlled_object main.cpp)
 
 if(MSVC)
     target_compile_options(controlled_object PRIVATE /W4 /utf-8)
