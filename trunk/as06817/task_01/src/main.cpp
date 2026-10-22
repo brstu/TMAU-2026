@@ -1,6 +1,9 @@
 #include <iostream>
 #include <memory>
+
+#ifdef _WIN32
 #include <windows.h>
+#endif
 
 #include "Model17.h"
 #include "Model21.h"
@@ -8,8 +11,10 @@
 #include "Simulator.h"
 
 int main() {
+#ifdef _WIN32
     SetConsoleCP(65001);
     SetConsoleOutputCP(65001);
+#endif
 
     int n;
 
@@ -48,31 +53,19 @@ int main() {
     std::cout << "\nMODEL 1.7\n";
 
     Simulator::run(
-        model17,
-        signalType,
-        n,
-        0.0,
-        "model17.csv"
+        model17, signalType, n, 0.0, "model17.csv"
     );
 
     std::cout << "\nMODEL 2.1\n";
 
     Simulator::run(
-        model21,
-        signalType,
-        n,
-        0.0,
-        "model21.csv"
+        model21, signalType, n, 0.0, "model21.csv"
     );
 
     std::cout << "\nMODEL 3.5\n";
 
     Simulator::run(
-        model35,
-        signalType,
-        n,
-        0.0,
-        "model35.csv"
+        model35, signalType, n, 0.0, "model35.csv"
     );
 
     std::cout << "\nМоделирование завершено.\n";
