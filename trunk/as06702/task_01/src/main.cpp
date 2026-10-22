@@ -10,8 +10,8 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
-#include <windows.h>
 #ifdef _WIN32
+#include <windows.h>
 #include <direct.h>
 #else
 #include <unistd.h>
@@ -259,8 +259,10 @@ void reportStability(double a1, double a2) {
 }
 
 int main() {
+    #ifdef _WIN32
     SetConsoleCP(65001);
     SetConsoleOutputCP(65001);
+    #endif
     cout << "==============================================\n";
     cout << "Моделирование объекта управления\n";
     cout << "==============================================\n";
