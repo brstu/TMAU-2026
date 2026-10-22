@@ -3,7 +3,6 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
-#include <windows.h>
 
 void Simulator::run(
     Model& model,
