@@ -1,0 +1,6 @@
+step,u_tau,y_next,model,signal
+1,0,0,Model 2.2,Harmonic
+2,0.841470984807897,1.6,Model 2.2,Harmonic
+3,0.909297426825682,2.4,Model 2.2,Harmonic
+4,0.141120008059867,1.48224001611973,Model 2.2,Harmonic
+5,-0.756802495307928,-0.258879991940133,Model 2.2,Harmonic

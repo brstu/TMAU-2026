@@ -1,0 +1,6 @@
+step,u_tau,y_next,model,signal
+1,1,1,Model 1.10,Impulse
+2,0,0.6,Model 1.10,Impulse
+3,0,0.86,Model 1.10,Impulse
+4,0,0.516,Model 1.10,Impulse
+5,0,0.3096,Model 1.10,Impulse
