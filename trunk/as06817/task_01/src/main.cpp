@@ -23,8 +23,11 @@ double getDoubleInput(const std::string& prompt, double default_val) {
     }
     try {
         return std::stod(line);
-    } catch (const std::exception& e) {
+    } catch (const std::invalid_argument& e) {
         std::cout << "Некорректный ввод (" << e.what() << "), используем значение по умолчанию: " << default_val << "\n";
+        return default_val;
+    } catch (const std::out_of_range& e) {
+        std::cout << "Число вне диапазона (" << e.what() << "), используем значение по умолчанию: " << default_val << "\n";
         return default_val;
     }
 }
