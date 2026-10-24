@@ -1,6 +1,20 @@
 ﻿import csv
 import os
+import sys
 import matplotlib.pyplot as plt
+
+# Исправление кодировки аргументов командной строки для Windows
+if sys.platform == "win32":
+    import io
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+    # Перекодируем аргументы из cp1251 (Windows console) в utf-8
+    fixed_argv = []
+    for arg in sys.argv:
+        try:
+            fixed_argv.append(arg.encode('cp1251').decode('utf-8'))
+        except UnicodeDecodeError:
+            fixed_argv.append(arg)
+    sys.argv = fixed_argv
 
 
 def read_results(filename):
@@ -25,7 +39,7 @@ def draw_graph(csv_file, image_file, model_name):
 
     plt.xlabel("τ")
     plt.ylabel("y")
-    plt.title("Результат моделирования — " + model_name + ", вариант 17")
+    plt.title("Результат моделирования")
     plt.grid()
     plt.tight_layout()
 
@@ -33,25 +47,22 @@ def draw_graph(csv_file, image_file, model_name):
     plt.close()
 
 
-base_dir = r"C:\Users\widuxd\Source\Repos\TMAU-2026\out\build\x64-Debug\trunk\as06817\task_01\src"
-doc_dir = r"C:\Users\widuxd\Source\Repos\TMAU-2026\trunk\as06817\task_01\doc"
+if __name__ == "__main__":
+    if len(sys.argv) != 4:
+        print("Ошибка: необходимо передать CSV, путь к изображению и модель.")
+        sys.exit(1)
 
-draw_graph(
-    os.path.join(base_dir, "model17.csv"),
-    os.path.join(doc_dir, "model17.png"),
-    "модель 1.7"
-)
+    csv_file = sys.argv[1]
+    image_file = sys.argv[2]
+    model_name = sys.argv[3]
 
-draw_graph(
-    os.path.join(base_dir, "model21.csv"),
-    os.path.join(doc_dir, "model21.png"),
-    "модель 2.1"
-)
+    if not os.path.isfile(csv_file):
+        print("CSV-файл не найден:", os.path.abspath(csv_file))
+        sys.exit(1)
 
-draw_graph(
-    os.path.join(base_dir, "model35.csv"),
-    os.path.join(doc_dir, "model35.png"),
-    "модель 3.5"
-)
-
-print("Три графика сохранены в папке doc.")
+    try:
+        draw_graph(csv_file, image_file, model_name)
+        print("График успешно построен.")
+    except Exception as error:
+        print("Ошибка построения графика:", error)
+        sys.exit(1)
