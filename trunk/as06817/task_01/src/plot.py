@@ -18,10 +18,13 @@ if sys.platform == "win32":
 
 
 def read_results(filename):
+    # Безопасно выделяем только имя файла, отсекая любые попытки обхода путей (../)
+    safe_filename = os.path.basename(filename)
+    
     tau = []
     y = []
 
-    with open(filename, "r", encoding="utf-8") as file:
+    with open(safe_filename, "r", encoding="utf-8") as file:
         reader = csv.DictReader(file)
 
         for row in reader:
