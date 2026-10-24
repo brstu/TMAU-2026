@@ -25,6 +25,6 @@ if %errorlevel% neq 0 (
 echo.
 echo ==========================================
 echo Build finished successfully!
-echo Executable is located at: build\Release\tmau_task_01.exe
+echo Executable is located at: build\Release\tmau_task_01_as06707.exe
 echo ==========================================
 pause
