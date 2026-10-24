@@ -7,7 +7,8 @@ private:
     double b;
     double y_current;
 public:
-    Model3_9(double b_val, double y0 = 0.0);
+    explicit Model3_9(double b_val, double y0 = 0.0);
+    
     double step(double u_tau) override;
     double getY() const override { return y_current; }
     void reset(double y0) override; 

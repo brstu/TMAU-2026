@@ -54,7 +54,7 @@ double getInput(int step, int type, double A) {
 }
 
 int main(int argc, char* argv[]) {
-    system("chcp 65001 > nul"); // Кодировка UTF-8
+    system("chcp 65001 > nul");
 
     try {
         fs::path exePath = fs::absolute(argv[0]);
@@ -65,7 +65,9 @@ int main(int argc, char* argv[]) {
             projectRoot = projectRoot.parent_path();
         }
         fs::current_path(projectRoot);
-    } catch (const std::exception& e) {}
+    } catch (const std::exception& e) {
+        std::cerr << "Предупреждение: Не удалось изменить рабочую директорию (" << e.what() << ")" << std::endl;
+    }
 
     cout << "Выберите модель:" << endl;
     cout << "1 - Model 1.1" << endl;
@@ -111,7 +113,7 @@ int main(int argc, char* argv[]) {
     out << "tau,u,y\n";
 
     if (modelChoice == 1 && !dynamic_cast<Model1_1*>(model.get())->isStable()) {
-        cout << "ВНИМАНИЕ: Модель неустойчива (|a| >= 1)!" << endl;
+        cout << "Модель неустойчива (|a| >= 1)!" << endl;
     }
 
     model->reset(y0);
@@ -129,10 +131,9 @@ int main(int argc, char* argv[]) {
     cout << "Запуск визуализации в Python...\n" << endl;
 
     string command = "python scripts/plot_results.py " + filename + " && pause";
-    int result = system(command.c_str());
     
-    if (result != 0) {
-        cout << "\nВНИМАНИЕ: Произошла ошибка при вызове Python." << endl;
+    if (int result = system(command.c_str()); result != 0) {
+        cout << "\nПроизошла ошибка при вызове Python." << endl;
         system("pause");
     }
 

@@ -4,7 +4,8 @@
 
 class Model2_5 : public Model {
 private:
-    double a, b;
+    double a;
+    double b;
     double y_current;
 public:
     Model2_5(double a_val, double b_val, double y0 = 0.0);
