@@ -1,0 +1,21 @@
+step,u_tau,y_next,model,signal
+1,1,0.2,Model 3.3,Step
+2,1,0.36,Model 3.3,Step
+3,1,0.488,Model 3.3,Step
+4,1,0.5904,Model 3.3,Step
+5,1,0.67232,Model 3.3,Step
+6,1,0.737856,Model 3.3,Step
+7,1,0.7902848,Model 3.3,Step
+8,1,0.83222784,Model 3.3,Step
+9,1,0.865782272,Model 3.3,Step
+10,1,0.8926258176,Model 3.3,Step
+11,1,0.91410065408,Model 3.3,Step
+12,1,0.931280523264,Model 3.3,Step
+13,1,0.9450244186112,Model 3.3,Step
+14,1,0.95601953488896,Model 3.3,Step
+15,1,0.964815627911168,Model 3.3,Step
+16,1,0.971852502328934,Model 3.3,Step
+17,1,0.977482001863147,Model 3.3,Step
+18,1,0.981985601490518,Model 3.3,Step
+19,1,0.985588481192414,Model 3.3,Step
+20,1,0.988470784953931,Model 3.3,Step

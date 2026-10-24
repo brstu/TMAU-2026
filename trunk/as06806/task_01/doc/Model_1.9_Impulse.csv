@@ -1,0 +1,21 @@
+step,u_tau,y_next,model,signal
+1,1,1,Model 1.9,Impulse
+2,0,0.5,Model 1.9,Impulse
+3,0,0.45,Model 1.9,Impulse
+4,0,0.425,Model 1.9,Impulse
+5,0,0.3525,Model 1.9,Impulse
+6,0,0.30625,Model 1.9,Impulse
+7,0,0.266125,Model 1.9,Impulse
+8,0,0.2295625,Model 1.9,Impulse
+9,0,0.19863125,Model 1.9,Impulse
+10,0,0.171840625,Model 1.9,Impulse
+11,0,0.1486028125,Model 1.9,Impulse
+12,0,0.12853265625,Model 1.9,Impulse
+13,0,0.111170953125,Model 1.9,Impulse
+14,0,0.0961522890625,Model 1.9,Impulse
+15,0,0.08316360078125,Model 1.9,Impulse
+16,0,0.071929353515625,Model 1.9,Impulse
+17,0,0.0622126258203125,Model 1.9,Impulse
+18,0,0.0538085436914063,Model 1.9,Impulse
+19,0,0.0465397323613282,Model 1.9,Impulse
+20,0,0.0402528375009766,Model 1.9,Impulse
