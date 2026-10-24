@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 if sys.platform == "win32":
     import io
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-    # Перекодируем аргументы из cp1251 (Windows console) в utf-8
     fixed_argv = []
     for arg in sys.argv:
         try:
@@ -18,7 +17,7 @@ if sys.platform == "win32":
 
 
 def read_results(filename):
-    # Безопасно выделяем только имя файла, отсекая любые попытки обхода путей (../)
+    # Защита от Path Traversal (используем только имя файла из текущей папки)
     safe_filename = os.path.basename(filename)
     
     tau = []
@@ -42,7 +41,7 @@ def draw_graph(csv_file, image_file, model_name):
 
     plt.xlabel("τ")
     plt.ylabel("y")
-    plt.title("Результат моделирования")
+    plt.title("Результат моделирования — " + model_name + ", вариант 17")
     plt.grid()
     plt.tight_layout()
 

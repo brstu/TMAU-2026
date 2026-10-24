@@ -23,8 +23,8 @@ double getDoubleInput(const std::string& prompt, double default_val) {
     }
     try {
         return std::stod(line);
-    } catch (...) {
-        std::cout << "Некорректный ввод, используем значение по умолчанию: " << default_val << "\n";
+    } catch (const std::exception& e) {
+        std::cout << "Некорректный ввод (" << e.what() << "), используем значение по умолчанию: " << default_val << "\n";
         return default_val;
     }
 }
@@ -79,7 +79,7 @@ int main() {
     // Очищаем буфер (используем защищенный вызов (max), чтобы не было конфликтов с Windows API)
     std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
 
-    SignalType signalType = static_cast<SignalType>(signalChoice);
+    auto signalType = static_cast<SignalType>(signalChoice);
 
     std::string csvFile;
     std::string imageFile;
@@ -146,9 +146,8 @@ int main() {
         csvFile + "\" \"" + imagePath + "\" \"" +
         modelName + "\"";
 
-    int result = std::system(command.c_str());
-
-    if (result != 0) {
+    // Инициализация переменной прямо в if (стандарт C++17)
+    if (int result = std::system(command.c_str()); result != 0) {
         std::cout << "Ошибка построения графика.\n";
         return 1;
     }
