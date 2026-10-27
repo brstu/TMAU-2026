@@ -6,7 +6,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_executable(task01 src/main.cpp)
+
+target_compile_definitions(task01 PRIVATE PROJECT_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
+
 target_compile_options(task01 PRIVATE
     $<$<CXX_COMPILER_ID:GNU,Clang>:-Wall -Wextra -Wpedantic>
-    $<$<CXX_COMPILER_ID:MSVC>:/W4>
+    $<$<CXX_COMPILER_ID:MSVC>:/W4 /utf-8>
 )

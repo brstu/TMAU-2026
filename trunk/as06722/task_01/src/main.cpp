@@ -3,6 +3,8 @@
 #include <iomanip>
 #include <iostream>
 #include <memory>
+#include <filesystem>
+#include <cstdlib>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -12,6 +14,10 @@
 #define NOMINMAX
 #endif
 #include <windows.h>
+#endif
+
+#ifndef PROJECT_SOURCE_DIR
+#define PROJECT_SOURCE_DIR "."
 #endif
 
 struct Sample {
@@ -135,6 +141,23 @@ int readInt(const std::string& prompt, int minValue, int maxValue) {
     }
 }
 
+int runPlot(const std::filesystem::path& csvPath, int modelChoice) {
+    const std::filesystem::path projectDir = std::filesystem::path(PROJECT_SOURCE_DIR);
+    const std::filesystem::path plotPath = projectDir / "src" / "plot.py";
+
+#ifdef _WIN32
+    const std::wstring command = L"py \"" + plotPath.wstring() +
+                                 L"\" \"" + csvPath.wstring() +
+                                 L"\" " + std::to_wstring(modelChoice);
+    return _wsystem(command.c_str());
+#else
+    const std::string command = "python3 \"" + plotPath.string() +
+                                "\" \"" + csvPath.string() +
+                                "\" " + std::to_string(modelChoice);
+    return std::system(command.c_str());
+#endif
+}
+
 int main() {
 #ifdef _WIN32
     SetConsoleOutputCP(CP_UTF8);
@@ -178,8 +201,10 @@ int main() {
         const InputSignal signal(static_cast<InputType>(signalChoice));
         const auto samples = model->simulate(n, y0, dt, signal);
 
-        std::ofstream csv("results.csv");
-        if (!csv) throw std::runtime_error("Не удалось создать results.csv в текущей папке.");
+        const std::filesystem::path projectDir = std::filesystem::path(PROJECT_SOURCE_DIR);
+        const std::filesystem::path csvPath = projectDir / "results.csv";
+        std::ofstream csv(csvPath);
+        if (!csv) throw std::runtime_error("Не удалось создать results.csv в каталоге проекта.");
         csv << "tau,u,y\n" << std::setprecision(12);
         std::cout << "\n" << model->name() << "\n";
         std::cout << std::left << std::setw(10) << "tau"
@@ -193,8 +218,15 @@ int main() {
                 << sample.input << ',' << sample.output << '\n';
         }
         csv.close();
-        std::cout << "\nРезультаты сохранены в results.csv\n";
-        std::cout << "Для построения графика запустите src/plot.py с файлом results.csv.\n";
+        std::cout << "\nРезультаты сохранены в: " << csvPath.string() << '\n';
+        std::cout << "Построение графика...\n" << std::flush;
+
+        const int plotResult = runPlot(csvPath, modelChoice);
+        if (plotResult != 0) {
+            std::cerr << "Не удалось автоматически открыть график.\n"
+                      << "Проверьте Python launcher (py) и Matplotlib.\n"
+                      << "Установка Matplotlib: py -m pip install matplotlib\n";
+        }
     } catch (const std::exception& ex) {
         std::cerr << "Ошибка: " << ex.what() << '\n';
         return 1;

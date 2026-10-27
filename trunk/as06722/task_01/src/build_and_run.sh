@@ -2,10 +2,13 @@
 set -e
 cd "$(dirname "$0")"
 echo "=== Configure CMake ==="
-cmake -S . -B build
+rm -rf build
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 echo "=== Build project ==="
 cmake --build build --config Release
 echo "=== Run simulation ==="
-./build/task01
-echo "=== Plot results ==="
-python3 src/plot.py results.csv
+if [ -x "./build/task01" ]; then
+    ./build/task01
+else
+    ./build/Release/task01
+fi
