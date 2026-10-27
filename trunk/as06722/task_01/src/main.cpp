@@ -20,6 +20,16 @@
 #define PROJECT_SOURCE_DIR "."
 #endif
 
+class SimulationError final : public std::runtime_error {
+public:
+    using std::runtime_error::runtime_error;
+};
+
+class FileError final : public std::runtime_error {
+public:
+    using std::runtime_error::runtime_error;
+};
+
 struct Sample {
     int step;
     double input;
@@ -63,7 +73,7 @@ public:
             const double u = signal.value(tau);
             const double nextY = next(y, u, previousU, dt);
             if (!std::isfinite(nextY)) {
-                throw std::runtime_error("Получено недопустимое значение. Проверьте параметры модели.");
+                throw SimulationError("Получено недопустимое значение. Проверьте параметры модели.");
             }
             y = nextY;
             previousU = u;
@@ -82,7 +92,8 @@ public:
     }
     std::string name() const override { return "Model 1.4: Linear Integrator with Loss"; }
 private:
-    double a_, b_;
+    double a_;
+    double b_;
 };
 
 // Model 2.9: y(tau+1) = a*y(tau) + b*|u|*sign(u) = a*y(tau) + b*u
@@ -99,10 +110,11 @@ private:
         if (value < 0.0) return -1.0;
         return 0.0;
     }
-    double a_, b_;
+    double a_;
+    double b_;
 };
 
-// Model 3.1: dy/dt = -a*y, explicit Euler: y(k+1) = y(k) - dt*a*y(k)
+// Model 3.1 is calculated with the explicit Euler method.
 class PureLinearDecay final : public Model {
 public:
     explicit PureLinearDecay(double a) : a_(a) {}
@@ -142,7 +154,7 @@ int readInt(const std::string& prompt, int minValue, int maxValue) {
 }
 
 int runPlot(const std::filesystem::path& csvPath, int modelChoice) {
-    const std::filesystem::path projectDir = std::filesystem::path(PROJECT_SOURCE_DIR);
+    const auto projectDir = std::filesystem::path(PROJECT_SOURCE_DIR);
     const std::filesystem::path plotPath = projectDir / "plot.py";
 
 #ifdef _WIN32
@@ -201,10 +213,10 @@ int main() {
         const InputSignal signal(static_cast<InputType>(signalChoice));
         const auto samples = model->simulate(n, y0, dt, signal);
 
-        const std::filesystem::path projectDir = std::filesystem::path(PROJECT_SOURCE_DIR);
+        const auto projectDir = std::filesystem::path(PROJECT_SOURCE_DIR);
         const std::filesystem::path csvPath = projectDir / "results.csv";
         std::ofstream csv(csvPath);
-        if (!csv) throw std::runtime_error("Не удалось создать results.csv в каталоге проекта.");
+        if (!csv) throw FileError("Не удалось создать results.csv в каталоге проекта.");
         csv << "tau,u,y\n" << std::setprecision(12);
         std::cout << "\n" << model->name() << "\n";
         std::cout << std::left << std::setw(10) << "tau"

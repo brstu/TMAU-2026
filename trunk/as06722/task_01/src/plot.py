@@ -2,6 +2,8 @@ import csv
 import sys
 from pathlib import Path
 
+RESULTS_FILE = "results.csv"
+
 try:
     import matplotlib.pyplot as plt
 except ImportError:
@@ -21,10 +23,10 @@ def find_csv(argument=None):
     script_dir = Path(__file__).resolve().parent
     project_dir = script_dir.parent
     candidates = [
-        Path.cwd() / "results.csv",
-        project_dir / "results.csv",
-        script_dir / "results.csv",
-        project_dir / "build" / "results.csv",
+        Path.cwd() / RESULTS_FILE,
+        project_dir / RESULTS_FILE,
+        script_dir / RESULTS_FILE,
+        project_dir / "build" / RESULTS_FILE,
     ]
 
     for candidate in candidates:
@@ -55,7 +57,7 @@ def main():
     csv_path = find_csv(csv_argument)
 
     if csv_path is None:
-        print("Не удалось найти results.csv.")
+        print(f"Не удалось найти {RESULTS_FILE}.")
         print('Пример запуска: py src/plot.py "results.csv" 1')
         sys.exit(1)
 
