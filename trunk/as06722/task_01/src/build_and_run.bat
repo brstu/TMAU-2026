@@ -34,10 +34,10 @@ echo [2/3] Building project...
 cmake --build build --config Release
 if errorlevel 1 goto error
 
-set "APP=build\Release\task01.exe"
-if not exist "%APP%" set "APP=build\task01.exe"
+set "APP=build\Release\as06722_task01.exe"
+if not exist "%APP%" set "APP=build\as06722_task01.exe"
 if not exist "%APP%" (
-    echo [ERROR] task01.exe was not created.
+    echo [ERROR] as06722_task01.exe was not created.
     goto error
 )
 

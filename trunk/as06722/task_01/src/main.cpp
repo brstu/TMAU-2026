@@ -143,7 +143,7 @@ int readInt(const std::string& prompt, int minValue, int maxValue) {
 
 int runPlot(const std::filesystem::path& csvPath, int modelChoice) {
     const std::filesystem::path projectDir = std::filesystem::path(PROJECT_SOURCE_DIR);
-    const std::filesystem::path plotPath = projectDir / "src" / "plot.py";
+    const std::filesystem::path plotPath = projectDir / "plot.py";
 
 #ifdef _WIN32
     const std::wstring command = L"py \"" + plotPath.wstring() +

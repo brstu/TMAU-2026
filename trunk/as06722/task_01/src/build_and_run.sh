@@ -7,8 +7,8 @@ cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 echo "=== Build project ==="
 cmake --build build --config Release
 echo "=== Run simulation ==="
-if [ -x "./build/task01" ]; then
-    ./build/task01
+if [ -x "./build/as06722_task01" ]; then
+    ./build/as06722_task01
 else
-    ./build/Release/task01
+    ./build/Release/as06722_task01
 fi
