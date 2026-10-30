@@ -1,27 +1,30 @@
 #include "InputSignal.h"
 #include <cmath>
 
-namespace {
+double StepSignal::valueAt(int /*step*/) const {
+    return level_;
+}
 
-    inline double stepSignal(int /*time*/) {
-        return 1.0;
+double ImpulseSignal::valueAt(int step) const {
+    return step == 0 ? height_ : 0.0;
+}
+
+double HarmonicSignal::valueAt(int step) const {
+    return amplitude_ * std::sin(static_cast<double>(step));
+}
+
+std::vector<std::unique_ptr<InputSignal>> makeSignals(int menuChoice) {
+    std::vector<std::unique_ptr<InputSignal>> result;
+    const bool all = (menuChoice == 4);
+
+    if (all || menuChoice == 1) {
+        result.push_back(std::make_unique<StepSignal>());
     }
-
-    inline double impulseSignal(int time) {
-        return (time == 0) ? 1.0 : 0.0;
+    if (all || menuChoice == 2) {
+        result.push_back(std::make_unique<ImpulseSignal>());
     }
-
-    inline double harmonicSignal(int time) {
-        return std::sin(static_cast<double>(time));
+    if (all || menuChoice == 3) {
+        result.push_back(std::make_unique<HarmonicSignal>());
     }
-
-} // namespace
-
-double getInputValue(InputType signalKind, int timeIndex) {
-    switch (signalKind) {
-    case InputType::STEP:     return stepSignal(timeIndex);
-    case InputType::IMPULSE:  return impulseSignal(timeIndex);
-    case InputType::HARMONIC: return harmonicSignal(timeIndex);
-    default:                  return 0.0;
-    }
+    return result;
 }
