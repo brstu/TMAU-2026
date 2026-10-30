@@ -1,14 +1,16 @@
-#ifndef INPUT_SIGNAL_H
-#define INPUT_SIGNAL_H
+#pragma once
 
-// Типы входных воздействий, подаваемых на модели
-enum class InputType {
-    STEP,       // ступенчатый сигнал: u = const = 1
-    IMPULSE,    // импульс: u(0) = 1, u(t>0) = 0
-    HARMONIC    // гармонический сигнал: u = sin(t)
+#include <cstddef>
+
+// Виды управляющих воздействий u(τ), подаваемых на вход моделей
+enum class InputType : unsigned char {
+    STEP,      // постоянный уровень
+    IMPULSE,   // единичный импульс в начальный момент
+    HARMONIC   // синусоида от номера такта
 };
 
-// Вычисляет значение входного сигнала в момент времени timeIndex
-double getInputValue(InputType signalKind, int timeIndex);
+// Сколько видов воздействий поддерживает программа
+inline constexpr std::size_t kInputTypeCount = 3;
 
-#endif // INPUT_SIGNAL_H
+// Значение воздействия вида type на такте tau (для неизвестного вида — 0)
+double getInputValue(InputType type, int tau);
