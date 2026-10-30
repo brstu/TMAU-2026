@@ -5,8 +5,8 @@
 #include <deque>
 #include <string>
 
-// Model 1.5 — линейная система с запаздыванием по состоянию:
-//   y(t+1) = a1*y(t) + a2*y(t-k) + b*u(t),   k >= 1
+// Model 1.5: линейная система с запаздыванием по состоянию на k шагов.
+// Формула модели приведена в doc/readme.md.
 class Model1_5 : public Model {
 public:
     Model1_5(double coeffA1, double coeffA2, double coeffB, int delayK);
@@ -14,8 +14,8 @@ public:
     double calculateNext(double input) override;
     void reset() override;
 
-    // Анализ устойчивости: корни z^(k+1) - a1*z^k - a2 = 0 должны лежать
-    // внутри единичной окружности |z| < 1
+    // Устойчивость: все корни характеристического уравнения
+    // должны лежать внутри единичной окружности на Z-плоскости
     bool isStable(std::string& message) const override;
 
 private:
@@ -23,7 +23,7 @@ private:
     double a2;
     double b;
     int k;
-    // История выходов: history[0] = y(t), history[k] = y(t-k)
+    // Буфер последних k+1 значений выхода, от нового к старому
     std::deque<double> history;
 };
 

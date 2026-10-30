@@ -4,10 +4,9 @@
 #include "Model.h"
 #include <string>
 
-// Model 3.3 — стандартный процесс первого порядка:
-//   dy/dt = -a*y + b*u
-// Решается методом Эйлера с шагом dt:
-//   y(t+1) = y(t) + dt*(-a*y(t) + b*u(t))
+// Model 3.3: стандартный процесс первого порядка.
+// Дифференциальное уравнение решается явным методом Эйлера с шагом dt.
+// Формулы модели приведены в doc/readme.md.
 class Model3_3 : public Model {
 public:
     Model3_3(double coeffA, double coeffB, double timeStep);
@@ -15,7 +14,7 @@ public:
     double calculateNext(double input) override;
     void reset() override;
 
-    // Разностная схема устойчива при |1 - a*dt| < 1
+    // Разностная схема устойчива, если её корень лежит внутри единичной окружности
     bool isStable(std::string& message) const override;
 
 private:

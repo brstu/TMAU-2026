@@ -4,8 +4,8 @@
 #include "Model.h"
 #include <string>
 
-// Model 2.9 — модуляция управляющего воздействия квадратным корнем:
-//   y(t+1) = a*y(t) + b*sqrt(|u(t)|)*sign(u(t))
+// Model 2.9: управляющее воздействие модулируется квадратным корнем
+// с сохранением знака. Формула модели приведена в doc/readme.md.
 class Model2_9 : public Model {
 public:
     Model2_9(double coeffA, double coeffB);
@@ -13,7 +13,7 @@ public:
     double calculateNext(double input) override;
     void reset() override;
 
-    // Однородная часть y(t+1) = a*y(t) устойчива при |a| < 1
+    // Однородная часть модели устойчива, если модуль коэффициента a меньше единицы
     bool isStable(std::string& message) const override;
 
 private:

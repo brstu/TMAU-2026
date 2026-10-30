@@ -1,21 +1,24 @@
 #include "Model1_5.h"
+#include <algorithm>
 #include <cmath>
 #include <complex>
 #include <sstream>
 #include <vector>
 
 Model1_5::Model1_5(double coeffA1, double coeffA2, double coeffB, int delayK)
-    : a1(coeffA1), a2(coeffA2), b(coeffB), k(delayK < 1 ? 1 : delayK) {
-    reset();
-}
+    : a1(coeffA1),
+      a2(coeffA2),
+      b(coeffB),
+      k(delayK < 1 ? 1 : delayK),
+      history(static_cast<size_t>(k) + 1, 0.0) {}
 
 double Model1_5::calculateNext(double input) {
-    const double y_curr = history.front();   // y(t)
-    const double y_delay = history.back();   // y(t-k)
+    const double y_curr = history.front();
+    const double y_delay = history.back();
 
     const double y_next = a1 * y_curr + a2 * y_delay + b * input;
 
-    // Сдвигаем историю: новое значение в начало, самое старое удаляем
+    // Новое значение помещается в начало буфера, самое старое удаляется
     history.push_front(y_next);
     history.pop_back();
 
@@ -30,31 +33,55 @@ void Model1_5::reset() {
 
 namespace {
 
-    // Поиск всех корней полинома методом Дюрана–Кернера.
-    // coeffs — коэффициенты при z^n, z^(n-1), ..., z^0 (старший = 1)
-    std::vector<std::complex<double>> polyRoots(const std::vector<double>& coeffs) {
-        const int n = static_cast<int>(coeffs.size()) - 1;
-        std::vector<std::complex<double>> roots(n);
-        const std::complex<double> seed(0.4, 0.9);
-        for (int i = 0; i < n; ++i) roots[i] = std::pow(seed, i);
+    using Complex = std::complex<double>;
 
-        auto evaluate = [&](std::complex<double> z) {
-            std::complex<double> result = 0.0;
-            for (double c : coeffs) result = result * z + c;
-            return result;
-        };
+    // Значение полинома в точке по схеме Горнера.
+    // Коэффициенты перечислены от старшей степени к младшей.
+    Complex evaluatePoly(const std::vector<double>& coeffs, Complex z) {
+        Complex result = 0.0;
+        for (double c : coeffs) {
+            result = result * z + c;
+        }
+        return result;
+    }
 
-        for (int iter = 0; iter < 1000; ++iter) {
-            double maxShift = 0.0;
-            for (int i = 0; i < n; ++i) {
-                std::complex<double> denom = 1.0;
-                for (int j = 0; j < n; ++j)
-                    if (j != i) denom *= (roots[i] - roots[j]);
-                const std::complex<double> shift = evaluate(roots[i]) / denom;
-                roots[i] -= shift;
-                maxShift = std::max(maxShift, std::abs(shift));
+    // Произведение разностей между i-м корнем и всеми остальными
+    Complex rootsDifference(const std::vector<Complex>& roots, size_t i) {
+        Complex denom = 1.0;
+        for (size_t j = 0; j < roots.size(); ++j) {
+            if (j != i) {
+                denom *= (roots[i] - roots[j]);
             }
-            if (maxShift < 1e-12) break;
+        }
+        return denom;
+    }
+
+    // Одна итерация метода Дюрана-Кернера, возвращает наибольший сдвиг корня
+    double durandKernerStep(const std::vector<double>& coeffs, std::vector<Complex>& roots) {
+        double maxShift = 0.0;
+        for (size_t i = 0; i < roots.size(); ++i) {
+            const Complex shift = evaluatePoly(coeffs, roots[i]) / rootsDifference(roots, i);
+            roots[i] -= shift;
+            maxShift = std::max(maxShift, std::abs(shift));
+        }
+        return maxShift;
+    }
+
+    // Поиск всех корней полинома со старшим коэффициентом, равным единице
+    std::vector<Complex> polyRoots(const std::vector<double>& coeffs) {
+        const size_t n = coeffs.size() - 1;
+        std::vector<Complex> roots(n);
+        const Complex seed(0.4, 0.9);
+        for (size_t i = 0; i < n; ++i) {
+            roots[i] = std::pow(seed, static_cast<int>(i));
+        }
+
+        const int maxIterations = 1000;
+        const double tolerance = 1e-12;
+        for (int iter = 0; iter < maxIterations; ++iter) {
+            if (durandKernerStep(coeffs, roots) < tolerance) {
+                break;
+            }
         }
         return roots;
     }
@@ -62,15 +89,16 @@ namespace {
 } // namespace
 
 bool Model1_5::isStable(std::string& message) const {
-    // Характеристическое уравнение: z^(k+1) - a1*z^k - a2 = 0
-    std::vector<double> coeffs(static_cast<size_t>(k) + 2, 0.0);
+    // Коэффициенты характеристического уравнения степени k+1
+    std::vector coeffs(static_cast<size_t>(k) + 2, 0.0);
     coeffs[0] = 1.0;
     coeffs[1] = -a1;
     coeffs[k + 1] -= a2;
 
-    const auto roots = polyRoots(coeffs);
     double maxModulus = 0.0;
-    for (const auto& r : roots) maxModulus = std::max(maxModulus, std::abs(r));
+    for (const auto& root : polyRoots(coeffs)) {
+        maxModulus = std::max(maxModulus, std::abs(root));
+    }
 
     std::ostringstream out;
     out.precision(4);

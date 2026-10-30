@@ -14,7 +14,7 @@ double Model2_9::sign(double value) {
 double Model2_9::calculateNext(double input) {
     const double y_curr = getY();
 
-    // Нелинейное воздействие: sqrt(|u|) * sign(u)
+    // Нелинейное воздействие: корень из модуля входа со знаком входа
     const double y_next = a * y_curr + b * std::sqrt(std::fabs(input)) * sign(input);
 
     setY(y_next);

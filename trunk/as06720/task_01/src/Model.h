@@ -9,14 +9,14 @@ class Model {
 public:
     virtual ~Model() = default;
 
-    // Один шаг моделирования: получить вход u(t), вернуть y(t+1)
+    // Один шаг моделирования: принимает текущий вход, возвращает новое значение выхода
     virtual double calculateNext(double u) = 0;
 
     // Привести внутреннее состояние к начальному
     virtual void reset() = 0;
 
     // Проверка устойчивости (по умолчанию модель считается устойчивой).
-    // Возвращает true, если процесс сходится; в message — пояснение.
+    // Возвращает true, если процесс сходится, а в message записывает пояснение.
     virtual bool isStable(std::string& message) const {
         message = "Stability analysis is not defined for this model.";
         return true;

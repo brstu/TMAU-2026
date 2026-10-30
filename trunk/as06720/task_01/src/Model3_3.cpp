@@ -8,7 +8,7 @@ Model3_3::Model3_3(double coeffA, double coeffB, double timeStep)
 double Model3_3::calculateNext(double input) {
     const double y_curr = getY();
 
-    // Метод Эйлера: y(t+1) = y(t) + dt * (-a*y(t) + b*u(t))
+    // Один шаг явного метода Эйлера
     const double y_next = y_curr + dt * (-a * y_curr + b * input);
 
     setY(y_next);
