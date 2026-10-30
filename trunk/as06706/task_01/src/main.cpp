@@ -52,9 +52,9 @@ bool readDouble(const std::string& prompt, double& value) {
 
         std::istringstream parser(line);
         double parsedValue = 0.0;
-        char extraSymbol = '\0';
 
-        if (parser >> parsedValue &&
+        if (char extraSymbol = '\0';
+            parser >> parsedValue &&
             !(parser >> extraSymbol) &&
             std::isfinite(parsedValue)) {
             value = parsedValue;
@@ -384,12 +384,9 @@ void runModel(int modelChoice, const char* executableArgv0) {
 
     std::cout << "\nВыбрана модель: " << model->name() << '\n';
     std::cout << "Входное воздействие: " << signal->name() << '\n';
-    std::cout << "Количество шагов: " << n
-        << ", начальное значение y_0 = " << initialY << '\n';
 
-    const std::string stability = model->stabilityInfo();
-
-    if (!stability.empty()) {
+    if (const std::string stability = model->stabilityInfo();
+        !stability.empty()) {
         std::cout << stability << '\n';
     }
 
@@ -401,6 +398,10 @@ void runModel(int modelChoice, const char* executableArgv0) {
         std::cout << "Нет результатов для сохранения.\n";
         return;
     }
+
+    // Выводим фактическое число рассчитанных строк, а не исходный аргумент n.
+    std::cout << "Количество рассчитанных шагов: " << rows.size()
+        << ", начальное значение y_0 = " << initialY << '\n';
 
     printResults(rows);
 

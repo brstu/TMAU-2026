@@ -5,6 +5,9 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 
 
+RESULTS_CSV_FILENAME = "results.csv"
+
+
 models = {
     1: "Модель 1.2 — линейная модель с задержкой управления",
     2: "Модель 2.4 — нелинейная модель (косинус и логарифм)",
@@ -33,9 +36,9 @@ for folder in script_directory.parents:
         break
 
 csv_candidates = [
-    Path.cwd() / "results.csv",
-    script_directory / "results.csv",
-    project_directory / "results.csv"
+    Path.cwd() / RESULTS_CSV_FILENAME,
+    script_directory / RESULTS_CSV_FILENAME,
+    project_directory / RESULTS_CSV_FILENAME
 ]
 
 csv_path = next(
@@ -44,7 +47,7 @@ csv_path = next(
 )
 
 if csv_path is None:
-    print("Файл results.csv не найден.")
+    print(f"Файл {RESULTS_CSV_FILENAME} не найден.")
     sys.exit(1)
 
 with open(csv_path, "r", encoding="utf-8-sig", newline="") as file:
