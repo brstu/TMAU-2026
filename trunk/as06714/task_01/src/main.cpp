@@ -34,8 +34,7 @@ namespace {
             if (line.find_first_not_of(" \t\r") == string::npos) return defValue;
             istringstream in(line);
             int number;
-            string rest;
-            if (in >> number && !(in >> rest) && number >= low && number <= high) return number;
+            if (string rest; in >> number && !(in >> rest) && number >= low && number <= high) return number;
             cout << "[Error] Please enter an integer between " << low << " and " << high << "." << endl;
             if (!cin) return defValue;
         }
@@ -49,8 +48,7 @@ namespace {
             if (line.find_first_not_of(" \t\r") == string::npos) return defValue;
             istringstream in(line);
             double number;
-            string rest;
-            if (in >> number && !(in >> rest)) return number;
+            if (string rest; in >> number && !(in >> rest)) return number;
             cout << "[Error] Please enter a valid number." << endl;
             if (!cin) return defValue;
         }
@@ -159,13 +157,13 @@ int main() {
         const double b1 = readReal("b1", 0.5);
         const double b2 = readReal("b2", 0.3);
         const double b3 = readReal("b3", 0.2);
-        models.push_back({ unique_ptr<Model>(new Model1_7(a, b1, b2, b3)), "Linear_1_7" });
+        models.push_back({ make_unique<Model1_7>(a, b1, b2, b3), "Linear_1_7" });
     }
     if (modelChoice == 2 || modelChoice == 4) {
         cout << "\n--- Parameters of Model 2.9 ---" << endl;
         const double a = readReal("a ", 0.7);
         const double b = readReal("b ", 1.0);
-        models.push_back({ unique_ptr<Model>(new Model2_9(a, b)), "Nonlinear_2_9" });
+        models.push_back({ make_unique<Model2_9>(a, b), "Nonlinear_2_9" });
     }
     if (modelChoice == 3 || modelChoice == 4) {
         cout << "\n--- Parameters of Model 3.1 ---" << endl;
@@ -173,7 +171,7 @@ int main() {
         const double a  = readReal("a ", 1.0);
         const double dt = readReal("dt", 0.1);
         const double y0 = readReal("y0", 1.0);
-        models.push_back({ unique_ptr<Model>(new Model3_1(a, dt, y0)), "DiffEquation_3_1" });
+        models.push_back({ make_unique<Model3_1>(a, dt, y0), "DiffEquation_3_1" });
     }
 
     vector<SignalChoice> signals;

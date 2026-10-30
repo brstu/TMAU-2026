@@ -4,7 +4,7 @@
 
 Model3_1::Model3_1(double coeffA, double timeStep, double initialY)
     : a(coeffA), dt(timeStep), y0(initialY) {
-    reset();
+    setY(y0);
 }
 
 double Model3_1::calculateNext(double /*input*/) {
