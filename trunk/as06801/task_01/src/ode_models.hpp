@@ -9,61 +9,69 @@ public:
     double nextStep(const Ctx& x) const override { return x.Y() + dt * rhs(x.Y(), x.U()); }
 protected:
     virtual double rhs(double y, double u) const = 0;  // правая часть dy/dt
+
+private:
     double dt;
 };
 
-struct Model31 : OdeModel {  // dy/dt = -a y
+struct Model31 : OdeModel {
     double a;
-    Model31(const Params& P) : OdeModel("3.1", "Линейный распад", P), a(P.get("a", 1)) {}
+    explicit Model31(const Params& P) : OdeModel("3.1", "Линейный распад", P), a(P.get("a", 1)) {}
     double rhs(double y, double) const override { return -a * y; }
 };
-struct Model32 : OdeModel {  // dy/dt = b u
+struct Model32 : OdeModel {
     double b;
-    Model32(const Params& P) : OdeModel("3.2", "Интегрирование входа", P), b(P.get("b", 1)) {}
+    explicit Model32(const Params& P) : OdeModel("3.2", "Интегрирование входа", P), b(P.get("b", 1)) {}
     double rhs(double, double u) const override { return b * u; }
 };
-struct Model33 : OdeModel {  // dy/dt = -a y + b u
-    double a, b;
-    Model33(const Params& P) : OdeModel("3.3", "Процесс 1-го порядка", P),
+struct Model33 : OdeModel {
+    double a;
+    double b;
+    explicit Model33(const Params& P) : OdeModel("3.3", "Процесс 1-го порядка", P),
         a(P.get("a", 1)), b(P.get("b", 1)) {}
     double rhs(double y, double u) const override { return -a * y + b * u; }
 };
-struct Model34 : OdeModel {  // dy/dt = -a y^2
+struct Model34 : OdeModel {
     double a;
-    Model34(const Params& P) : OdeModel("3.4", "Квадратичный распад", P), a(P.get("a", 1)) {}
+    explicit Model34(const Params& P) : OdeModel("3.4", "Квадратичный распад", P), a(P.get("a", 1)) {}
     double rhs(double y, double) const override { return -a * y * y; }
 };
-struct Model35 : OdeModel {  // dy/dt = b sin(u)
+struct Model35 : OdeModel {
     double b;
-    Model35(const Params& P) : OdeModel("3.5", "Гармоническое воздействие", P), b(P.get("b", 1)) {}
+    explicit Model35(const Params& P) : OdeModel("3.5", "Гармоническое воздействие", P), b(P.get("b", 1)) {}
     double rhs(double, double u) const override { return b * std::sin(u); }
 };
-struct Model36 : OdeModel {  // dy/dt = a y^3 + b u
-    double a, b;
-    Model36(const Params& P) : OdeModel("3.6", "Кубический рост и управление", P),
+struct Model36 : OdeModel {
+    double a;
+    double b;
+    explicit Model36(const Params& P) : OdeModel("3.6", "Кубический рост и управление", P),
         a(P.get("a", -1)), b(P.get("b", 1)) {}
     double rhs(double y, double u) const override { return a * y * y * y + b * u; }
 };
-struct Model37 : OdeModel {  // dy/dt = -e^a y + b u
-    double a, b;
-    Model37(const Params& P) : OdeModel("3.7", "Экспоненциальное масштабирование", P),
+struct Model37 : OdeModel {
+    double a;
+    double b;
+    explicit Model37(const Params& P) : OdeModel("3.7", "Экспоненциальное масштабирование", P),
         a(P.get("a", 0)), b(P.get("b", 1)) {}
     double rhs(double y, double u) const override { return -std::exp(a) * y + b * u; }
 };
-struct Model38 : OdeModel {  // dy/dt = -a1 y - a2 y^2 + b u
-    double a1, a2, b;
-    Model38(const Params& P) : OdeModel("3.8", "Линейно-квадратичный распад", P),
+struct Model38 : OdeModel {
+    double a1;
+    double a2;
+    double b;
+    explicit Model38(const Params& P) : OdeModel("3.8", "Линейно-квадратичный распад", P),
         a1(P.get("a1", 1)), a2(P.get("a2", .5)), b(P.get("b", 1)) {}
     double rhs(double y, double u) const override { return -a1 * y - a2 * y * y + b * u; }
 };
-struct Model39 : OdeModel {  // dy/dt = b tanh(u)
+struct Model39 : OdeModel {
     double b;
-    Model39(const Params& P) : OdeModel("3.9", "Ограниченная скорость", P), b(P.get("b", 1)) {}
+    explicit Model39(const Params& P) : OdeModel("3.9", "Ограниченная скорость", P), b(P.get("b", 1)) {}
     double rhs(double, double u) const override { return b * std::tanh(u); }
 };
-struct Model310 : OdeModel {  // dy/dt = -a y + b + u
-    double a, b;
-    Model310(const Params& P) : OdeModel("3.10", "Постоянное смещение", P),
+struct Model310 : OdeModel {
+    double a;
+    double b;
+    explicit Model310(const Params& P) : OdeModel("3.10", "Постоянное смещение", P),
         a(P.get("a", 1)), b(P.get("b", .5)) {}
     double rhs(double y, double u) const override { return -a * y + b + u; }
 };

@@ -11,13 +11,25 @@
 enum class Input { Step, Impulse, Sine };
 
 inline const char* inputName(Input i) {
-    return i == Input::Step ? "step" : i == Input::Impulse ? "impulse" : "sine";
+    switch (i) {
+        case Input::Step: return "step";
+        case Input::Impulse: return "impulse";
+        default: return "sine";
+    }
 }
+// Значение входного воздействия в момент tau.
+inline double inputValue(Input t, int tau, double amp) {
+    switch (t) {
+        case Input::Step: return amp;
+        case Input::Impulse: return tau == 0 ? 1.0 : 0.0;
+        default: return std::sin(static_cast<double>(tau));
+    }
+}
+
 // u_tau для tau = 0..n
 inline std::vector<double> makeInput(Input t, int n, double amp) {
     std::vector<double> u(n + 1);
-    for (int tau = 0; tau <= n; ++tau)
-        u[tau] = t == Input::Step ? amp : t == Input::Impulse ? (tau == 0 ? 1.0 : 0.0) : std::sin((double)tau);
+    for (int tau = 0; tau <= n; ++tau) u[tau] = inputValue(t, tau, amp);
     return u;
 }
 

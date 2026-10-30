@@ -42,5 +42,6 @@ public:
     const std::string& title() const { return title_; }
 
 private:
-    std::string id_, title_;
+    std::string id_;
+    std::string title_;
 };
