@@ -1,66 +1,111 @@
 #include "ConsoleUI.h"
 #include "Simulation.h"
-
 #include "LinearModel.h"
 #include "SquareRootModel.h"
 #include "PureLinearDecayModel.h"
-
 #include "results_csv.h"
 
 #include <iostream>
-#include <memory>
+#include <limits>
 #include <cstdlib>
+
+int ConsoleUI::readChoice(int min, int max)
+{
+    int x;
+    while (true)
+    {
+        std::cout << "> ";
+        if (std::cin >> x && x >= min && x <= max)
+            return x;
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cout << "Введите число от " << min << " до " << max << "\n";
+    }
+}
+
+double ConsoleUI::readDouble(const std::string& prompt)
+{
+    double x;
+    while (true)
+    {
+        std::cout << prompt;
+        if (std::cin >> x)
+            return x;
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cout << "Нужно ввести число\n";
+    }
+}
+
+int ConsoleUI::readSteps()
+{
+    std::cout << "Количество шагов (1..1000):\n";
+    return readChoice(1, 1000);
+}
+
+InputType ConsoleUI::selectImpact()
+{
+    std::cout << "Выберите воздействие:\n"
+                 "  1 - Ступенчатое\n"
+                 "  2 - Импульсное\n"
+                 "  3 - Гармоническое\n";
+    switch (readChoice(1, 3))
+    {
+    case 1:  return InputType::Step;
+    case 2:  return InputType::Impulse;
+    default: return InputType::Harmonic;
+    }
+}
+
+std::unique_ptr<Model> ConsoleUI::selectModel(std::string& name)
+{
+    std::cout << "Выберите модель:\n"
+                 "  1 - Линейная: y(j) = a*y(j-1) + b1*u(j) + b2*u(j-1) + b3*u(j-2)\n"
+                 "  2 - Корневая: y(j) = a*y(j-1) + b*sign(u)*sqrt(|u|)\n"
+                 "  3 - Линейный распад: y(j+1) = y(j) - h*a*y(j)\n";
+    switch (readChoice(1, 3))
+    {
+    case 1:
+    {
+        name = "LinearModel";
+        double a  = readDouble("a  = ");
+        double b1 = readDouble("b1 = ");
+        double b2 = readDouble("b2 = ");
+        double b3 = readDouble("b3 = ");
+        return std::make_unique<LinearModel>(a, b1, b2, b3);
+    }
+    case 2:
+    {
+        name = "SquareRootModel";
+        double a = readDouble("a = ");
+        double b = readDouble("b = ");
+        return std::make_unique<SquareRootModel>(a, b);
+    }
+    default:
+    {
+        name = "PureLinearDecayModel";
+        double a  = readDouble("a  = ");
+        double h  = readDouble("h  = ");
+        double y0 = readDouble("y0 = ");
+        return std::make_unique<PureLinearDecayModel>(a, h, y0);
+    }
+    }
+}
 
 void ConsoleUI::run()
 {
-    int numberOfSteps;
+    int steps = readSteps();
 
-    std::cout << "Input number of steps: ";
-    std::cin >> numberOfSteps;
+    std::string modelName;
+    auto model = selectModel(modelName);
+    InputType type = selectImpact();
 
-    if (!std::cin || numberOfSteps <= 0) {
-        std::cout << "Invalid number of steps!\n";
-        return;
-    }
+    Simulation sim(steps, type, modelName, std::move(model));
+    auto result = sim.run();
 
-    // Создаём объект моделирования.
-    Simulation sim(numberOfSteps);
+    saveResultToCsv(result, "results.csv");
+    std::cout << "Результаты сохранены в results.csv\n";
 
-    // Модель 1: LinearModel.
-    sim.addModel(
-        std::make_unique<LinearModel>(
-            0.5, 1.0, 0.3, 0.1
-        )
-    );
-
-    // Модель 2.9: Square Root Modulated Action.
-    sim.addModel(
-        std::make_unique<SquareRootModel>(
-            0.5, 1.0
-        )
-    );
-
-    // Модель 3.1: Pure Linear Decay.
-    sim.addModel(
-        std::make_unique<PureLinearDecayModel>(
-            0.2
-        )
-    );
-
-    // Запускаем моделирование.
-    auto results = sim.run();
-
-    // Сохраняем результаты в CSV.
-    saveResultsToCsv(results, "results.csv");
-
-    std::cout << "Results saved to results.csv\n";
-
-    // После сохранения результатов:
-    saveResultsToCsv(results, "results.csv");
-
-    int result = std::system("python plot.py");
-
-    if (result != 0) {
+    if (std::system("python plot.py results.csv") != 0)
         std::cout << "Не удалось запустить plot.py\n";
-    }
 }

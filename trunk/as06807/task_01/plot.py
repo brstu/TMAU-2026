@@ -1,55 +1,44 @@
-
 import csv
+import sys
 import matplotlib.pyplot as plt
-from collections import defaultdict
 
-filename = "results.csv"
+filename = sys.argv[1] if len(sys.argv) > 1 else "results.csv"
 
-# Данные будут сгруппированы по модели и воздействию.
-data = defaultdict(lambda: defaultdict(lambda: [[], []]))
+steps, u_vals, y_vals = [], [], []
+model = input_type = ""
 
 with open(filename, "r", newline="", encoding="utf-8") as file:
-    reader = csv.DictReader(file)
-
-    for row in reader:
-        model = int(row["ModelIndex"])
+    for row in csv.DictReader(file):
+        model = row["Model"]
         input_type = row["InputType"]
-        step = int(row["Step"])
-        y = float(row["Y"])
+        steps.append(int(row["Step"]))
+        u_vals.append(float(row["U"]))
+        y_vals.append(float(row["Y"]))
 
-        data[model][input_type][0].append(step)
-        data[model][input_type][1].append(y)
-
-if not data:
+if not steps:
     print("В CSV-файле нет результатов.")
     raise SystemExit
 
-print("Доступные модели:", ", ".join(map(str, sorted(data))))
+# ---- Таблица в консоли ----
+print(f"\nМодель: {model}, воздействие: {input_type}\n")
+print(f"{'Шаг':>5} | {'u':>12} | {'y':>12}")
+print("-" * 36)
+for s, u, y in zip(steps, u_vals, y_vals):
+    print(f"{s:>5} | {u:>12.6f} | {y:>12.6f}")
 
-try:
-    model_index = int(input("Введите индекс модели для графика: "))
-except ValueError:
-    print("Нужно ввести целое число.")
-    raise SystemExit
+# ---- График ----
+fig, (ax_u, ax_y) = plt.subplots(2, 1, figsize=(10, 7), sharex=True)
 
-if model_index not in data:
-    print("Модель с таким индексом не найдена.")
-    raise SystemExit
+ax_u.plot(steps, u_vals, marker="o", color="tab:orange")
+ax_u.set_title(f"Воздействие: {input_type}")
+ax_u.set_ylabel("u")
+ax_u.grid(True)
 
-plt.figure(figsize=(10, 6))
+ax_y.plot(steps, y_vals, marker="o", color="tab:blue")
+ax_y.set_title(f"Отклик модели {model}")
+ax_y.set_xlabel("Шаг времени")
+ax_y.set_ylabel("y")
+ax_y.grid(True)
 
-for input_type, (steps, values) in data[model_index].items():
-    # Сортируем точки по времени на случай изменения порядка в CSV.
-    points = sorted(zip(steps, values))
-    steps = [point[0] for point in points]
-    values = [point[1] for point in points]
-
-    plt.plot(steps, values, marker="o", label=input_type)
-
-plt.title(f"Результаты моделирования: модель {model_index}")
-plt.xlabel("Шаг времени")
-plt.ylabel("Выходное значение y")
-plt.grid(True)
-plt.legend()
 plt.tight_layout()
 plt.show()

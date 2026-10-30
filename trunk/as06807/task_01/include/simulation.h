@@ -1,23 +1,20 @@
 #pragma once
-
-#include <vector>
 #include <memory>
-
+#include <string>
 #include "model.h"
-#include "impact.h"
 #include "SimulationResult.h"
+#include "InputType.h"
 
 class Simulation {
 private:
     int numberOfSteps;
-    std::vector<std::unique_ptr<Model>> models;
+    InputType type;
+    std::string modelName;
+    std::unique_ptr<Model> model;
 
 public:
-    Simulation(
-        int numberOfSteps
-    );
+    Simulation(int numberOfSteps, InputType type,
+               std::string modelName, std::unique_ptr<Model> model);
 
-    void addModel(std::unique_ptr<Model> model);
-
-    std::vector<ModelResult> run() const;
+    SimulationResult run() const;
 };

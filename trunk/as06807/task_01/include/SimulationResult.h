@@ -1,17 +1,12 @@
 #pragma once
-
+#include <string>
 #include <vector>
-#include <cstddef>
 #include "InputType.h"
 
-struct ImpactResult
+struct SimulationResult
 {
+    std::string modelName;
     InputType type;
-    std::vector<double> values;
-};
-
-struct ModelResult
-{
-    std::size_t ModelIndex{};
-    std::vector<ImpactResult> calculateResult;
+    std::vector<double> u;
+    std::vector<double> y;
 };

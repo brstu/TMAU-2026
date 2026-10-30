@@ -1,6 +1,5 @@
 #pragma once
-
 #include <vector>
-#include "SimulationResult.h"
+#include "InputType.h"
 
-std::vector<ImpactResult> getInput(int steps);
+std::vector<double> getInput(int steps, InputType type);

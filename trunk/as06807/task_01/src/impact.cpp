@@ -2,34 +2,25 @@
 #include <cmath>
 #include <stdexcept>
 
-std::vector<ImpactResult> getInput(int steps)
+std::vector<double> getInput(int steps, InputType type)
 {
     if (steps <= 0)
+        throw std::invalid_argument("Number of steps must be positive");
+
+    std::vector<double> u(steps, 0.0);
+
+    switch (type)
     {
-        throw std::invalid_argument(
-            "Number of steps must be positive"
-        );
+    case InputType::Step:
+        u.assign(steps, 1.0);
+        break;
+    case InputType::Impulse:
+        u[0] = 1.0;
+        break;
+    case InputType::Harmonic:
+        for (int t = 0; t < steps; ++t)
+            u[t] = std::sin(t);
+        break;
     }
-
-    std::vector<ImpactResult> u(3);
-
-    // Ступенчатое воздействие.
-    u[0].type = InputType::Step;
-    u[0].values.resize(steps, 1.0);
-
-    // Импульсное воздействие.
-    u[1].type = InputType::Impulse;
-    u[1].values.resize(steps, 0.0);
-    u[1].values[0] = 1.0;
-
-    // Гармоническое воздействие.
-    u[2].type = InputType::Harmonic;
-    u[2].values.resize(steps);
-
-    for (int tau = 0; tau < steps; ++tau)
-    {
-        u[2].values[tau] = std::sin(tau);
-    }
-
     return u;
 }

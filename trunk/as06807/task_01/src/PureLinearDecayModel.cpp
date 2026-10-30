@@ -1,25 +1,15 @@
 #include "PureLinearDecayModel.h"
 
-PureLinearDecayModel::PureLinearDecayModel(double a, double h)
-    : a(a), h(h) {}
+PureLinearDecayModel::PureLinearDecayModel(double a, double h, double y0)
+    : a(a), h(h), y0(y0) {}
 
-std::vector<double> PureLinearDecayModel::calculate(
-    const std::vector<double>& u
-) {
-    std::vector<double> y;
-    y.reserve(u.size() + 1);
+std::vector<double> PureLinearDecayModel::calculate(const std::vector<double>& u)
+{
+    std::vector<double> y(u.size());
+    if (y.empty()) return y;
 
-    // Начальное значение выхода
-    y.push_back(1.0);
-
-    for (size_t j = 0; j < u.size(); ++j) {
-        double currentY = y[j];
-
-        // Метод Эйлера для dy/dt = -a*y
-        double nextY = currentY - h * a * currentY;
-
-        y.push_back(nextY);
-    }
-
+    y[0] = y0;
+    for (std::size_t j = 1; j < u.size(); ++j)
+        y[j] = y[j - 1] - h * a * y[j - 1];   // Эйлер: dy/dt = -a*y
     return y;
 }
