@@ -6,17 +6,17 @@ Model3_3::Model3_3(double coeffA, double coeffB, double timeStep)
     : a(coeffA), b(coeffB), dt(timeStep) {}
 
 double Model3_3::calculateNext(double input) {
-    const double y_curr = getY();
+    const double y_curr = output();
 
     // Один шаг явного метода Эйлера
     const double y_next = y_curr + dt * (-a * y_curr + b * input);
 
-    setY(y_next);
+    storeOutput(y_next);
     return y_next;
 }
 
 void Model3_3::reset() {
-    setY(0.0);
+    storeOutput(0.0);
 }
 
 bool Model3_3::isStable(std::string& message) const {

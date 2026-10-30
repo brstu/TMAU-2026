@@ -182,17 +182,19 @@ $0 < a\Delta t < 2$. При $u = 1$: $y_{\infty} = b / a = 1$.
 Программа построена на принципах ООП: абстрактный базовый класс `Model`
 задаёт чисто виртуальные методы `calculateNext()` и `reset()`, а конкретные
 уравнения реализованы в классах-наследниках.
+Входные воздействия также оформлены иерархией классов: абстрактный
+`InputSignal` и наследники `StepSignal`, `ImpulseSignal`, `HarmonicSignal`.
 
 ```mermaid
 classDiagram
     class Model {
         <<abstract>>
-        -y_curr : double
+        -lastOutput_ : double
         +calculateNext(u : double) double*
         +reset() void*
-        +isStable(message : string&) bool
-        +getY() double
-        #setY(value : double) void
+        +isStable(report : string&) bool
+        +output() double
+        #storeOutput(value : double) void
     }
 
     class Model1_5 {
@@ -227,17 +229,37 @@ classDiagram
         +isStable(message : string&) bool
     }
 
-    class InputType {
-        <<enumeration>>
-        STEP
-        IMPULSE
-        HARMONIC
+    class InputSignal {
+        <<abstract>>
+        +valueAt(step : int) double*
+        +name() string*
+    }
+
+    class StepSignal {
+        -level_ : double
+        +valueAt(step : int) double
+        +name() string
+    }
+
+    class ImpulseSignal {
+        -height_ : double
+        +valueAt(step : int) double
+        +name() string
+    }
+
+    class HarmonicSignal {
+        -amplitude_ : double
+        +valueAt(step : int) double
+        +name() string
     }
 
     Model <|-- Model1_5
     Model <|-- Model2_9
     Model <|-- Model3_3
-    Model ..> InputType : u = getInputValue(type, t)
+    InputSignal <|-- StepSignal
+    InputSignal <|-- ImpulseSignal
+    InputSignal <|-- HarmonicSignal
+    Model ..> InputSignal : u = valueAt(t)
 ```
 
 ---
@@ -265,7 +287,7 @@ task_01/
     ├── Model1_5.h / .cpp     — линейная модель 1.5
     ├── Model2_9.h / .cpp     — нелинейная модель 2.9
     ├── Model3_3.h / .cpp     — дифференциальное уравнение 3.3
-    ├── InputSignal.h / .cpp  — входные воздействия
+    ├── InputSignal.h / .cpp  — классы входных воздействий
     ├── main.cpp              — диалог с пользователем, вывод таблиц и CSV
     └── plot.py               — визуализация (Matplotlib)
 ```

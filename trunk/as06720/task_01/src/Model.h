@@ -1,37 +1,34 @@
-#ifndef MODEL_BASE_H
-#define MODEL_BASE_H
+#pragma once
 
 #include <string>
 
-// Абстрактный базовый класс для всех моделей варианта 15.
-// Хранит текущее значение выхода и задаёт общий интерфейс расчёта.
+// Общий интерфейс дискретной модели управляемого объекта (вариант 15).
+// Наследники описывают конкретное уравнение и хранят свою историю состояний.
 class Model {
 public:
+    Model() = default;
+    Model(const Model&) = default;
+    Model& operator=(const Model&) = default;
     virtual ~Model() = default;
 
-    // Один шаг моделирования: принимает текущий вход, возвращает новое значение выхода
+    // Расчёт следующего шага симуляции по текущему входному воздействию
     virtual double calculateNext(double u) = 0;
 
-    // Привести внутреннее состояние к начальному
+    // Возврат модели в нулевое начальное состояние
     virtual void reset() = 0;
 
-    // Проверка устойчивости (по умолчанию модель считается устойчивой).
-    // Возвращает true, если процесс сходится, а в message записывает пояснение.
-    virtual bool isStable(std::string& message) const {
-        message = "Stability analysis is not defined for this model.";
+    // Анализ устойчивости. Текстовое пояснение записывается в report.
+    virtual bool isStable(std::string& report) const {
+        report = "No stability criterion for this model.";
         return true;
     }
 
-    // Текущее значение выхода
-    double getY() const { return y_curr; }
+    // Последнее рассчитанное значение выхода
+    double output() const { return lastOutput_; }
 
 protected:
-    // Установить выход (используется наследниками)
-    void setY(double value) { y_curr = value; }
+    void storeOutput(double value) { lastOutput_ = value; }
 
 private:
-    // Нулевое начальное состояние
-    double y_curr = 0.0;
+    double lastOutput_ = 0.0;
 };
-
-#endif // MODEL_BASE_H

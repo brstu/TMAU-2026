@@ -12,17 +12,17 @@ double Model2_9::sign(double value) {
 }
 
 double Model2_9::calculateNext(double input) {
-    const double y_curr = getY();
+    const double y_curr = output();
 
     // Нелинейное воздействие: корень из модуля входа со знаком входа
     const double y_next = a * y_curr + b * std::sqrt(std::fabs(input)) * sign(input);
 
-    setY(y_next);
+    storeOutput(y_next);
     return y_next;
 }
 
 void Model2_9::reset() {
-    setY(0.0);
+    storeOutput(0.0);
 }
 
 bool Model2_9::isStable(std::string& message) const {

@@ -22,12 +22,12 @@ double Model1_5::calculateNext(double input) {
     history.push_front(y_next);
     history.pop_back();
 
-    setY(y_next);
+    storeOutput(y_next);
     return y_next;
 }
 
 void Model1_5::reset() {
-    setY(0.0);
+    storeOutput(0.0);
     history.assign(static_cast<size_t>(k) + 1, 0.0);
 }
 

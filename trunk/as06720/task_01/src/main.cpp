@@ -56,24 +56,10 @@ namespace {
 
     // ---------- Описание моделей и сигналов ----------
 
-    struct SignalChoice {
-        InputType kind;
-        string label;
-    };
-
     struct ModelEntry {
         unique_ptr<Model> model;
         string tag;
     };
-
-    const vector<SignalChoice>& allSignals() {
-        static const vector<SignalChoice> signals = {
-            { InputType::STEP,     "Step" },
-            { InputType::IMPULSE,  "Impulse" },
-            { InputType::HARMONIC, "Harmonic" }
-        };
-        return signals;
-    }
 
     void ensureDocDir() {
         std::error_code ec;
@@ -94,10 +80,10 @@ namespace {
 
     // Один прогон модели: таблица в консоль + CSV в doc/
     string runSimulation(Model& model, const string& modelTag,
-                         const SignalChoice& signal, int stepCount) {
+                         const InputSignal& signal, int stepCount) {
         model.reset();
 
-        const string csvPath = "doc/" + modelTag + "_" + signal.label + ".csv";
+        const string csvPath = "doc/" + modelTag + "_" + signal.name() + ".csv";
         ofstream report(csvPath);
         if (!report.is_open()) {
             cout << "[Error] Cannot create file: " << csvPath << endl;
@@ -105,13 +91,13 @@ namespace {
         }
 
         report << "Step,u,y\n";
-        cout << "\n>>> " << modelTag << " (" << signal.label << " signal)\n";
+        cout << "\n>>> " << modelTag << " (" << signal.name() << " signal)\n";
         cout << "+------+------------+--------------+\n";
         cout << "|" << setw(6) << "t" << "|" << setw(12) << "u(t)" << "|" << setw(14) << "y(t+1)" << "|\n";
         cout << "+------+------------+--------------+\n";
 
         for (int step = 0; step < stepCount; ++step) {
-            const double u = getInputValue(signal.kind, step);
+            const double u = signal.valueAt(step);
             const double y = model.calculateNext(u);
             report << step << "," << u << "," << y << "\n";
             cout << "|" << setw(6) << step
@@ -173,9 +159,7 @@ int main() {
         models.push_back({ make_unique<Model3_3>(a, b, dt), "DiffEquation_3_3" });
     }
 
-    vector<SignalChoice> signals;
-    if (sigChoice == 4) signals = allSignals();
-    else signals.push_back(allSignals()[sigChoice - 1]);
+    const auto signals = makeSignals(sigChoice);
 
     // Анализ устойчивости перед началом симуляции
     for (const auto& entry : models) checkStability(*entry.model, entry.tag);
@@ -184,7 +168,7 @@ int main() {
     vector<string> produced;
     for (auto& entry : models) {
         for (const auto& signal : signals) {
-            const string path = runSimulation(*entry.model, entry.tag, signal, steps);
+            const string path = runSimulation(*entry.model, entry.tag, *signal, steps);
             if (!path.empty()) produced.push_back(path);
         }
     }
