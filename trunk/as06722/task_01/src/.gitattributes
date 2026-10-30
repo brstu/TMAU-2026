@@ -1,6 +1,0 @@
-* text=auto
-*.cpp text eol=lf
-*.py text eol=lf
-*.md text eol=lf
-*.puml text eol=lf
-*.bat text eol=crlf
