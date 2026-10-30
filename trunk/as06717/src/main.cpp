@@ -9,7 +9,7 @@
 #include "model2-10.h"
 #include "model3-2.h"
 
-#ifdef _WIN32
+#ifdef _WIN32 // проверка на 
 #include <windows.h>
 #endif
 

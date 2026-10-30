@@ -1,0 +1,3 @@
+C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/build/CMakeFiles/ZERO_CHECK.dir
+C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/build/src/CMakeFiles/LabWork1.dir

@@ -1,0 +1,10 @@
+^C:\USERS\USER\DESKTOP\GITHUB_UNIV\TMAU-2026\TRUNK\AS06717\BUILD\CMAKEFILES\1E93F8209B730F5F287A2250CA7DE4E3\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717 -BC:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/build/LabWork1.slnx
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
