@@ -13,38 +13,25 @@ echo Lab 1 - Variant 20
 echo CMake build and interactive simulation
 echo ==========================================
 echo.
-echo Project directory:
-echo "%PROJECT_DIR%"
-echo.
 
-echo [1/4] Configuring CMake...
+echo [1/3] Configuring CMake...
 cmake -S "%PROJECT_DIR%" -B "%BUILD_DIR%"
 if errorlevel 1 goto cmake_error
 
 echo.
-echo [2/4] Building project...
+echo [2/3] Building project...
 cmake --build "%BUILD_DIR%" --config Debug
 if errorlevel 1 goto build_error
 
 echo.
-echo [3/4] Starting simulation...
+echo [3/3] Starting simulation...
 
 if not exist "%EXE%" (
-    echo ERROR: task_01.exe was not found:
-    echo "%EXE%"
+    echo ERROR: task_01.exe was not found.
     goto finish
 )
 
 "%EXE%"
-
-echo.
-echo [4/4] Plotting results...
-
-if exist "%PROJECT_DIR%\plot_results.py" (
-    py -3 "%PROJECT_DIR%\plot_results.py"
-) else (
-    echo WARNING: plot_results.py was not found.
-)
 
 goto finish
 
@@ -58,5 +45,7 @@ goto finish
 
 :finish
 echo.
+echo ==========================================
 echo Finished.
+echo ==========================================
 pause

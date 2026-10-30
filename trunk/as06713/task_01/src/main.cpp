@@ -161,8 +161,8 @@ public:
                                    std::size_t n,
                                    double y0,
                                    double stepValue) const {
-        std::vector<double> y(n + 1, 0.0);
-        std::vector<double> u(n + 1, 0.0);
+        std::vector y(n + 1, 0.0);
+        std::vector u(n + 1, 0.0);
         std::vector<SimulationRow> rows;
         rows.reserve(n + 1);
         y[0] = y0;
@@ -262,9 +262,12 @@ double readDouble(const std::string& prompt, double defaultValue,
 
         std::stringstream parser(line);
         double value = 0.0;
-        char extra = '\0';
-        if ((parser >> value) && !(parser >> extra) && std::isfinite(value)
-            && value >= minValue && value <= maxValue) {
+        if (char extra = '\0';
+            (parser >> value) &&
+            !(parser >> extra) &&
+            std::isfinite(value) &&
+            value >= minValue &&
+            value <= maxValue) {
             return value;
         }
         std::cout << "Ошибка: введите число в диапазоне от " << minValue
@@ -285,9 +288,9 @@ std::size_t readStepCount() {
 
         std::stringstream parser(line);
         long long value = 0;
-        char extra = '\0';
-        if ((parser >> value) && !(parser >> extra)
-            && value >= 1 && value <= 100000) {
+        if (char extra = '\0';
+            (parser >> value) &&
+            !(parser >> extra)) {
             return static_cast<std::size_t>(value);
         }
         std::cout << "Ошибка: введите целое число от 1 до 100000.\n";
@@ -304,9 +307,12 @@ int readChoice(const std::string& title, int minValue, int maxValue) {
 
         std::stringstream parser(line);
         int value = 0;
-        char extra = '\0';
-        if ((parser >> value) && !(parser >> extra)
-            && value >= minValue && value <= maxValue) {
+
+        if (char extra = '\0';
+            (parser >> value) &&
+            !(parser >> extra) &&
+            value >= minValue &&
+            value <= maxValue) {
             return value;
         }
         std::cout << "Ошибка: выберите пункт от " << minValue
@@ -359,7 +365,7 @@ int main() {
               << "1. Ступенчатое: u(t)=const\n"
               << "2. Импульсное: u(0)=1, далее 0\n"
               << "3. Гармоническое: u(t)=sin(t)\n";
-    const InputType inputType = static_cast<InputType>(
+    const auto inputType = static_cast<InputType>(
         readChoice("Ваш выбор (1-3): ", 1, 3));
 
     const double y0 = readDouble("Начальное значение y(0)", 0.0, -1000.0, 1000.0);
@@ -397,9 +403,11 @@ int main() {
 
     TablePrinter::print(rows);
 
-    const std::string csvFile = (std::filesystem::current_path() / "simulation.csv").string();
-    if (CsvExporter::save(csvFile, rows)) {
-        std::cout << "\nРезультаты сохранены в файл:\n" << csvFile << '\n';
+    if (const std::string csvFile =
+        (std::filesystem::current_path() / "simulation.csv").string();
+        CsvExporter::save(csvFile, rows)) {
+        std::cout << "\nРезультаты сохранены в файл:\n"
+            << csvFile << '\n';
         std::cout << "\nЗапускаю Python для построения графиков...\n";
         runPythonPlot(csvFile);
     }

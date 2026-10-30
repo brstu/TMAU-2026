@@ -1,11 +1,10 @@
-"""Строит графики u(tau) и y(tau) по CSV."""
 import csv
-import sys
 from pathlib import Path
-
 import matplotlib.pyplot as plt
 
-CSV_FILE = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("simulation.csv")
+BASE_DIR = Path(__file__).resolve().parent
+CSV_FILE = BASE_DIR / "simulation.csv"
+
 if not CSV_FILE.is_file():
     raise SystemExit(
         f"Файл результатов не найден: {CSV_FILE}\n"
@@ -13,48 +12,71 @@ if not CSV_FILE.is_file():
     )
 
 rows = []
+
 with CSV_FILE.open("r", encoding="utf-8-sig", newline="") as file:
     reader = csv.DictReader(file, delimiter=";")
+
     required = {"Model", "Input", "Time", "u_tau", "y_tau"}
+
     if not reader.fieldnames or not required.issubset(set(reader.fieldnames)):
         raise SystemExit("В CSV отсутствуют необходимые столбцы.")
+
     for row in reader:
         try:
             rows.append((
-                row["Model"], row["Input"], float(row["Time"]),
-                float(row["u_tau"]), float(row["y_tau"])
+                row["Model"],
+                row["Input"],
+                float(row["Time"]),
+                float(row["u_tau"]),
+                float(row["y_tau"])
             ))
-        except (TypeError, ValueError):
+        except (ValueError, TypeError):
             continue
 
 if not rows:
-    raise SystemExit("В CSV нет числовых результатов для построения графика.")
+    raise SystemExit("В CSV нет корректных данных для построения графиков.")
 
 model_name = rows[0][0]
-input_name = rows[0][1]
-times = [row[2] for row in rows]
-input_values = [row[3] for row in rows]
-output_values = [row[4] for row in rows]
+signal_name = rows[0][1]
 
-plt.rcParams["font.family"] = "DejaVu Sans"
+time = [row[2] for row in rows]
+input_signal = [row[3] for row in rows]
+output_signal = [row[4] for row in rows]
+
 fig, axes = plt.subplots(2, 1, figsize=(10, 7), sharex=True)
-fig.suptitle(f"{model_name}\nВходное воздействие: {input_name}", fontsize=13)
 
-axes[0].plot(times, output_values, marker="o", markersize=3, linewidth=1.7,
-             label="Выход y(t)")
-axes[0].set_ylabel("y(t)")
-axes[0].grid(True, linestyle="--", alpha=0.45)
+fig.suptitle(
+    f"{model_name}\nВход: {signal_name}",
+    fontsize=14
+)
+
+axes[0].plot(
+    time,
+    input_signal,
+    marker="o",
+    linewidth=1.5,
+    label="u(tau)"
+)
+
+axes[0].set_title("Входное воздействие")
+axes[0].set_ylabel("u(tau)")
+axes[0].grid(True)
 axes[0].legend()
 
-axes[1].plot(times, input_values, linewidth=1.5, label="Вход u(t)")
-axes[1].set_xlabel("Время")
-axes[1].set_ylabel("u(t)")
-axes[1].grid(True, linestyle="--", alpha=0.45)
+axes[1].plot(
+    time,
+    output_signal,
+    marker="o",
+    linewidth=1.5,
+    label="y(tau)"
+)
+
+axes[1].set_title("Выходной сигнал системы")
+axes[1].set_xlabel("Время (tau)")
+axes[1].set_ylabel("y(tau)")
+axes[1].grid(True)
 axes[1].legend()
 
-fig.tight_layout(rect=(0, 0, 1, 0.93))
-output_file = CSV_FILE.resolve().parent / "results_plot.png"
-fig.savefig(output_file, dpi=160, bbox_inches="tight")
-print(f"График сохранен: {output_file}")
-if plt.get_backend().lower() != "agg":
-    plt.show()
+plt.tight_layout()
+
+plt.show()
