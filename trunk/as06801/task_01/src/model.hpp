@@ -1,14 +1,16 @@
 #pragma once
 // Базовые классы: контекст симуляции, параметры, абстрактная модель.
 #include <cmath>
+#include <functional>
 #include <map>
 #include <string>
+#include <string_view>
 #include <vector>
 
 // Параметры модели (a, b, a1, ... ) с значениями по умолчанию.
 struct Params {
-    std::map<std::string, double> v;
-    double get(const std::string& k, double def) const {
+    std::map<std::string, double, std::less<>> v;
+    double get(std::string_view k, double def) const {
         auto it = v.find(k);
         return it == v.end() ? def : it->second;
     }

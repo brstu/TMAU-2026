@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cstdio>
 #include <memory>
+#include <string_view>
 #include <vector>
 #include "linear_models.hpp"
 #include "nonlinear_models.hpp"
@@ -39,7 +40,7 @@ inline std::vector<std::string> allIds() {
             "3.1","3.2","3.3","3.4","3.5","3.6","3.7","3.8","3.9","3.10"};
 }
 
-inline std::unique_ptr<Model> makeModel(const std::string& id, const Params& P) {
+inline std::unique_ptr<Model> makeModel(std::string_view id, const Params& P) {
 #define M(ID, CLS) if (id == ID) return std::unique_ptr<Model>(new CLS(P));
     M("1.1",Model11) M("1.2",Model12) M("1.3",Model13) M("1.4",Model14) M("1.5",Model15)
     M("1.6",Model16) M("1.7",Model17) M("1.8",Model18) M("1.9",Model19) M("1.10",Model110)
@@ -53,7 +54,7 @@ inline std::unique_ptr<Model> makeModel(const std::string& id, const Params& P) 
 
 // Симуляция: y_0 = y0, далее y_{tau+1} = model.nextStep(...), tau = 0..n-1.
 inline std::vector<double> simulate(const Model& m, const std::vector<double>& u, double y0, int n) {
-    std::vector<double> y(n + 1, 0.0);
+    std::vector y(static_cast<size_t>(n) + 1, 0.0);
     y[0] = y0;
     for (int t = 0; t < n; ++t) {
         y[t + 1] = m.nextStep(Ctx{y, u, t});

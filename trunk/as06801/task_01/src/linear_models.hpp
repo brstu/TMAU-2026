@@ -116,7 +116,7 @@ struct Model11 : LinearModel {
 struct Model12 : LinearModel {
     explicit Model12(const Params& P) : LinearModel("1.2", "Чистое запаздывание по управлению") {
         const auto k = static_cast<size_t>(std::max(1, static_cast<int>(P.get("k", 2))));
-        std::vector<double> u(k + 1, 0.0);
+        std::vector u(k + 1, 0.0);
         u[k] = P.get("b", .5);
         setCoefficients({P.get("a", .8)}, u); }
 };
@@ -135,7 +135,7 @@ struct Model14 : LinearModel {
 struct Model15 : LinearModel {
     explicit Model15(const Params& P) : LinearModel("1.5", "Запаздывание по состоянию") {
         const auto k = static_cast<size_t>(std::max(1, static_cast<int>(P.get("k", 2))));
-        std::vector<double> y(k + 1, 0.0);
+        std::vector y(k + 1, 0.0);
         y[0] = P.get("a1", .5);
         y[k] += P.get("a2", .2);
         setCoefficients(y, {P.get("b", .5)}); }

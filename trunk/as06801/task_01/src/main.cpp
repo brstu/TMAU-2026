@@ -2,7 +2,9 @@
 #include <cstdio>
 #include <filesystem>
 #include <iostream>
+#include <stdexcept>
 #include <string>
+#include <string_view>
 #include <vector>
 #include "simulator.hpp"
 #ifdef _WIN32
@@ -42,7 +44,9 @@ bool toDouble(const std::string& text, double& value) {
         size_t pos = 0;
         value = std::stod(text, &pos);
         return pos == text.size();
-    } catch (const std::exception&) {
+    } catch (const std::invalid_argument&) {
+        return false;
+    } catch (const std::out_of_range&) {
         return false;
     }
 }
@@ -52,12 +56,14 @@ bool toInt(const std::string& text, int& value) {
         size_t pos = 0;
         value = std::stoi(text, &pos);
         return pos == text.size();
-    } catch (const std::exception&) {
+    } catch (const std::invalid_argument&) {
+        return false;
+    } catch (const std::out_of_range&) {
         return false;
     }
 }
 
-bool parseInputs(const std::string& text, std::vector<Input>& inputs) {
+bool parseInputs(std::string_view text, std::vector<Input>& inputs) {
     if (text == "step") inputs = {Input::Step};
     else if (text == "impulse") inputs = {Input::Impulse};
     else if (text == "sine") inputs = {Input::Sine};
@@ -112,8 +118,10 @@ bool runInput(const Model& model, const Options& opt, Input type) {
     const auto u = makeInput(type, opt.n, opt.amp);
     const auto y = simulate(model, u, opt.y0, opt.n);
     if (!opt.quiet) printTable(u, y);
-    const std::string path = opt.out + "/model_" + model.id() + "_" + inputName(type) + ".csv";
-    if (saveCsv(path, u, y)) std::printf("  CSV: %s\n", path.c_str());
+    if (const std::string path = opt.out + "/model_" + model.id() + "_" + inputName(type) + ".csv";
+        saveCsv(path, u, y)) {
+        std::printf("  CSV: %s\n", path.c_str());
+    }
     return true;
 }
 
@@ -141,8 +149,7 @@ int main(int argc, char** argv) {
     SetConsoleOutputCP(65001);
 #endif
     Options opt;
-    const std::vector<std::string> args(argv + 1, argv + argc);
-    switch (parseArgs(args, opt)) {
+    switch (const std::vector<std::string> args(argv + 1, argv + argc); parseArgs(args, opt)) {
         case ParseResult::Help: usage(); return 0;
         case ParseResult::Error: usage(); return 1;
         case ParseResult::Ok: break;
