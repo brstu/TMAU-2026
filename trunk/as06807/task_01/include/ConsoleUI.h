@@ -12,6 +12,6 @@ private:
     int readSteps();
     InputType selectImpact();
     std::unique_ptr<Model> selectModel(std::string& name);
-    double readDouble(const std::string& prompt);
-    int readChoice(int min, int max);
+    double readDouble(const std::string& prompt) const;
+    int readChoice(int min, int max) const;
 };
