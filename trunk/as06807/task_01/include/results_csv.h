@@ -4,6 +4,12 @@
 #include <stdexcept>
 #include <string>
 
+class CsvFileError : public std::runtime_error
+{
+public:
+    using std::runtime_error::runtime_error;
+};
+
 inline std::string inputTypeToString(InputType type)
 {
     switch (type)
@@ -19,7 +25,7 @@ inline void saveResultToCsv(const SimulationResult& r, const std::string& filena
 {
     std::ofstream file(filename);
     if (!file.is_open())
-        throw std::runtime_error("Cannot create CSV file");
+        throw CsvFileError("Cannot create CSV file");
 
     file << "Model,InputType,Step,U,Y\n";
     for (std::size_t i = 0; i < r.y.size(); ++i)
