@@ -1,5 +1,5 @@
 #include "ConsoleUI.h"
-#include "Simulation.h"
+#include "simulation.h"
 #include "LinearModel.h"
 #include "SquareRootModel.h"
 #include "PureLinearDecayModel.h"
