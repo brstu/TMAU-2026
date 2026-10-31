@@ -1,38 +1,38 @@
 import csv
+import re
 from pathlib import Path
 
 import matplotlib.pyplot as plt
 
 
 DOC_DIR = Path(__file__).resolve().parent.parent / "doc"
-INPUTS = [("step", "Step"), ("impulse", "Impulse"), ("harmonic", "Harmonic")]
-SERIES = ["y_1.6", "y_2.10", "y_3.4"]
 
 
 def load(path):
     with open(path, newline="", encoding="utf-8") as f:
-        rows = list(csv.DictReader(f))
-
-    return {key: [float(row[key]) for row in rows] for key in rows[0]}
+        return list(csv.DictReader(f))
 
 
 def main():
-    fig, axes = plt.subplots(len(INPUTS), 1, figsize=(9, 10), sharex=True)
+    rows = load(DOC_DIR / "results.csv")
+    model = rows[0]["model"]
+    signal = rows[0]["input"]
+    tau = [int(row["tau"]) for row in rows]
+    u = [float(row["u"]) for row in rows]
+    y = [float(row["y"]) for row in rows]
 
-    for ax, (name, title) in zip(axes, INPUTS):
-        data = load(DOC_DIR / f"results_{name}.csv")
-
-        for key in SERIES:
-            ax.plot(data["tau"], data[key], marker="o", markersize=3, label=key)
-
-        ax.plot(data["tau"], data["u"], "--", color="gray", label="u")
-        ax.set_title(f"{title} input")
-        ax.grid(True)
-        ax.legend()
-        
-    axes[-1].set_xlabel("tau")
+    fig, ax = plt.subplots(figsize=(9, 5))
+    ax.plot(tau, y, marker="o", markersize=3, label="y")
+    ax.plot(tau, u, "--", color="gray", label="u")
+    ax.set_title(f"{model}, {signal} input")
+    ax.set_xlabel("tau")
+    ax.grid(True)
+    ax.legend()
     fig.tight_layout()
-    fig.savefig(DOC_DIR / "results.png", dpi=130)
+
+    name = re.sub(r"\W+", "_", f"{model}_{signal}").strip("_")
+    output = DOC_DIR / f"{name}.png"
+    fig.savefig(output, dpi=130)
     plt.show()
 
 
