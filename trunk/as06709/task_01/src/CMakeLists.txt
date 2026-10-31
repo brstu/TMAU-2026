@@ -1,3 +1,4 @@
+
 cmake_minimum_required(VERSION 3.16)
 project(task_01_variant17 LANGUAGES CXX)
 
@@ -15,10 +16,11 @@ add_executable(task_01_as06709
 
 if(MSVC)
     # Treat source files and string literals as UTF-8 (including Russian text).
-    target_compile_options(task_01 PRIVATE /W4 /utf-8)
+    target_compile_options(task_01_as06709 PRIVATE /W4 /utf-8)
 else()
-    target_compile_options(task_01 PRIVATE -Wall -Wextra -pedantic)
+    target_compile_options(task_01_as06709 PRIVATE -Wall -Wextra -pedantic)
 endif()
+
 set_target_properties(task_01_as06709 PROPERTIES
     OUTPUT_NAME task_01
 )
