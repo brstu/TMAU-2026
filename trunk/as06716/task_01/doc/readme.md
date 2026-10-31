@@ -4,7 +4,7 @@
 <p align="center">Кафедра ИИТ</p>
 <br><br><br><br><br><br><br>
 <p align="center">Лабораторная работа №1</p>
-<p align="center">По дисциплине “Теория и моделирование автоматического управления”</p>
+<p align="center">По дисциплине “Теория и методы автоматического управления”</p>
 <p align="center">Тема: “Моделирование объектов управления”</p>
 <br><br><br><br><br>
 <p align="right">Выполнила:</p>
@@ -62,15 +62,66 @@ $$\Large \frac{dy}{dt} = -a \cdot y^2$$
 - `DiffModel34` — Model 3.4
 
 
+## UML
+
+```mermaid
+classDiagram
+    class Model {
+        <<abstract>>
+        +step(u double) double*
+        +output() double*
+        +name() string*
+    }
+ 
+    class LinearModel16 {
+        -a1 double
+        -a2 double
+        -a3 double
+        -b double
+        -y0 double
+        -y1 double
+        -y2 double
+        +step(u double) double
+        +output() double
+        +name() string
+    }
+ 
+    class NonlinearModel210 {
+        -a double
+        -b double
+        -y double
+        +step(u double) double
+        +output() double
+        +name() string
+    }
+ 
+    class DiffModel34 {
+        -a double
+        -dt double
+        -y double
+        +step(u double) double
+        +output() double
+        +name() string
+    }
+ 
+    Model <|-- LinearModel16
+    Model <|-- NonlinearModel210
+    Model <|-- DiffModel34
+```
+
+
+
 ## Результат
 
 Программа:
- 
-- позволяет задать количество шагов симуляции `n` (по умолчанию 20)
-- для каждого из трёх входных воздействий моделирует все три модели
+
+- позволяет выбрать одну из трёх моделей (1.6, 2.10, 3.4)
+- позволяет выбрать одно из трёх входных воздействий (ступенчатое, импульсное, гармоническое)
+- принимает коэффициенты выбранной модели (enter - значение по умолчанию)
+- позволяет задать количество шагов симуляции `n` (по умолчанию 20, допустимо от 1 до 100000)
 - выводит результаты в консоль в табличном виде
-- сохраняет результаты в `doc/results_step.csv`, `doc/results_impulse.csv`, `doc/results_harmonic.csv`
-- строит графики через Python/Matplotlib (`src/plot.py` читает CSV из `doc` и сохраняет `doc/results.png`)
+- сохраняет результаты в `doc/results.csv`
+- строит графики через Python/Matplotlib (`src/plot.py` читает `doc/results.csv` и сохраняет график в `doc/` под именем `Model_1_6_Step.png`)
 
 
 ## Пример работы программы:
@@ -101,7 +152,7 @@ if errorlevel 1 goto :error
 
 echo.
 echo ===== Plotting results (Python / Matplotlib) =====
-python src\plot.py
+python plot.py
 if errorlevel 1 echo Plotting failed. Try: pip install matplotlib
 
 pause
@@ -123,54 +174,27 @@ exit /b 1
 ![](work.png)
 
 
-При запуске исполняемого файла результаты сохраняются в файлы `.csv` в каталоге `doc`, после чего запускается `plot.py` для визуализации.
+При запуске исполняемого файла выбираются модель и воздействие, вводятся коэффициенты и `n`. Результат сохраняется в `doc/results.csv`, после чего запускается `plot.py` для визуализации.
 
 
-### Графики для трёх входных воздействий
+### Графики
  
-![Результат выполнения plot.py](results.png)
+**Ступенчатое воздействие:**
+ 
+![Model 1.6, step](Model_1_6_Step.png)
+![Model 2.10, step](Model_2_10_Step.png)
+![Model 3.4, step](Model_3_4_Step.png)
+ 
+**Гармоническое воздействие:**
+ 
+![Model 1.6, harmonic](Model_1_6_Harmonic.png)
+![Model 2.10, harmonic](Model_2_10_Harmonic.png)
+![Model 3.4, harmonic](Model_3_4_Harmonic.png)
+ 
+**Импульсное воздействие:**
+ 
+![Model 1.6, impulse](Model_1_6_Impulse.png)
+![Model 2.10, impulse](Model_2_10_Impulse.png)
+![Model 3.4, impulse](Model_3_4_Impulse.png)
 
 
-
-## UML
-
-```mermaid
-classDiagram
-    class Model {
-        <<abstract>>
-        +step(u double) double*
-        +output() double*
-    }
- 
-    class LinearModel16 {
-        -a1 double
-        -a2 double
-        -a3 double
-        -b double
-        -y0 double
-        -y1 double
-        -y2 double
-        +step(u double) double
-        +output() double
-    }
- 
-    class NonlinearModel210 {
-        -a double
-        -b double
-        -y double
-        +step(u double) double
-        +output() double
-    }
- 
-    class DiffModel34 {
-        -a double
-        -dt double
-        -y double
-        +step(u double) double
-        +output() double
-    }
- 
-    Model <|-- LinearModel16
-    Model <|-- NonlinearModel210
-    Model <|-- DiffModel34
-```
