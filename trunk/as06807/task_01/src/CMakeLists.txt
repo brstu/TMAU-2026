@@ -10,13 +10,13 @@ if (MSVC)
 endif()
 
 add_executable(SimulationProject
-    src/main.cpp
-    src/simulation.cpp
-    src/impact.cpp
-    src/LinearModel.cpp
-    src/SquareRootModel.cpp
-    src/PureLinearDecayModel.cpp
-    src/ConsoleUI.cpp
+    main.cpp
+    simulation.cpp
+    impact.cpp
+    LinearModel.cpp
+    SquareRootModel.cpp
+    PureLinearDecayModel.cpp
+    ConsoleUI.cpp
 )
 
-target_include_directories(SimulationProject PRIVATE include)
+target_include_directories(SimulationProject PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../include")
