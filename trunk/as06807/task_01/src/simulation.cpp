@@ -1,4 +1,4 @@
-#include "Simulation.h"
+#include "simulation.h"
 #include "impact.h"
 #include <utility>
 
