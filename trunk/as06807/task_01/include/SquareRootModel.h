@@ -4,7 +4,8 @@
 
 class SquareRootModel : public Model {
 private:
-    double a, b;
+    double a;
+    double b;
 
 public:
     SquareRootModel(double a, double b);
