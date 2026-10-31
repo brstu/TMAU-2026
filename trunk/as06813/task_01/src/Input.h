@@ -14,7 +14,7 @@ inline int readInt(const std::string& prompt, int minValue, int maxValue) {
     while (true) {
         std::cout << prompt;
         if (std::cin >> value && value >= minValue && value <= maxValue) {
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
             return value;
         }
         if (std::cin.eof()) {
@@ -22,7 +22,7 @@ inline int readInt(const std::string& prompt, int minValue, int maxValue) {
             std::exit(0);
         }
         std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
         std::cout << "Ошибка: нужно целое число от " << minValue << " до " << maxValue << "\n";
     }
 }
@@ -43,8 +43,7 @@ inline double readCoef(const std::string& name, double defaultValue,
 
         std::istringstream in(line);
         double value;
-        std::string rest;
-        if (in >> value && !(in >> rest) && value >= minValue && value <= maxValue) {
+        if (std::string rest; in >> value && !(in >> rest) && value >= minValue && value <= maxValue) {
             return value;
         }
         std::cout << "  Ошибка: нужно число от " << minValue << " до " << maxValue

@@ -1,3 +1,4 @@
+#include <array>
 #include <cmath>
 #include <cstdlib>
 #include <fstream>
@@ -16,7 +17,7 @@
 #include "NonlinearModel.h"
 #include "DifferentialModel.h"
 
-const std::string SIGNALS[] = { "step", "impulse", "harmonic" };
+const std::array<std::string, 3> SIGNALS = { "step", "impulse", "harmonic" };
 
 // Значение входного сигнала на шаге k
 double inputSignal(int signal, int k) {
@@ -80,8 +81,7 @@ int main() {
         std::cout << "Расчёт закончен, данные записаны в " << file << std::endl;
 
         // таблица и график - в Python
-        std::string cmd = "python plot.py " + file;
-        if (std::system(cmd.c_str()) != 0) {
+        if (std::string cmd = "python plot.py " + file; std::system(cmd.c_str()) != 0) {
             std::cout << "plot.py не запустился (нужны Python и matplotlib)\n";
         }
 

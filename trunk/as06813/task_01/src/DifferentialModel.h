@@ -5,7 +5,8 @@
 #include "Input.h"
 #include "Model.h"
 
-// Модель 3.1: dy/dt = -a*y, метод Эйлера: y(k+1) = y(k) + dt*(-a*y(k))
+// Дифференциальная модель 3.1 (линейное затухание),
+// решается явным методом Эйлера (формула приведена в отчёте)
 class DifferentialModel : public Model {
 private:
     double a = 0.5;
@@ -18,16 +19,18 @@ public:
         dt = readCoef("dt", 0.1, 0.0001, 100.0);
     }
 
-    double nextStep(double u, double dt) override {
-        double dydt = -a * y;
+    // Вход u в уравнение не входит, шаг step берётся из timeStep()
+    double nextStep(double, double step) override {
+        double current = getOutput();
+        double dydt = -a * current;
+        double yNext = current + step * dydt;
 
-        y = y + dt * dydt;
-
-        return y;
+        setOutput(yNext);
+        return yNext;
     }
 
     void reset() override {
-        y = 1.0;
+        setOutput(1.0);
     }
 
     double timeStep() const override {

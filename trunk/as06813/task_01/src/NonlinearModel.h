@@ -5,7 +5,8 @@
 #include "Input.h"
 #include "Model.h"
 
-// Модель 2.7: y(k+1) = a*y(k) + b*relay(u(k), y(k))
+// Нелинейная модель 2.7 с релейным элементом с гистерезисом
+// (формула приведена в отчёте)
 class NonlinearModel : public Model {
 private:
     double a = 0.7;
@@ -14,7 +15,7 @@ private:
 
     // Реле с гистерезисом: внутри зоны [-epsilon; epsilon] выход реле зависит от знака y
     double relay(double u) const {
-        if (u > epsilon || (u >= -epsilon && y > 0.0)) {
+        if (u > epsilon || (u >= -epsilon && getOutput() > 0.0)) {
             return 1.0;
         }
         return -1.0;
@@ -28,13 +29,11 @@ public:
         epsilon = readCoef("epsilon", 0.2, 0.0);
     }
 
-    double nextStep(double u, double dt) override {
-        double relayValue = relay(u);
+    double nextStep(double u, double) override {
+        double yNext = a * getOutput() + b * relay(u);
 
-        double yNext = a * y + b * relayValue;
-
-        y = yNext;
-        return y;
+        setOutput(yNext);
+        return yNext;
     }
 
     std::string name() const override {

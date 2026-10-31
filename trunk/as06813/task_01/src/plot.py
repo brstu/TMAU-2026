@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 
 import matplotlib.pyplot as plt
@@ -32,14 +33,37 @@ def show_table(k, t, u, y):
         print(f"{row[0]:>5}  {row[1]:>7.2f}  {row[2]:>9.4f}  {yk:>11.5f}")
 
 
-path = sys.argv[1] if len(sys.argv) > 1 else ""
-if not os.path.exists(path):
-    print("Нет файла с результатами:", path)
+def results_file_from_args():
+    """Проверяет аргумент и возвращает (модель, воздействие) или None.
+
+    Путь из командной строки напрямую не используется: имя файла разбирается
+    по шаблону, а модель и воздействие берутся из списка допустимых значений.
+    """
+    if len(sys.argv) < 2:
+        return None
+    match = re.fullmatch(r"result_(\d\.\d)_([a-z]+)\.csv", os.path.basename(sys.argv[1]))
+    if match is None:
+        return None
+    model = next((m for m in TITLES if m == match.group(1)), None)
+    signal = next((s for s in SIGNALS if s == match.group(2)), None)
+    if model is None or signal is None:
+        return None
+    return model, signal
+
+
+parsed = results_file_from_args()
+if parsed is None:
+    print("Запуск: python plot.py result_<модель>_<воздействие>.csv")
     sys.exit(1)
 
-name = os.path.splitext(os.path.basename(path))[0]   # result_1.3_step
-_, model, signal = name.split("_")
-title = f"{TITLES.get(model, model)}, {SIGNALS.get(signal, signal)} воздействие"
+model, signal = parsed
+name = f"result_{model}_{signal}"
+path = os.path.join(os.getcwd(), name + ".csv")
+if not os.path.exists(path):
+    print("Нет файла с результатами:", name + ".csv")
+    sys.exit(1)
+
+title = f"{TITLES[model]}, {SIGNALS[signal]} воздействие"
 
 k, t, u, y = load(path)
 print(title)

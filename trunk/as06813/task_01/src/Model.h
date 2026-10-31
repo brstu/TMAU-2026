@@ -4,8 +4,14 @@
 #include <string>
 
 class Model {
+private:
+    double y = 0.0;   // текущее значение выхода
+
 protected:
-    double y = 0.0;
+    // Наследники меняют выход только через этот метод
+    void setOutput(double value) {
+        y = value;
+    }
 
 public:
     virtual ~Model() = default;
@@ -16,7 +22,7 @@ public:
     virtual double nextStep(double u, double dt) = 0;
 
     virtual void reset() {
-        y = 0.0;
+        setOutput(0.0);
     }
 
     // Шаг по времени: для дискретных моделей 1, для дифференциальной - dt
