@@ -37,13 +37,13 @@ double ConsoleUI::readDouble(const std::string& prompt) const
     }
 }
 
-int ConsoleUI::readSteps()
+int ConsoleUI::readSteps() const
 {
     std::cout << "Number of steps (1..1000):\n";
     return readChoice(1, 1000);
 }
 
-InputType ConsoleUI::selectImpact()
+InputType ConsoleUI::selectImpact() const
 {
     std::cout << "Select input type:\n"
               << "  1 - Step\n"
