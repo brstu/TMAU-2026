@@ -6,6 +6,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <string_view>
 
 #include "models.hpp"
 
@@ -40,7 +41,7 @@ double inputValue(InputType type, int tau) {
 }
 
 template <typename T>
-bool parseValue(const std::string& text, T& value) {
+bool parseValue(std::string_view text, T& value) {
     const char* end = text.data() + text.size();
     const auto [ptr, ec] = std::from_chars(text.data(), end, value);
 
@@ -53,8 +54,7 @@ double readDouble(const std::string& name, double defaultValue) {
     if (!std::getline(std::cin, line) || line.empty()) {
         return defaultValue;
     }
-    double value = 0.0;
-    if (parseValue(line, value) && std::isfinite(value)) {
+    if (double value = 0.0; parseValue(line, value) && std::isfinite(value)) {
         return value;
     }
     std::cout << "  Некорректный ввод, используется " << defaultValue << ".\n";
@@ -63,8 +63,7 @@ double readDouble(const std::string& name, double defaultValue) {
 }
 
 double readPositive(const std::string& name, double defaultValue) {
-    const double value = readDouble(name, defaultValue);
-    if (value > 0.0) {
+    if (const double value = readDouble(name, defaultValue); value > 0.0) {
         return value;
     }
     std::cout << "  Значение должно быть больше нуля, используется " << defaultValue << ".\n";
@@ -75,9 +74,8 @@ double readPositive(const std::string& name, double defaultValue) {
 int readChoice(const std::string& prompt, int maxValue) {
     std::cout << prompt;
     std::string line;
-    int choice = 0;
     while (std::getline(std::cin, line)) {
-        if (parseValue(line, choice) && choice >= 1 && choice <= maxValue) {
+        if (int choice = 0; parseValue(line, choice) && choice >= 1 && choice <= maxValue) {
             return choice;
         }
         std::cout << "Введите число от 1 до " << maxValue << ": ";
@@ -93,11 +91,10 @@ int readSteps() {
         return DEFAULT_STEPS;
     }
 
-    int n = 0;
-    if (parseValue(line, n) && n > 0 && n <= MAX_STEPS) {
+    if (int n = 0; parseValue(line, n) && n > 0 && n <= MAX_STEPS) {
         return n;
     }
-    
+
     std::cout << "Введите целое число от 1 до " << MAX_STEPS << ", используется " << DEFAULT_STEPS << ".\n";
     return DEFAULT_STEPS;
 }
@@ -121,9 +118,10 @@ std::unique_ptr<Model> createModel(int choice) {
     const double a = readDouble("a", 0.5);
     const double dt = readPositive("dt", 0.1);
     const double y0 = readDouble("y0", 1.0);
-
+    
     return std::make_unique<DiffModel34>(a, dt, y0);
 }
+
 
 bool simulate(Model& model, InputType type, int steps) {
     const std::filesystem::path docDir = DOC_DIR;
@@ -132,7 +130,7 @@ bool simulate(Model& model, InputType type, int steps) {
     std::ofstream csv(fileName);
     if (!csv) {
         std::cerr << "Не удалось открыть файл " << fileName << "\n";
-
+      
         return false;
     }
 
@@ -155,7 +153,7 @@ bool simulate(Model& model, InputType type, int steps) {
 }  // namespace
 
 int main() {
-    const int modelChoice = readChoice("Модель: 1 - model 1.6, 2 - model 2.10, 3 - model 3.4. Выбор: ", MODEL_COUNT);
+    const int modelChoice = readChoice("Модель: 1 - Model 1.6, 2 - Model 2.10, 3 - Model 3.4. Выбор: ", MODEL_COUNT);
     const int inputChoice = readChoice("Воздействие: 1 - ступенчатое, 2 - импульсное, 3 - гармоническое. Выбор: ", INPUT_COUNT);
     const auto model = createModel(modelChoice);
     const int steps = readSteps();
