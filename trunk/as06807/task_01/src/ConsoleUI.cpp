@@ -9,7 +9,7 @@
 #include <limits>
 #include <cstdlib>
 
-int ConsoleUI::readChoice(int min, int max)
+int ConsoleUI::readChoice(int min, int max) const
 {
     int x;
     while (true)
@@ -23,7 +23,7 @@ int ConsoleUI::readChoice(int min, int max)
     }
 }
 
-double ConsoleUI::readDouble(const std::string& prompt)
+double ConsoleUI::readDouble(const std::string& prompt) const
 {
     double x;
     while (true)
