@@ -4,7 +4,10 @@
 
 class LinearModel : public Model {
 private:
-    double a, b1, b2, b3;
+    double a;
+    double b1;
+    double b2;
+    double b3;
 
 public:
     LinearModel(double a, double b1, double b2, double b3);
