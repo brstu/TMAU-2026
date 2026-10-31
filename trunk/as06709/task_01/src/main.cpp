@@ -96,7 +96,7 @@ int main() {
     std::cout << "2 - Импульсное u(0)=1, далее 0\n";
     std::cout << "3 - Гармоническое u(tau) = sin(tau)\n";
     const int signalChoice = readInt("Ваш выбор: ", 1, 3);
-    const Signal signal = static_cast<Signal>(signalChoice);
+    const auto signal = static_cast<Signal>(signalChoice);
 
     const int n = readInt("\nКоличество шагов n (1..10000): ", 1, 10000);
     double dt = 1.0;
