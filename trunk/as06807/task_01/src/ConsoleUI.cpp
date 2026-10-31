@@ -19,7 +19,7 @@ int ConsoleUI::readChoice(int min, int max)
             return x;
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        std::cout << "Введите число от " << min << " до " << max << "\n";
+        std::cout << "Enter a number from " << min << " to " << max << "\n";
     }
 }
 
@@ -33,22 +33,23 @@ double ConsoleUI::readDouble(const std::string& prompt)
             return x;
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        std::cout << "Нужно ввести число\n";
+        std::cout << "Please enter a valid number\n";
     }
 }
 
 int ConsoleUI::readSteps()
 {
-    std::cout << "Количество шагов (1..1000):\n";
+    std::cout << "Number of steps (1..1000):\n";
     return readChoice(1, 1000);
 }
 
 InputType ConsoleUI::selectImpact()
 {
-    std::cout << "Выберите воздействие:\n"
-                 "  1 - Ступенчатое\n"
-                 "  2 - Импульсное\n"
-                 "  3 - Гармоническое\n";
+    std::cout << "Select input type:\n"
+              << "  1 - Step\n"
+              << "  2 - Impulse\n"
+              << "  3 - Harmonic\n";
+
     switch (readChoice(1, 3))
     {
     case 1:  return InputType::Step;
@@ -59,10 +60,11 @@ InputType ConsoleUI::selectImpact()
 
 std::unique_ptr<Model> ConsoleUI::selectModel(std::string& name)
 {
-    std::cout << "Выберите модель:\n"
-                 "  1 - Линейная: y(j) = a*y(j-1) + b1*u(j) + b2*u(j-1) + b3*u(j-2)\n"
-                 "  2 - Корневая: y(j) = a*y(j-1) + b*sign(u)*sqrt(|u|)\n"
-                 "  3 - Линейный распад: y(j+1) = y(j) - h*a*y(j)\n";
+    std::cout << "Select a model:\n"
+              << "  1 - Linear: y(j) = a*y(j-1) + b1*u(j) + b2*u(j-1) + b3*u(j-2)\n"
+              << "  2 - Square root: y(j) = a*y(j-1) + b*sign(u)*sqrt(|u|)\n"
+              << "  3 - Linear decay: y(j+1) = y(j) - h*a*y(j)\n";
+
     switch (readChoice(1, 3))
     {
     case 1:
@@ -104,8 +106,8 @@ void ConsoleUI::run()
     auto result = sim.run();
 
     saveResultToCsv(result, "results.csv");
-    std::cout << "Результаты сохранены в results.csv\n";
+    std::cout << "Results saved to results.csv\n";
 
     if (std::system("python plot.py results.csv") != 0)
-        std::cout << "Не удалось запустить plot.py\n";
+        std::cout << "Failed to run plot.py\n";
 }
