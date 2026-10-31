@@ -7,7 +7,7 @@ std::vector<double> getInput(int steps, InputType type)
     if (steps <= 0)
         throw std::invalid_argument("Number of steps must be positive");
 
-    std::vector<double> u(steps, 0.0);
+    std::vector u(steps, 0.0);
 
     switch (type)
     {
