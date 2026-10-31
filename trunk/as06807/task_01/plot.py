@@ -1,13 +1,19 @@
 import csv
 import sys
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 
+base_dir = Path(__file__).resolve().parent
 filename = sys.argv[1] if len(sys.argv) > 1 else "results.csv"
+csv_path = (base_dir / filename).resolve()
+if not csv_path.is_relative_to(base_dir):
+    sys.exit("Путь к файлу должен находиться в каталоге проекта.")
 
 steps, u_vals, y_vals = [], [], []
 model = input_type = ""
 
-with open(filename, "r", newline="", encoding="utf-8") as file:
+with csv_path.open("r", newline="", encoding="utf-8") as file:
     for row in csv.DictReader(file):
         model = row["Model"]
         input_type = row["InputType"]
