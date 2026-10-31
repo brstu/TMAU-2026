@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <string>
 
 
 class Model {
@@ -10,13 +11,15 @@ public:
     virtual double step(double u) = 0;
 
     virtual double output() const = 0;
+
+    virtual std::string name() const = 0;
 };
 
 
 // model 1.6
 class LinearModel16 : public Model {
 public:
-    LinearModel16(double a1, double a2, double a3, double b): a1_(a1), a2_(a2), a3_(a3), b_(b) {}
+    LinearModel16(double a1, double a2, double a3, double b) : a1_(a1), a2_(a2), a3_(a3), b_(b) {}
 
     double step(double u) override {
         const double next = a1_ * y0_ + a2_ * y1_ + a3_ * y2_ + b_ * u;
@@ -28,6 +31,8 @@ public:
     }
 
     double output() const override { return y0_; }
+
+    std::string name() const override { return "Model 1.6"; }
 
 private:
     double a1_;
@@ -53,6 +58,8 @@ public:
 
     double output() const override { return y_; }
 
+    std::string name() const override { return "Model 2.10"; }
+
 private:
     double a_;
     double b_;
@@ -72,6 +79,8 @@ public:
     }
 
     double output() const override { return y_; }
+
+    std::string name() const override { return "Model 3.4"; }
 
 private:
     double a_;
