@@ -12,10 +12,10 @@ if errorlevel 1 goto fail
 
 echo.
 echo  Run 
-if exist build\Release\task_01.exe (
-    build\Release\task_01.exe
+if exist build\Release\as06816_task_01.exe (
+    build\Release\as06816_task_01.exe
 ) else (
-    build\task_01.exe
+    build\as06816_task_01.exe
 )
 
 echo.
