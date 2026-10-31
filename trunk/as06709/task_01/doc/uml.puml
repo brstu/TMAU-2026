@@ -1,0 +1,34 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+abstract class Model {
+  # y_ : double
+  # previousY_ : double
+  # previousU_ : double
+  # previousU2_ : double
+  + step(u : double, dt : double) : double
+  + reset() : void
+  {abstract} # calculateNext(u : double, dt : double) : double
+}
+class LinearModel17 {
+  - a_ : double
+  - b1_ : double
+  - b2_ : double
+  - b3_ : double
+  # calculateNext(u : double, dt : double) : double
+}
+class NonlinearModel21 {
+  - a_ : double
+  - b_ : double
+  - c_ : double
+  - d_ : double
+  # calculateNext(u : double, dt : double) : double
+}
+class DifferentialModel35 {
+  - b_ : double
+  # calculateNext(u : double, dt : double) : double
+}
+Model <|-- LinearModel17
+Model <|-- NonlinearModel21
+Model <|-- DifferentialModel35
+@enduml
