@@ -9,7 +9,11 @@ std::vector<double> SquareRootModel::calculate(const std::vector<double>& u)
     for (std::size_t j = 0; j < u.size(); ++j)
     {
         double yPrev = (j >= 1) ? y[j - 1] : 0.0;
-        double sign = (u[j] > 0) ? 1.0 : (u[j] < 0) ? -1.0 : 0.0;
+        double sign = 0.0;
+        if (u[j] > 0)
+            sign = 1.0;
+        else if (u[j] < 0)
+            sign = -1.0;
         y[j] = a * yPrev + b * std::sqrt(std::abs(u[j])) * sign;
     }
     return y;
