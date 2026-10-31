@@ -4,6 +4,7 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <memory>
 #include <string>
 
 #include "models.hpp"
@@ -16,14 +17,17 @@
 namespace {
 
 constexpr int DEFAULT_STEPS = 20;
+constexpr int MAX_STEPS = 100000;
+constexpr int MODEL_COUNT = 3;
+constexpr int INPUT_COUNT = 3;
 
-enum class InputType { Step, Impulse, Harmonic };
+enum class InputType { Step = 1, Impulse = 2, Harmonic = 3 };
 
 std::string inputName(InputType type) {
     switch (type) {
-        case InputType::Step: return "step";
-        case InputType::Impulse: return "impulse";
-        default: return "harmonic";
+        case InputType::Step: return "Step";
+        case InputType::Impulse: return "Impulse";
+        default: return "Harmonic";
     }
 }
 
@@ -35,36 +39,96 @@ double inputValue(InputType type, int tau) {
     }
 }
 
+template <typename T>
+bool parseValue(const std::string& text, T& value) {
+    const char* end = text.data() + text.size();
+    const auto [ptr, ec] = std::from_chars(text.data(), end, value);
+
+    return ec == std::errc() && ptr == end;
+}
+
+double readDouble(const std::string& name, double defaultValue) {
+    std::cout << "  " << name << " [" << defaultValue << "]: ";
+    std::string line;
+    if (!std::getline(std::cin, line) || line.empty()) {
+        return defaultValue;
+    }
+    double value = 0.0;
+    if (parseValue(line, value) && std::isfinite(value)) {
+        return value;
+    }
+    std::cout << "  Некорректный ввод, используется " << defaultValue << ".\n";
+
+    return defaultValue;
+}
+
+double readPositive(const std::string& name, double defaultValue) {
+    const double value = readDouble(name, defaultValue);
+    if (value > 0.0) {
+        return value;
+    }
+    std::cout << "  Значение должно быть больше нуля, используется " << defaultValue << ".\n";
+
+    return defaultValue;
+}
+
+int readChoice(const std::string& prompt, int maxValue) {
+    std::cout << prompt;
+    std::string line;
+    int choice = 0;
+    while (std::getline(std::cin, line)) {
+        if (parseValue(line, choice) && choice >= 1 && choice <= maxValue) {
+            return choice;
+        }
+        std::cout << "Введите число от 1 до " << maxValue << ": ";
+    }
+
+    return 1;
+}
+
 int readSteps() {
     std::cout << "Количество шагов симуляции n [" << DEFAULT_STEPS << "]: ";
     std::string line;
-    std::getline(std::cin, line);
-
-    if (line.empty()) {
+    if (!std::getline(std::cin, line) || line.empty()) {
         return DEFAULT_STEPS;
     }
 
     int n = 0;
-    const char* end = line.data() + line.size();
-
-    if (const auto result = std::from_chars(line.data(), end, n);
-        result.ec == std::errc() && result.ptr == end && n > 0) {
-
+    if (parseValue(line, n) && n > 0 && n <= MAX_STEPS) {
         return n;
     }
-
-    std::cout << "Некорректный ввод, используется " << DEFAULT_STEPS << ".\n";
+    
+    std::cout << "Введите целое число от 1 до " << MAX_STEPS << ", используется " << DEFAULT_STEPS << ".\n";
     return DEFAULT_STEPS;
 }
 
-bool simulate(InputType type, int steps) {
-    LinearModel16 m16(0.5, 0.2, 0.1, 1.0);
-    NonlinearModel210 m210(0.8, 0.5);
-    DiffModel34 m34(0.5, 0.1, 1.0);
+std::unique_ptr<Model> createModel(int choice) {
+    std::cout << "\nКоэффициенты (enter - значение по умолчанию):\n";
+    if (choice == 1) {
+        const double a1 = readDouble("a1", 0.5);
+        const double a2 = readDouble("a2", 0.2);
+        const double a3 = readDouble("a3", 0.1);
+        const double b = readDouble("b", 1.0);
 
+        return std::make_unique<LinearModel16>(a1, a2, a3, b);
+    }
+    if (choice == 2) {
+        const double a = readDouble("a", 0.8);
+        const double b = readDouble("b", 0.5);
+
+        return std::make_unique<NonlinearModel210>(a, b);
+    }
+    const double a = readDouble("a", 0.5);
+    const double dt = readPositive("dt", 0.1);
+    const double y0 = readDouble("y0", 1.0);
+
+    return std::make_unique<DiffModel34>(a, dt, y0);
+}
+
+bool simulate(Model& model, InputType type, int steps) {
     const std::filesystem::path docDir = DOC_DIR;
     std::filesystem::create_directories(docDir);
-    const auto fileName = docDir / ("results_" + inputName(type) + ".csv");
+    const auto fileName = docDir / "results.csv";
     std::ofstream csv(fileName);
     if (!csv) {
         std::cerr << "Не удалось открыть файл " << fileName << "\n";
@@ -72,20 +136,17 @@ bool simulate(InputType type, int steps) {
         return false;
     }
 
-    std::cout << "\nВходное воздействие: " << inputName(type) << "\n" 
-        << std::setw(5) << "tau" << std::setw(12) << "u" << std::setw(14) << "y (1.6)" << std::setw(14) << "y (2.10)" << std::setw(14) << "y (3.4)" << "\n";
-    csv << "tau,u,y_1.6,y_2.10,y_3.4\n";
+    std::cout << "\nМодель: " << model.name() << ", воздействие: " << inputName(type) << "\n"
+        << std::setw(6) << "tau" << std::setw(14) << "u" << std::setw(14) << "y" << "\n";
+    csv << "model,input,tau,u,y\n";
     std::cout << std::fixed << std::setprecision(6);
     csv << std::fixed << std::setprecision(6);
 
-    for (int tau = 0; tau <= steps; ++tau) {
-        const double u = inputValue(type, tau);
-        std::cout << std::setw(5) << tau << std::setw(12) << u << std::setw(14)
-            << m16.output() << std::setw(14) << m210.output() << std::setw(14) << m34.output() << "\n";
-        csv << tau << ',' << u << ',' << m16.output() << ',' << m210.output() << ',' << m34.output() << '\n';
-        m16.step(u);
-        m210.step(u);
-        m34.step(u);
+    for (int tau = 1; tau <= steps; ++tau) {
+        const double u = inputValue(type, tau - 1);
+        const double y = model.step(u);
+        std::cout << std::setw(6) << tau << std::setw(14) << u << std::setw(14) << y << "\n";
+        csv << model.name() << ',' << inputName(type) << ',' << tau << ',' << u << ',' << y << '\n';
     }
 
     return true;
@@ -94,8 +155,10 @@ bool simulate(InputType type, int steps) {
 }  // namespace
 
 int main() {
+    const int modelChoice = readChoice("Модель: 1 - model 1.6, 2 - model 2.10, 3 - model 3.4. Выбор: ", MODEL_COUNT);
+    const int inputChoice = readChoice("Воздействие: 1 - ступенчатое, 2 - импульсное, 3 - гармоническое. Выбор: ", INPUT_COUNT);
+    const auto model = createModel(modelChoice);
     const int steps = readSteps();
-    const bool ok = simulate(InputType::Step, steps) && simulate(InputType::Impulse, steps) && simulate(InputType::Harmonic, steps);
-    
-    return ok ? 0 : 1;
+
+    return simulate(*model, static_cast<InputType>(inputChoice), steps) ? 0 : 1;
 }
