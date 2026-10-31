@@ -107,7 +107,7 @@ int main() {
         dt = readDouble("Введите dt: ");
     }
 
-    std::unique_ptr<Model> model;
+    auto model = std::unique_ptr<Model>{};
     std::string modelName;
     if (modelChoice == 1) {
         std::cout << "\nВведите коэффициенты линейной модели 1.7:\n";
