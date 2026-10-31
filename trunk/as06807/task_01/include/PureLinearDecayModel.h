@@ -9,7 +9,7 @@ private:
     double y0;
 
 public:
-    PureLinearDecayModel(double a, double h = 1.0 , double y0 =1.0 );
+    explicit PureLinearDecayModel(double a, double h = 1.0 , double y0 =1.0 );
 
     std::vector<double> calculate(
         const std::vector<double>& u
