@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_executable(task_01_06709
+add_executable(task_01_as06709
     main.cpp
     Model.cpp
     LinearModel17.cpp
