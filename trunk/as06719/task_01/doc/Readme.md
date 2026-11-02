@@ -49,40 +49,29 @@
 
   Уравнение модели:
 
-  $$
-  y_{t+1}=ay_t+b\cdot sat(u_t)
-  $$
+  y<sub>t+1</sub> = ay<sub>t</sub> + b · sat(u<sub>t</sub>)
 
   Функция насыщения:
 
-  $$
-  sat(u)=
-  \begin{cases}
-  U_{\max}, & u>U_{\max},\\
-  u, & U_{\min}\leq u\leq U_{\max},\\
-  U_{\min}, & u<U_{\min}.
-  \end{cases}
-  $$
+  sat(u) = U<sub>max</sub>, если u > U<sub>max</sub>
+
+  sat(u) = u, если U<sub>min</sub> ≤ u ≤ U<sub>max</sub>
+
+  sat(u) = U<sub>min</sub>, если u < U<sub>min</sub>
 
   Используются границы насыщения:
 
-  $$
-  U_{\min}=-1,\qquad U_{\max}=1
-  $$
+  U<sub>min</sub> = −1, U<sub>max</sub> = 1
 
 - **Дифференциальная модель: Model 3.4**
 
   Дифференциальное уравнение:
 
-  $$
-  \frac{dy}{dt}=-ay^2
-  $$
+  dy/dt = −ay<sup>2</sup>
 
   Для численного решения используется метод Эйлера:
 
-  $$
-  y_{t+1}=y_t-dt\cdot ay_t^2
-  $$
+  y<sub>t+1</sub> = y<sub>t</sub> − Δt · ay<sub>t</sub><sup>2</sup>
 
 ## Структура программы
 
@@ -110,9 +99,9 @@
 
 В программе реализованы следующие входные сигналы:
 
-- Ступенчатый: \(u_t=1\).
-- Импульсный: \(u_0=1\), при \(t>0\) — \(u_t=0\).
-- Синусоидальный: \(u_t=\sin(t)\).
+- Ступенчатый: u<sub>t</sub> = 1.
+- Импульсный: u<sub>0</sub> = 1, при t > 0 — u<sub>t</sub> = 0.
+- Синусоидальный: u<sub>t</sub> = sin(t).
 
 ## Пример работы программы
 
