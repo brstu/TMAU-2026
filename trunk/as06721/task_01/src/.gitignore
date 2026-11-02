@@ -1,0 +1,9 @@
+.vs/
+build/
+out/
+*.exe
+*.obj
+*.pdb
+*.ilk
+*.user
+__pycache__/
