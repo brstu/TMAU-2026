@@ -7,11 +7,11 @@
 <p align="center">По дисциплине «Теория и методы автоматического управления»</p>
 <br><br><br><br><br>
 <p align="right">Выполнил:</p>
-<p align="right">Студент 1 курса</p>
+<p align="right">Студент 3 курса</p>
 <p align="right">Группы АС-67</p>
 <p align="right">Ерш Д.А.</p>
 <p align="right">Проверил:</p>
-<p align="right">Дворанович Д.А.</p>
+<p align="right">Дворанинович Д.А.</p>
 <br><br><br><br><br>
 <p align="center">Брест 2026</p>
 
