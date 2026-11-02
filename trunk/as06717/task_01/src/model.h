@@ -8,7 +8,7 @@ enum class InputType {
 };
 
 class Model {
-protected:
+private:
     double alpha;
     std::string label;
 
