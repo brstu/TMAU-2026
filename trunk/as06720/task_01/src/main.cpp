@@ -8,6 +8,7 @@
 #include <memory>
 #include <sstream>
 #include <string>
+#include <string_view>
 #include <vector>
 
 #include "InputSignal.h"
@@ -23,7 +24,7 @@ namespace {
 
     // ===================== Консольный ввод =====================
 
-    bool isBlank(const std::string& text) {
+    bool isBlank(std::string_view text) {
         return std::all_of(text.begin(), text.end(),
                            [](unsigned char c) { return std::isspace(c) != 0; });
     }
@@ -38,7 +39,7 @@ namespace {
 
     // Запрос значения: пустая строка или конец ввода дают значение по умолчанию
     template <typename T>
-    T ask(const std::string& label, T fallback, T low, T high) {
+    T ask(std::string_view label, T fallback, T low, T high) {
         while (true) {
             std::cout << label << " [" << fallback << "]: ";
             std::string line;
@@ -52,16 +53,16 @@ namespace {
         }
     }
 
-    double askCoefficient(const std::string& label, double fallback) {
+    double askCoefficient(std::string_view label, double fallback) {
         return ask(label, fallback, kAnyLow, kAnyHigh);
     }
 
-    int askMenu(const std::string& title, const std::vector<std::string>& items) {
+    int askMenu(std::string_view title, const std::vector<std::string>& items) {
         std::cout << '\n' << title << '\n';
         for (size_t i = 0; i < items.size(); ++i) {
             std::cout << "  " << (i + 1) << ") " << items[i] << '\n';
         }
-        const int last = static_cast<int>(items.size());
+        const auto last = static_cast<int>(items.size());
         return ask("Your choice", last, 1, last);
     }
 
