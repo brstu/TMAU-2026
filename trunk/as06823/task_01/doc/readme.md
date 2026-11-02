@@ -104,13 +104,7 @@ $$y_{\tau+1} = a_1y_\tau +a_2y_{\tau-1} +a_3y_{\tau-2} +bu_\tau$$
 
 Математическое уравнение:
 
-$$
-y_{\tau+1}
-=
-ay_\tau(1-y_\tau)
-+bu_\tau
-+c\sin(y_{\tau-1}u_\tau).
-$$
+$$y_{\tau+1} = ay_\tau(1-y_\tau) +bu_\tau +c\sin(y_{\tau-1}u_\tau)$$
 
 Где:
 
@@ -133,12 +127,7 @@ $$
 
 Для численного решения применяется метод Эйлера с шагом интегрирования $\Delta t$:
 
-$$
-y_{\tau+1}
-=
-y_\tau
-+\Delta t(-ay_\tau+b+u_\tau).
-$$
+$$y_{\tau+1} = y_\tau +\Delta t(-ay_\tau+b+u_\tau)$$
 
 Где:
 
