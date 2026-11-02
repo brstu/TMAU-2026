@@ -10,7 +10,6 @@ add_executable(task_01_as06812
     models.h
 )
 
-# Оставляем привычное имя исполняемого файла
 set_target_properties(task_01_as06812 PROPERTIES
     OUTPUT_NAME task_01
 )
