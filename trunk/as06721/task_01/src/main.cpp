@@ -46,8 +46,7 @@ int readInt(const string& prompt, int minValue, int maxValue, int defaultValue =
 
         istringstream input(line);
         int value;
-        char extra;
-        if ((input >> value) && !(input >> extra) && value >= minValue && value <= maxValue) {
+        if (char extra; (input >> value) && !(input >> extra) && value >= minValue && value <= maxValue) {
             return value;
         }
 
@@ -69,8 +68,8 @@ double readDouble(const string& prompt, double defaultValue) {
 
         istringstream input(line);
         double value;
-        char extra;
-        if ((input >> value) && !(input >> extra) && isfinite(value)) {
+        // Используем C++17 init-statement внутри if
+        if (char extra; (input >> value) && !(input >> extra) && isfinite(value)) {
             return value;
         }
 
@@ -123,6 +122,30 @@ int runPlotScript() {
     return result;
 }
 
+void setupWorkingDirectory(int argc, char* argv[]) {
+    if (argc <= 0 || argv[0] == nullptr) return;
+
+    try {
+        const filesystem::path exePath = filesystem::absolute(argv[0]);
+        if (!filesystem::exists(exePath)) return;
+
+        filesystem::path candidate = exePath.parent_path();
+        for (int level = 0; level < 4; ++level) {
+            if (filesystem::exists(candidate / "plot.py")) {
+                filesystem::current_path(candidate);
+                return; 
+            }
+            if (candidate == candidate.parent_path()) {
+                return; 
+            }
+            candidate = candidate.parent_path();
+        }
+    }
+    catch (const filesystem::filesystem_error& e) {
+        cerr << "Предупреждение: ошибка файловой системы при поиске plot.py: " << e.what() << '\n';
+    }
+}
+
 int main(int argc, char* argv[]) {
 #ifdef _WIN32
     SetConsoleCP(CP_UTF8);
@@ -131,24 +154,8 @@ int main(int argc, char* argv[]) {
     setlocale(LC_ALL, "");
 #endif
 
-    try {
-        if (argc > 0 && argv[0] != nullptr) {
-            const filesystem::path exePath = filesystem::absolute(argv[0]);
-            if (filesystem::exists(exePath)) {
-                filesystem::path candidate = exePath.parent_path();
-                for (int level = 0; level < 4; ++level) {
-                    if (filesystem::exists(candidate / "plot.py")) {
-                        filesystem::current_path(candidate);
-                        break;
-                    }
-                    if (candidate == candidate.parent_path()) break;
-                    candidate = candidate.parent_path();
-                }
-            }
-        }
-    }
-    catch (const filesystem::filesystem_error&) {
-    }
+    setupWorkingDirectory(argc, argv);
+
     cout << "  МОДЕЛИРОВАНИЕ ОБЪЕКТА УПРАВЛЕНИЯ — ВАРИАНТ 14\n";
     cout << "Доступные модели:\n";
     cout << "1. Model 1.4 — дискретный интегратор с потерями\n";
@@ -176,8 +183,9 @@ int main(int argc, char* argv[]) {
     unique_ptr<Model> model = chooseModel(modelChoice);
     unique_ptr<InputSignal> signal = chooseSignal(signalChoice);
 
-    vector<double> u(static_cast<size_t>(n));
-    vector<double> y(static_cast<size_t>(n) + 1, 0.0);
+    vector u(static_cast<size_t>(n), 0.0);
+    vector y(static_cast<size_t>(n) + 1, 0.0);
+
     for (int tau = 0; tau < n; ++tau) {
         u[static_cast<size_t>(tau)] = signal->valueAt(tau);
     }
@@ -207,12 +215,29 @@ int main(int argc, char* argv[]) {
     }
 
     const string csvName = "results.csv";
-    const string modelTitle = (modelChoice == 1) ? "Model 1.4"
-        : (modelChoice == 2) ? "Model 2.8"
-        : "Model 3.2";
-    const string signalTitle = (signalChoice == 1) ? "Ступенчатое"
-        : (signalChoice == 2) ? "Импульсное"
-        : "Гармоническое";
+
+    string modelTitle;
+    if (modelChoice == 1) {
+        modelTitle = "Model 1.4";
+    }
+    else if (modelChoice == 2) {
+        modelTitle = "Model 2.8";
+    }
+    else {
+        modelTitle = "Model 3.2";
+    }
+
+    string signalTitle;
+    if (signalChoice == 1) {
+        signalTitle = "Ступенчатое";
+    }
+    else if (signalChoice == 2) {
+        signalTitle = "Импульсное";
+    }
+    else {
+        signalTitle = "Гармоническое";
+    }
+
     ofstream csv(csvName);
     if (!csv.is_open()) {
         cerr << "Не удалось создать файл " << csvName << ".\n";
@@ -227,12 +252,14 @@ int main(int argc, char* argv[]) {
             << signalTitle << '\n';
     }
     csv.close();
+
     cout << "\nТаблица сохранена в файл: " << csvName << '\n';
     cout << "\nПостроение графика...\n" << flush;
     if (runPlotScript() != 0) {
         cout << "Не удалось автоматически запустить plot.py. Убедитесь, что установлен Python и matplotlib.\n";
         cout << "Установка matplotlib: py -m pip install matplotlib\n";
     }
+
     cout << "\nМоделирование завершено.\n";
     return 0;
 }
