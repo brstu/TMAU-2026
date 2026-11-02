@@ -23,13 +23,6 @@
 
 using namespace std;
 
-class sssss {
-    int hello();
-};
-sssss::hello() {
-    return 1;
-}
-
 int readInt(const string& prompt, int minValue, int maxValue, int defaultValue = -1) {
     string line;
     while (true) {
