@@ -5,18 +5,18 @@ project(task01_variant10 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_executable(task_01_as06812
+add_executable(task_01_as06811
     RealizeModel.cpp
     models.h
 )
 
 # Оставляем привычное имя исполняемого файла
-set_target_properties(task_01_as06812 PROPERTIES
+set_target_properties(task_01_as06811 PROPERTIES
     OUTPUT_NAME task_01
 )
 
 if(MSVC)
-    target_compile_options(task_01_as06812 PRIVATE /utf-8 /W4)
+    target_compile_options(task_01_as06811 PRIVATE /utf-8 /W4)
 else()
-    target_compile_options(task_01_as06812 PRIVATE -Wall -Wextra)
+    target_compile_options(task_01_as06811 PRIVATE -Wall -Wextra)
 endif()
