@@ -24,9 +24,3 @@ if errorlevel 1 (
     exit /b 1
 )
 
-echo.
-echo === Запуск программы ===
-build\task_01.exe
-
-echo.
-pause
