@@ -31,7 +31,10 @@ static unique_ptr<Model> pickModel() {
     int id = readChoice("Your choice: ");
 
     if (id == 1) {
-        double a1, a2, b1, b2;
+        double a1;
+        double a2;
+        double b1;
+        double b2;
         cout << "\nCoefficients:\n";
         cout << "  b1 = "; cin >> b1;
         cout << "  b2 = "; cin >> b2;
@@ -40,7 +43,8 @@ static unique_ptr<Model> pickModel() {
         return make_unique<ArModel>(a1, a2, b1, b2);
     }
     if (id == 2) {
-        double alpha, beta;
+        double alpha;
+        double beta;
         cout << "\nCoefficients:\n";
         cout << "  alpha = "; cin >> alpha;
         cout << "  beta  = "; cin >> beta;
