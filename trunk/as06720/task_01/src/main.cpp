@@ -1,7 +1,10 @@
+#include <algorithm>
+#include <cctype>
 #include <filesystem>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <limits>
 #include <memory>
 #include <sstream>
 #include <string>
@@ -12,171 +15,192 @@
 #include "Model2_9.h"
 #include "Model3_3.h"
 
-using namespace std;
-
 namespace {
 
-    // ---------- Ввод с проверкой и значениями по умолчанию ----------
+    constexpr double kAnyLow = std::numeric_limits<double>::lowest();
+    constexpr double kAnyHigh = std::numeric_limits<double>::max();
+    const std::string kOutputDir = "doc";
 
-    string readLine(const string& question) {
-        cout << question;
-        string line;
-        if (!getline(cin, line)) {
-            // Конец ввода — дальше используются значения по умолчанию
-            return "";
-        }
-        return line;
+    // ===================== Консольный ввод =====================
+
+    bool isBlank(const std::string& text) {
+        return std::all_of(text.begin(), text.end(),
+                           [](unsigned char c) { return std::isspace(c) != 0; });
     }
 
-    int readBoundedInt(const string& question, int low, int high, int defValue) {
-        for (;;) {
-            const string line = readLine(question + " [default " + to_string(defValue) + "]: ");
-            if (line.find_first_not_of(" \t\r") == string::npos) return defValue;
-            istringstream in(line);
-            int number;
-            if (string rest; in >> number && !(in >> rest) && number >= low && number <= high) return number;
-            cout << "[Error] Please enter an integer between " << low << " and " << high << "." << endl;
-            if (!cin) return defValue;
-        }
+    // Строка должна целиком состоять из одного числа нужного типа
+    template <typename T>
+    bool parseWhole(const std::string& text, T& value) {
+        std::istringstream stream(text);
+        std::string tail;
+        return static_cast<bool>(stream >> value) && !(stream >> tail);
     }
 
-    double readReal(const string& question, double defValue) {
-        for (;;) {
-            ostringstream hint;
-            hint << defValue;
-            const string line = readLine(question + " [default " + hint.str() + "]: ");
-            if (line.find_first_not_of(" \t\r") == string::npos) return defValue;
-            istringstream in(line);
-            double number;
-            if (string rest; in >> number && !(in >> rest)) return number;
-            cout << "[Error] Please enter a valid number." << endl;
-            if (!cin) return defValue;
+    // Запрос значения: пустая строка или конец ввода дают значение по умолчанию
+    template <typename T>
+    T ask(const std::string& label, T fallback, T low, T high) {
+        while (true) {
+            std::cout << label << " [" << fallback << "]: ";
+            std::string line;
+            if (!std::getline(std::cin, line) || isBlank(line)) {
+                return fallback;
+            }
+            if (T value{}; parseWhole(line, value) && value >= low && value <= high) {
+                return value;
+            }
+            std::cout << "  ! expected a number from " << low << " to " << high << '\n';
         }
     }
 
-    // ---------- Описание моделей и сигналов ----------
+    double askCoefficient(const std::string& label, double fallback) {
+        return ask(label, fallback, kAnyLow, kAnyHigh);
+    }
 
-    struct ModelEntry {
-        unique_ptr<Model> model;
-        string tag;
+    int askMenu(const std::string& title, const std::vector<std::string>& items) {
+        std::cout << '\n' << title << '\n';
+        for (size_t i = 0; i < items.size(); ++i) {
+            std::cout << "  " << (i + 1) << ") " << items[i] << '\n';
+        }
+        const int last = static_cast<int>(items.size());
+        return ask("Your choice", last, 1, last);
+    }
+
+    // ===================== Создание моделей =====================
+
+    struct NamedModel {
+        std::string tag;
+        std::unique_ptr<Model> model;
     };
 
-    void ensureDocDir() {
-        std::error_code ec;
-        std::filesystem::create_directories("doc", ec);
+    NamedModel setupLinear() {
+        std::cout << "\n[Model 1.5] linear, state delay\n";
+        const double a1 = askCoefficient("  a1", 0.5);
+        const double a2 = askCoefficient("  a2", 0.3);
+        const double b = askCoefficient("  b", 1.0);
+        const int delay = ask("  k (delay)", 2, 1, 50);
+        return { "Linear_1_5", std::make_unique<Model1_5>(a1, a2, b, delay) };
     }
 
-    // Проверка устойчивости перед запуском (дополнительное задание)
-    void checkStability(const Model& model, const string& tag) {
-        string info;
-        const bool stable = model.isStable(info);
-        cout << "\n[Stability] " << tag << ": " << info << endl;
-        if (stable) {
-            cout << "[Stability] OK: the process is convergent (stable)." << endl;
+    NamedModel setupNonlinear() {
+        std::cout << "\n[Model 2.9] nonlinear, square root action\n";
+        const double a = askCoefficient("  a", 0.7);
+        const double b = askCoefficient("  b", 1.0);
+        return { "Nonlinear_2_9", std::make_unique<Model2_9>(a, b) };
+    }
+
+    NamedModel setupDifferential() {
+        std::cout << "\n[Model 3.3] first-order ODE, Euler method\n";
+        const double a = askCoefficient("  a", 1.0);
+        const double b = askCoefficient("  b", 1.0);
+        const double dt = askCoefficient("  dt", 0.1);
+        return { "DiffEquation_3_3", std::make_unique<Model3_3>(a, b, dt) };
+    }
+
+    std::vector<NamedModel> selectModels(int choice) {
+        using Factory = NamedModel (*)();
+        const std::vector<Factory> factories = { setupLinear, setupNonlinear, setupDifferential };
+
+        std::vector<NamedModel> chosen;
+        for (size_t i = 0; i < factories.size(); ++i) {
+            const bool wanted = (choice == 4) || (choice == static_cast<int>(i) + 1);
+            if (wanted) {
+                chosen.push_back(factories[i]());
+            }
+        }
+        return chosen;
+    }
+
+    // ===================== Устойчивость =====================
+
+    void reportStability(const NamedModel& item) {
+        std::string details;
+        const bool converges = item.model->isStable(details);
+        std::cout << "\n* Stability of " << item.tag << '\n'
+                  << "  " << details << '\n';
+        if (converges) {
+            std::cout << "  result: stable, the process converges\n";
         } else {
-            cout << "[WARNING] Coefficients lead to a DIVERGENT (unstable) process!" << endl;
+            std::cout << "  [WARNING] unstable coefficients, the process DIVERGES!\n";
         }
     }
 
-    // Один прогон модели: таблица в консоль + CSV в doc/
-    string runSimulation(Model& model, const string& modelTag,
-                         const InputSignal& signal, int stepCount) {
-        model.reset();
+    // ===================== Симуляция и вывод =====================
 
-        const string csvPath = "doc/" + modelTag + "_" + signal.name() + ".csv";
-        ofstream report(csvPath);
-        if (!report.is_open()) {
-            cout << "[Error] Cannot create file: " << csvPath << endl;
-            return "";
+    void printRule() {
+        std::cout << std::string(38, '-') << '\n';
+    }
+
+    std::string simulate(NamedModel& item, const InputSignal& input, int steps) {
+        item.model->reset();
+
+        const std::string fileName = kOutputDir + "/" + item.tag + "_" + input.name() + ".csv";
+        std::ofstream csv(fileName);
+        if (!csv) {
+            std::cout << "  ! cannot open " << fileName << '\n';
+            return {};
         }
+        csv << "Step,u,y\n";
 
-        report << "Step,u,y\n";
-        cout << "\n>>> " << modelTag << " (" << signal.name() << " signal)\n";
-        cout << "+------+------------+--------------+\n";
-        cout << "|" << setw(6) << "t" << "|" << setw(12) << "u(t)" << "|" << setw(14) << "y(t+1)" << "|\n";
-        cout << "+------+------------+--------------+\n";
+        std::cout << "\n== " << item.tag << " / " << input.name() << " ==\n";
+        printRule();
+        std::cout << std::setw(8) << "step" << " | " << std::setw(10) << "input u"
+                  << " | " << std::setw(12) << "output y" << '\n';
+        printRule();
 
-        for (int step = 0; step < stepCount; ++step) {
-            const double u = signal.valueAt(step);
-            const double y = model.calculateNext(u);
-            report << step << "," << u << "," << y << "\n";
-            cout << "|" << setw(6) << step
-                 << "|" << setw(12) << fixed << setprecision(4) << u
-                 << "|" << setw(14) << y << "|\n";
+        for (int t = 0; t < steps; ++t) {
+            const double u = input.valueAt(t);
+            const double y = item.model->calculateNext(u);
+            csv << t << "," << u << "," << y << "\n";
+            std::cout << std::setw(8) << t << " | "
+                      << std::setw(10) << std::fixed << std::setprecision(4) << u << " | "
+                      << std::setw(12) << y << '\n';
         }
-        cout << "+------+------------+--------------+\n";
-        cout << "Saved to " << csvPath << endl;
-        return csvPath;
+        printRule();
+        std::cout << "  -> " << fileName << '\n';
+        return fileName;
     }
 
 } // namespace
 
 int main() {
-    cout << "=== Modeling of controlled objects (Variant 15) ===" << endl;
-    cout << "Model 1.5 : y(t+1) = a1*y(t) + a2*y(t-k) + b*u(t)" << endl;
-    cout << "Model 2.9 : y(t+1) = a*y(t) + b*sqrt(|u(t)|)*sign(u(t))" << endl;
-    cout << "Model 3.3 : dy/dt = -a*y + b*u  (Euler method)" << endl;
-    cout << "(press Enter to accept a default value)\n" << endl;
+    std::cout << "Lab 1, variant 15: simulation of controlled objects\n"
+              << "  1.5  y(t+1) = a1*y(t) + a2*y(t-k) + b*u(t)\n"
+              << "  2.9  y(t+1) = a*y(t) + b*sqrt(|u(t)|)*sign(u(t))\n"
+              << "  3.3  dy/dt = -a*y + b*u, Euler method\n"
+              << "Press Enter to keep the value shown in brackets.\n\n";
 
-    const int steps = readBoundedInt("Enter number of steps n (1-1000)", 1, 1000, 30);
+    const int steps = ask("Number of simulation steps n", 30, 1, 1000);
 
-    cout << "\nSelect model:\n"
-         << "1. Linear model 1.5\n"
-         << "2. Nonlinear model 2.9\n"
-         << "3. Differential equation 3.3\n"
-         << "4. All models" << endl;
-    const int modelChoice = readBoundedInt("Enter choice (1-4)", 1, 4, 4);
+    const int modelChoice = askMenu("Which model to simulate?",
+        { "linear 1.5", "nonlinear 2.9", "differential 3.3", "all three" });
+    const int signalChoice = askMenu("Which input signal?",
+        { "step, u = 1", "impulse, u(0) = 1", "harmonic, u = sin(t)", "all three" });
 
-    cout << "\nSelect input signal:\n"
-         << "1. Step      u = 1\n"
-         << "2. Impulse   u(0) = 1, u(t>0) = 0\n"
-         << "3. Harmonic  u = sin(t)\n"
-         << "4. All signals" << endl;
-    const int sigChoice = readBoundedInt("Enter choice (1-4)", 1, 4, 4);
+    std::vector<NamedModel> models = selectModels(modelChoice);
+    const auto inputs = makeSignals(signalChoice);
 
-    // Создание выбранных моделей (полиморфизм через указатель на Model)
-    vector<ModelEntry> models;
-
-    if (modelChoice == 1 || modelChoice == 4) {
-        cout << "\n--- Parameters of Model 1.5 ---" << endl;
-        const double a1 = readReal("a1", 0.5);
-        const double a2 = readReal("a2", 0.3);
-        const double b  = readReal("b ", 1.0);
-        const int    k  = readBoundedInt("k (delay, >= 1)", 1, 50, 2);
-        models.push_back({ make_unique<Model1_5>(a1, a2, b, k), "Linear_1_5" });
-    }
-    if (modelChoice == 2 || modelChoice == 4) {
-        cout << "\n--- Parameters of Model 2.9 ---" << endl;
-        const double a = readReal("a ", 0.7);
-        const double b = readReal("b ", 1.0);
-        models.push_back({ make_unique<Model2_9>(a, b), "Nonlinear_2_9" });
-    }
-    if (modelChoice == 3 || modelChoice == 4) {
-        cout << "\n--- Parameters of Model 3.3 ---" << endl;
-        const double a  = readReal("a ", 1.0);
-        const double b  = readReal("b ", 1.0);
-        const double dt = readReal("dt", 0.1);
-        models.push_back({ make_unique<Model3_3>(a, b, dt), "DiffEquation_3_3" });
+    for (const auto& item : models) {
+        reportStability(item);
     }
 
-    const auto signals = makeSignals(sigChoice);
+    std::error_code ignored;
+    std::filesystem::create_directories(kOutputDir, ignored);
 
-    // Анализ устойчивости перед началом симуляции
-    for (const auto& entry : models) checkStability(*entry.model, entry.tag);
-
-    ensureDocDir();
-    vector<string> produced;
-    for (auto& entry : models) {
-        for (const auto& signal : signals) {
-            const string path = runSimulation(*entry.model, entry.tag, *signal, steps);
-            if (!path.empty()) produced.push_back(path);
+    std::vector<std::string> written;
+    for (auto& item : models) {
+        for (const auto& input : inputs) {
+            if (std::string path = simulate(item, *input, steps); !path.empty()) {
+                written.push_back(path);
+            }
         }
     }
 
-    // Список файлов этого запуска — по нему plot.py строит графики
-    ofstream list("doc/last_run.txt");
-    for (const auto& path : produced) list << path << "\n";
+    // Перечень CSV-файлов текущего запуска для скрипта plot.py
+    std::ofstream index(kOutputDir + "/last_run.txt");
+    for (const auto& path : written) {
+        index << path << "\n";
+    }
 
-    cout << "\nSimulation finished. Files written: " << produced.size() << endl;
+    std::cout << "\nDone, CSV files created: " << written.size() << '\n';
     return 0;
 }
