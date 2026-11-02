@@ -11,7 +11,7 @@ double TanhModel::calculateStep(double u_now, double u_prev1, double u_prev2) {
     (void)u_prev1;
     (void)u_prev2;
     double cubed = u_now * u_now * u_now;
-    double nextY = alpha * tanh(prevY) + gain_k * cubed;
+    double nextY = getAlpha() * tanh(prevY) + gain_k * cubed;
     prevY = nextY;
     return nextY;
 }
