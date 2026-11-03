@@ -1,0 +1,36 @@
+@startuml
+abstract class Model {
+  +next(y: double, u: double, previousU: double, dt: double): double
+  +name(): string
+  +simulate(n: int, y0: double, dt: double, signal: InputSignal): vector<Sample>
+}
+
+class InputSignal {
+  +value(tau: int): double
+}
+
+class LinearIntegratorLoss {
+  -a: double
+  -b: double
+  +next(y: double, u: double, previousU: double, dt: double): double
+  +name(): string
+}
+
+class SquareRootModulatedAction {
+  -a: double
+  -b: double
+  +next(y: double, u: double, previousU: double, dt: double): double
+  +name(): string
+}
+
+class PureLinearDecay {
+  -a: double
+  +next(y: double, u: double, previousU: double, dt: double): double
+  +name(): string
+}
+
+Model <|-- LinearIntegratorLoss
+Model <|-- SquareRootModulatedAction
+Model <|-- PureLinearDecay
+Model ..> InputSignal : uses
+@enduml
