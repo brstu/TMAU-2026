@@ -1,4 +1,4 @@
-#ifndef DIFFEQMODEL_H
+z#ifndef DIFFEQMODEL_H
 #define DIFFEQMODEL_H
 
 #include "Model.h"
