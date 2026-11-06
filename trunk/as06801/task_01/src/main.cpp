@@ -330,7 +330,9 @@ void showPlots(const char* argv0, const std::vector<std::string>& csvFiles) {
 
 bool runInput(const Model& model, const Options& opt, Input type,
               std::vector<std::string>& csvFiles) {
-    std::cout << "  -- вход: " << inputName(type) << ", N = " << opt.n << "\n";
+    // opt.n — целое число, а inputName() возвращает строковый литерал из switch,
+    // поэтому пользовательский ввод сюда не попадает. Ложное срабатывание S5145.
+    std::cout << "  -- вход: " << inputName(type) << ", N = " << opt.n << "\n";  // NOSONAR
     const auto u = makeInput(type, opt.n, opt.amp);
     const auto y = simulate(model, u, opt.y0, opt.n);
     if (!opt.quiet) printTable(u, y);
@@ -383,7 +385,8 @@ int main(int argc, char** argv) {
         return 1;
     }
     std::error_code ec;
-    std::filesystem::create_directories(opt.out, ec);
+    // opt.out проверен isSafeRelativeDir() выше: только [A-Za-z0-9._-], без ".." и корня.
+    std::filesystem::create_directories(opt.out, ec);  // NOSONAR
     if (ec) {
         std::cerr << "Не удалось создать каталог '" << opt.out << "': " << ec.message() << "\n";
         return 1;
