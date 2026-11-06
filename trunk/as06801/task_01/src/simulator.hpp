@@ -1,7 +1,11 @@
 #pragma once
 // Входные воздействия, фабрика моделей, симуляция, вывод.
 #include <algorithm>
-#include <cstdio>
+#include <cmath>
+#include <filesystem>
+#include <fstream>
+#include <iomanip>
+#include <iostream>
 #include <memory>
 #include <string_view>
 #include <vector>
@@ -59,7 +63,8 @@ inline std::vector<double> simulate(const Model& m, const std::vector<double>& u
     for (int t = 0; t < n; ++t) {
         y[t + 1] = m.nextStep(Ctx{y, u, t});
         if (!std::isfinite(y[t + 1])) {
-            std::printf("  ! Расходимость: y стало нечисловым на шаге tau=%d, расчёт остановлен\n", t + 1);
+            std::cout << "  ! Расходимость: y стало нечисловым на шаге tau=" << t + 1
+                      << ", расчёт остановлен\n";
             y.resize(t + 1);
             break;
         }
@@ -68,16 +73,34 @@ inline std::vector<double> simulate(const Model& m, const std::vector<double>& u
 }
 
 inline void printTable(const std::vector<double>& u, const std::vector<double>& y) {
-    std::printf("  %6s | %12s | %14s\n", "tau", "u", "y");
-    std::printf("  -------+--------------+---------------\n");
-    for (size_t t = 0; t < y.size(); ++t) std::printf("  %6zu | %12.5f | %14.6g\n", t, u[t], y[t]);
+    std::cout << "  " << std::setw(6) << "tau" << " | " << std::setw(12) << "u" << " | "
+              << std::setw(14) << "y" << "\n"
+              << "  -------+--------------+---------------\n";
+    for (size_t t = 0; t < y.size(); ++t) {
+        std::cout << "  " << std::setw(6) << t << " | " << std::setw(12) << std::fixed
+                  << std::setprecision(5) << u[t] << " | " << std::setw(14) << std::setprecision(6)
+                  << std::defaultfloat << y[t] << "\n";
+    }
+}
+
+// Путь к csv должен быть относительным и без "..", чтобы запись не вышла
+// за пределы каталога результатов.
+inline bool isSafeCsvPath(const std::string& path) {
+    const std::filesystem::path p(path);
+    if (p.is_absolute() || p.has_root_name() || p.has_root_directory()) return false;
+    for (const auto& part : p) {
+        if (part == "..") return false;
+    }
+    return true;
 }
 
 inline bool saveCsv(const std::string& path, const std::vector<double>& u, const std::vector<double>& y) {
-    FILE* f = std::fopen(path.c_str(), "w");
+    if (!isSafeCsvPath(path)) return false;
+    std::ofstream f(path);
     if (!f) return false;
-    std::fprintf(f, "tau,u,y\n");
-    for (size_t t = 0; t < y.size(); ++t) std::fprintf(f, "%zu,%.8g,%.8g\n", t, u[t], y[t]);
-    std::fclose(f);
-    return true;
+    f << "tau,u,y\n";
+    for (size_t t = 0; t < y.size(); ++t) {
+        f << t << ',' << std::setprecision(8) << u[t] << ',' << y[t] << '\n';
+    }
+    return static_cast<bool>(f);
 }

@@ -1,15 +1,20 @@
 // Лабораторная работа №1. Моделирование объекта управления.
-#include <cstdio>
 #include <cstdlib>
 #include <filesystem>
+#include <iomanip>
 #include <iostream>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <string_view>
 #include <vector>
 #include "simulator.hpp"
 #ifdef _WIN32
+#include <process.h>
 #include <windows.h>
+#else
+#include <sys/wait.h>
+#include <unistd.h>
 #endif
 
 namespace {
@@ -78,10 +83,26 @@ bool parseInputs(std::string_view text, std::vector<Input>& inputs) {
     return true;
 }
 
+// Каталог для csv должен оставаться внутри текущего каталога:
+// запрещаем абсолютные пути и переходы "..", чтобы нельзя было писать куда угодно.
+bool isSafeRelativeDir(const std::string& dir) {
+    if (dir.empty()) return false;
+    const std::filesystem::path p(dir);
+    if (p.is_absolute() || p.has_root_name() || p.has_root_directory()) return false;
+    for (const auto& part : p) {
+        if (part == "..") return false;
+    }
+    return true;
+}
+
 // Применяет одну пару "--ключ значение" к настройкам.
 bool applyOption(Options& opt, const std::string& key, const std::string& value) {
     if (key == "model") { opt.model = value; return true; }
-    if (key == "out") { opt.out = value; return true; }
+    if (key == "out") {
+        if (!isSafeRelativeDir(value)) return false;
+        opt.out = value;
+        return true;
+    }
     if (key == "input") return parseInputs(value, opt.inputs);
     if (key == "n") return toInt(value, opt.n) && opt.n >= 1;
     if (key == "y0") return toDouble(value, opt.y0);
@@ -123,27 +144,33 @@ ParseResult parseArgs(const std::vector<std::string>& args, Options& opt) {
 
 // ---------------------------------------------------------------- интерактив
 
+// Признак того, что ввод закончился (EOF): дальше спрашивать бессмысленно.
+bool g_inputClosed = false;
+
 // Читает строку; пустая строка означает "оставить значение по умолчанию".
 std::string ask(const std::string& prompt) {
+    if (g_inputClosed) return {};
     std::cout << prompt << std::flush;
     std::string line;
-    if (!std::getline(std::cin, line)) return {};
+    if (!std::getline(std::cin, line)) {
+        g_inputClosed = true;
+        return {};
+    }
     return line;
 }
 
 // Компактная запись числа: 0.5 вместо 0.500000.
 std::string fmt(double v) {
-    char buf[32];
-    std::snprintf(buf, sizeof buf, "%g", v);
-    return buf;
+    std::ostringstream out;
+    out << std::setprecision(6) << std::defaultfloat << v;
+    return out.str();
 }
 
 double askDouble(const std::string& name, double def) {
     for (;;) {
         const std::string line = ask("  " + name + " [" + fmt(def) + "]: ");
         if (line.empty()) return def;
-        double v = 0;
-        if (toDouble(line, v)) return v;
+        if (double v = 0; toDouble(line, v)) return v;
         std::cout << "  Ожидается число, повторите ввод.\n";
     }
 }
@@ -152,32 +179,27 @@ int askInt(const std::string& name, int def, int minValue) {
     for (;;) {
         const std::string line = ask("  " + name + " [" + std::to_string(def) + "]: ");
         if (line.empty()) return def;
-        int v = 0;
-        if (toInt(line, v) && v >= minValue) return v;
+        if (int v = 0; toInt(line, v) && v >= minValue) return v;
         std::cout << "  Ожидается целое число >= " << minValue << ", повторите ввод.\n";
     }
 }
 
+// Печатает модели одного блока (id начинается с prefix).
+void printBlock(const std::string& prefix, const char* header) {
+    std::cout << header << "\n";
+    for (const auto& id : allIds()) {
+        if (id.rfind(prefix, 0) != 0) continue;
+        const auto m = makeModel(id, Params{});
+        std::cout << "    " << std::left << std::setw(5) << id << ' ' << std::right
+                  << (m ? m->title() : std::string()) << "\n";
+    }
+}
+
 void printModelList() {
-    std::puts("\nДоступные модели:");
-    std::puts("  Блок 1 — линейные дискретные модели:");
-    for (const auto& id : allIds()) {
-        if (id.rfind("1.", 0) != 0) continue;
-        const auto m = makeModel(id, Params{});
-        std::printf("    %-5s %s\n", id.c_str(), m ? m->title().c_str() : "");
-    }
-    std::puts("  Блок 2 — нелинейные дискретные модели:");
-    for (const auto& id : allIds()) {
-        if (id.rfind("2.", 0) != 0) continue;
-        const auto m = makeModel(id, Params{});
-        std::printf("    %-5s %s\n", id.c_str(), m ? m->title().c_str() : "");
-    }
-    std::puts("  Блок 3 — дифференциальные уравнения (метод Эйлера):");
-    for (const auto& id : allIds()) {
-        if (id.rfind("3.", 0) != 0) continue;
-        const auto m = makeModel(id, Params{});
-        std::printf("    %-5s %s\n", id.c_str(), m ? m->title().c_str() : "");
-    }
+    std::cout << "\nДоступные модели:\n";
+    printBlock("1.", "  Блок 1 — линейные дискретные модели:");
+    printBlock("2.", "  Блок 2 — нелинейные дискретные модели:");
+    printBlock("3.", "  Блок 3 — дифференциальные уравнения (метод Эйлера):");
 }
 
 // Спрашивает у пользователя модель, N, y0, амплитуду, вход и параметры модели.
@@ -186,11 +208,15 @@ void askInteractive(Options& opt) {
     for (;;) {
         const std::string id = ask("\nВыберите модель (например 1.3): ");
         if (makeModel(id, Params{})) { opt.model = id; break; }
+        if (g_inputClosed) {
+            std::cout << "\nВвод завершён — используется модель " << opt.model << ".\n";
+            break;
+        }
         std::cout << "  Модели '" << id << "' нет в списке, повторите ввод.\n";
     }
 
     const auto probe = makeModel(opt.model, Params{});
-    std::printf("\nМодель %s: %s\n", probe->id().c_str(), probe->title().c_str());
+    std::cout << "\nМодель " << probe->id() << ": " << probe->title() << "\n";
     std::puts("Параметры модели (Enter — оставить значение по умолчанию):");
     for (const auto& [name, def] : probe->params()) {
         opt.params.v[name] = askDouble(name, def);
@@ -200,11 +226,11 @@ void askInteractive(Options& opt) {
     opt.n = askInt("N (число шагов)", opt.n, 1);
     opt.y0 = askDouble("y0 (начальное значение)", opt.y0);
     opt.amp = askDouble("amp (амплитуда ступеньки)", opt.amp);
-    for (;;) {
+    bool ok = false;
+    while (!ok) {
         const std::string line = ask("  вход (step/impulse/sine/all) [all]: ");
-        if (line.empty()) { parseInputs("all", opt.inputs); break; }
-        if (parseInputs(line, opt.inputs)) break;
-        std::cout << "  Допустимо: step, impulse, sine, all.\n";
+        ok = line.empty() ? parseInputs("all", opt.inputs) : parseInputs(line, opt.inputs);
+        if (!ok) std::cout << "  Допустимо: step, impulse, sine, all.\n";
     }
 }
 
@@ -222,13 +248,39 @@ std::filesystem::path exeDir(const char* argv0) {
 std::filesystem::path findPlotScript(const char* argv0) {
     std::error_code ec;
     std::filesystem::path dir = exeDir(argv0);
-    for (int i = 0; i < 5 && !dir.empty(); ++i) {
-        const auto candidate = dir / "plot.py";
-        if (std::filesystem::is_regular_file(candidate, ec)) return candidate;
-        if (dir == dir.parent_path()) break;
-        dir = dir.parent_path();
+    for (int i = 0; i < 5; ++i) {
+        if (const auto candidate = dir / "plot.py"; std::filesystem::is_regular_file(candidate, ec)) {
+            return candidate;
+        }
+        const auto parent = dir.parent_path();
+        if (parent == dir) break;  // достигли корня файловой системы
+        dir = parent;
     }
     return {};
+}
+
+// Запускает процесс без командной оболочки: аргументы передаются массивом,
+// поэтому имена файлов с пробелами и кавычками не могут внедрить команду.
+// Возвращает true, если процесс завершился с кодом 0.
+bool runProcess(const std::vector<std::string>& argv) {
+    std::vector<const char*> raw;
+    raw.reserve(argv.size() + 1);
+    for (const auto& a : argv) raw.push_back(a.c_str());
+    raw.push_back(nullptr);
+#ifdef _WIN32
+    const intptr_t rc = _spawnvp(_P_WAIT, raw[0], raw.data());
+    return rc == 0;
+#else
+    const pid_t pid = fork();
+    if (pid < 0) return false;
+    if (pid == 0) {
+        execvp(raw[0], const_cast<char* const*>(raw.data()));
+        _exit(127);  // exec не удался
+    }
+    int status = 0;
+    if (waitpid(pid, &status, 0) < 0) return false;
+    return WIFEXITED(status) && WEXITSTATUS(status) == 0;
+#endif
 }
 
 // Запускает python plot.py --show <csv...>, чтобы график появился сразу.
@@ -239,19 +291,20 @@ void showPlots(const char* argv0, const std::vector<std::string>& csvFiles) {
         std::puts("\nplot.py не найден — график не построен (csv сохранены).");
         return;
     }
-    std::string args = " \"" + script.string() + "\" --show";
-    for (const auto& f : csvFiles) args += " \"" + f + "\"";
-    std::printf("\nПостроение графиков: python%s\n", args.c_str());
-    std::fflush(stdout);  // чтобы сообщения программы не смешивались с выводом python
+    std::vector<std::string> args = {script.string(), "--show"};
+    args.insert(args.end(), csvFiles.begin(), csvFiles.end());
+    std::cout << "\nПостроение графиков: python " << script.string() << "\n" << std::flush;
 #ifdef _WIN32
     // Консоль переключена в UTF-8, поэтому и python должен писать в UTF-8.
-    const std::string prefix = "set PYTHONIOENCODING=utf-8&& ";
-#else
-    const std::string prefix;
+    _putenv_s("PYTHONIOENCODING", "utf-8");
 #endif
     // Сначала пробуем "python", затем лаунчер "py" (типично для Windows).
-    if (std::system((prefix + "python" + args).c_str()) != 0 &&
-        std::system((prefix + "py -3" + args).c_str()) != 0) {
+    std::vector<std::string> cmd = {"python"};
+    cmd.insert(cmd.end(), args.begin(), args.end());
+    if (runProcess(cmd)) return;
+    cmd = {"py", "-3"};
+    cmd.insert(cmd.end(), args.begin(), args.end());
+    if (!runProcess(cmd)) {
         std::puts("Не удалось запустить python/matplotlib — график не показан (csv сохранены).");
     }
 }
@@ -260,13 +313,13 @@ void showPlots(const char* argv0, const std::vector<std::string>& csvFiles) {
 
 bool runInput(const Model& model, const Options& opt, Input type,
               std::vector<std::string>& csvFiles) {
-    std::printf("  -- вход: %s, N = %d\n", inputName(type), opt.n);
+    std::cout << "  -- вход: " << inputName(type) << ", N = " << opt.n << "\n";
     const auto u = makeInput(type, opt.n, opt.amp);
     const auto y = simulate(model, u, opt.y0, opt.n);
     if (!opt.quiet) printTable(u, y);
     const std::string path = opt.out + "/model_" + model.id() + "_" + inputName(type) + ".csv";
     if (saveCsv(path, u, y)) {
-        std::printf("  CSV: %s\n", path.c_str());
+        std::cout << "  CSV: " << path << "\n";
         csvFiles.push_back(path);
     }
     return true;
@@ -278,12 +331,13 @@ bool runModel(const std::string& id, const Options& opt, std::vector<std::string
         std::cerr << "Неизвестная модель: " << id << "\n";
         return false;
     }
-    std::printf("\n=== Модель %s: %s ===\n", model->id().c_str(), model->title().c_str());
+    std::cout << "\n=== Модель " << model->id() << ": " << model->title() << " ===\n";
     std::string info;
     const bool stable = model->isStable(info);
-    std::printf("  Устойчивость: %s\n", info.c_str());
+    std::cout << "  Устойчивость: " << info << "\n";
     if (!stable) {
-        std::printf("  *** ПРЕДУПРЕЖДЕНИЕ: система НЕУСТОЙЧИВА (корень вне единичного круга) — процесс будет расходиться! ***\n");
+        std::cout << "  *** ПРЕДУПРЕЖДЕНИЕ: система НЕУСТОЙЧИВА (корень вне единичного круга)"
+                     " — процесс будет расходиться! ***\n";
     }
     for (Input type : opt.inputs) runInput(*model, opt, type, csvFiles);
     return true;

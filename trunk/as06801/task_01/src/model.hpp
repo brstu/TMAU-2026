@@ -56,7 +56,7 @@ protected:
         // поэтому список параметров держим отсортированным по имени.
         auto pos = params_.begin();
         while (pos != params_.end() && pos->first < name) ++pos;
-        params_.insert(pos, {name, def});
+        params_.emplace(pos, name, def);
         return P.get(name, def);
     }
 
