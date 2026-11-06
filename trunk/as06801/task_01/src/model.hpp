@@ -5,6 +5,7 @@
 #include <map>
 #include <string>
 #include <string_view>
+#include <utility>
 #include <vector>
 
 // Параметры модели (a, b, a1, ... ) с значениями по умолчанию.
@@ -43,7 +44,24 @@ public:
     const std::string& id() const { return id_; }
     const std::string& title() const { return title_; }
 
+    // Параметры, которые использует модель: (имя, значение по умолчанию).
+    // Заполняется автоматически при вызове param() в конструкторе наследника.
+    const std::vector<std::pair<std::string, double>>& params() const { return params_; }
+
+protected:
+    // Читает параметр из P (или значение по умолчанию) и запоминает его,
+    // чтобы программа могла запросить это значение у пользователя.
+    double param(const Params& P, std::string name, double def) {
+        // Порядок не должен зависеть от порядка вычисления аргументов setCoefficients,
+        // поэтому список параметров держим отсортированным по имени.
+        auto pos = params_.begin();
+        while (pos != params_.end() && pos->first < name) ++pos;
+        params_.insert(pos, {name, def});
+        return P.get(name, def);
+    }
+
 private:
     std::string id_;
     std::string title_;
+    std::vector<std::pair<std::string, double>> params_;
 };

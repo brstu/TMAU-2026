@@ -26,7 +26,7 @@ struct Model21 : Model {
     double c;
     double d;
     explicit Model21(const Params& P) : Model("2.1", "Квадратичная ОС и гармоническое управление"),
-        a(P.get("a", .8)), b(P.get("b", .1)), c(P.get("c", .5)), d(P.get("d", .2)) {}
+        a(param(P, "a", .8)), b(param(P, "b", .1)), c(param(P, "c", .5)), d(param(P, "d", .2)) {}
     double nextStep(const Ctx& x) const override {
         return a * x.Y() - b * x.Y(1) * x.Y(1) + c * x.U() + d * std::sin(x.U(1)); }
 };
@@ -37,7 +37,7 @@ struct Model22 : Model {
     double umax;
     double umin;
     explicit Model22(const Params& P) : Model("2.2", "Насыщение исполнительного органа"),
-        a(P.get("a", .8)), b(P.get("b", .5)), umax(P.get("Umax", 1)), umin(P.get("Umin", -1)) {}
+        a(param(P, "a", .8)), b(param(P, "b", .5)), umax(param(P, "Umax", 1)), umin(param(P, "Umin", -1)) {}
     double nextStep(const Ctx& x) const override {
         return a * x.Y() + b * saturate(x.U(), umin, umax); }
 };
@@ -47,7 +47,7 @@ struct Model23 : Model {
     double b;
     double dl;
     explicit Model23(const Params& P) : Model("2.3", "Зона нечувствительности"),
-        a(P.get("a", .8)), b(P.get("b", .5)), dl(P.get("delta", .3)) {}
+        a(param(P, "a", .8)), b(param(P, "b", .5)), dl(param(P, "delta", .3)) {}
     double nextStep(const Ctx& x) const override {
         return a * x.Y() + b * deadZone(x.U(), dl); }
 };
@@ -56,7 +56,7 @@ struct Model24 : Model {
     double a;
     double b;
     explicit Model24(const Params& P) : Model("2.4", "Логарифмическое взаимодействие"),
-        a(P.get("a", .8)), b(P.get("b", .5)) {}
+        a(param(P, "a", .8)), b(param(P, "b", .5)) {}
     double nextStep(const Ctx& x) const override {
         return a * x.Y() * std::cos(x.Y()) + b * std::log(1 + std::fabs(x.U())); }
 };
@@ -65,7 +65,7 @@ struct Model25 : Model {
     double a;
     double b;
     explicit Model25(const Params& P) : Model("2.5", "Сигнум-трение и экспоненциальный рост"),
-        a(P.get("a", .8)), b(P.get("b", .5)) {}
+        a(param(P, "a", .8)), b(param(P, "b", .5)) {}
     double nextStep(const Ctx& x) const override {
         return a * x.Y() + b * sgn(x.U()) * (1 - std::exp(-std::fabs(x.U()))); }
 };
@@ -75,7 +75,7 @@ struct Model26 : Model {
     double a2;
     double b;
     explicit Model26(const Params& P) : Model("2.6", "Асимметричный полиномиальный люфт"),
-        a1(P.get("a1", .5)), a2(P.get("a2", .2)), b(P.get("b", .5)) {}
+        a1(param(P, "a1", .5)), a2(param(P, "a2", .2)), b(param(P, "b", .5)) {}
     double nextStep(const Ctx& x) const override {
         return a1 * std::pow(x.Y(), 3) - a2 * x.Y(1) + b * x.U() * x.U(); }
 };
@@ -85,7 +85,7 @@ struct Model27 : Model {
     double b;
     double eps;
     explicit Model27(const Params& P) : Model("2.7", "Реле с гистерезисом"),
-        a(P.get("a", .8)), b(P.get("b", .5)), eps(P.get("eps", .1)) {}
+        a(param(P, "a", .8)), b(param(P, "b", .5)), eps(param(P, "eps", .1)) {}
     double nextStep(const Ctx& x) const override {
         const double u = x.U();
         double r = x.Y() > 0 ? 1.0 : -1.0;  // внутри зоны гистерезиса реле сохраняет знак y
@@ -99,7 +99,7 @@ struct Model28 : Model {
     double b;
     double c;
     explicit Model28(const Params& P) : Model("2.8", "Хаотическое логистическое отображение"),
-        a(P.get("a", 2.5)), b(P.get("b", .1)), c(P.get("c", .1)) {}
+        a(param(P, "a", 2.5)), b(param(P, "b", .1)), c(param(P, "c", .1)) {}
     double nextStep(const Ctx& x) const override {
         return a * x.Y() * (1 - x.Y()) + b * x.U() + c * std::sin(x.Y(1) * x.U()); }
 };
@@ -108,7 +108,7 @@ struct Model29 : Model {
     double a;
     double b;
     explicit Model29(const Params& P) : Model("2.9", "Модуляция корнем"),
-        a(P.get("a", .8)), b(P.get("b", .5)) {}
+        a(param(P, "a", .8)), b(param(P, "b", .5)) {}
     double nextStep(const Ctx& x) const override {
         return a * x.Y() + b * std::sqrt(std::fabs(x.U())) * sgn(x.U()); }
 };
@@ -117,7 +117,7 @@ struct Model210 : Model {
     double a;
     double b;
     explicit Model210(const Params& P) : Model("2.10", "Сглаживание гиперболическим тангенсом"),
-        a(P.get("a", .8)), b(P.get("b", .5)) {}
+        a(param(P, "a", .8)), b(param(P, "b", .5)) {}
     double nextStep(const Ctx& x) const override {
         return a * std::tanh(x.Y()) + b * std::pow(x.U(), 3); }
 };

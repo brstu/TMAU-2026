@@ -110,58 +110,58 @@ private:
 // Модель 1.1 (уравнение — в readme.md)
 struct Model11 : LinearModel {
     explicit Model11(const Params& P) : LinearModel("1.1", "Инерционное звено 1-го порядка") {
-        setCoefficients({P.get("a", .8)}, {P.get("b", .5)}); }
+        setCoefficients({param(P, "a", .8)}, {param(P, "b", .5)}); }
 };
 // Модель 1.2 (уравнение — в readme.md)
 struct Model12 : LinearModel {
     explicit Model12(const Params& P) : LinearModel("1.2", "Чистое запаздывание по управлению") {
-        const auto k = static_cast<size_t>(std::max(1, static_cast<int>(P.get("k", 2))));
+        const auto k = static_cast<size_t>(std::max(1, static_cast<int>(param(P, "k", 2))));
         std::vector u(k + 1, 0.0);
-        u[k] = P.get("b", .5);
-        setCoefficients({P.get("a", .8)}, u); }
+        u[k] = param(P, "b", .5);
+        setCoefficients({param(P, "a", .8)}, u); }
 };
 // Модель 1.3 (уравнение — в readme.md)
 struct Model13 : LinearModel {
     explicit Model13(const Params& P) : LinearModel("1.3", "Система 2-го порядка") {
-        setCoefficients({P.get("a1", .5), P.get("a2", .2)}, {P.get("b", .5)}); }
+        setCoefficients({param(P, "a1", .5), param(P, "a2", .2)}, {param(P, "b", .5)}); }
 };
 // Модель 1.4 (уравнение — в readme.md)
 struct Model14 : LinearModel {
     explicit Model14(const Params& P) : LinearModel("1.4", "Интегратор с потерями") {
-        double b = P.get("b", .5);
-        setCoefficients({P.get("a", .8)}, {b, -b}); }
+        double b = param(P, "b", .5);
+        setCoefficients({param(P, "a", .8)}, {b, -b}); }
 };
 // Модель 1.5 (уравнение — в readme.md)
 struct Model15 : LinearModel {
     explicit Model15(const Params& P) : LinearModel("1.5", "Запаздывание по состоянию") {
-        const auto k = static_cast<size_t>(std::max(1, static_cast<int>(P.get("k", 2))));
+        const auto k = static_cast<size_t>(std::max(1, static_cast<int>(param(P, "k", 2))));
         std::vector y(k + 1, 0.0);
-        y[0] = P.get("a1", .5);
-        y[k] += P.get("a2", .2);
-        setCoefficients(y, {P.get("b", .5)}); }
+        y[0] = param(P, "a1", .5);
+        y[k] += param(P, "a2", .2);
+        setCoefficients(y, {param(P, "b", .5)}); }
 };
 // Модель 1.6 (уравнение — в readme.md)
 struct Model16 : LinearModel {
     explicit Model16(const Params& P) : LinearModel("1.6", "Система 3-го порядка") {
-        setCoefficients({P.get("a1", .5), P.get("a2", .2), P.get("a3", .1)}, {P.get("b", .5)}); }
+        setCoefficients({param(P, "a1", .5), param(P, "a2", .2), param(P, "a3", .1)}, {param(P, "b", .5)}); }
 };
 // Модель 1.7 (уравнение — в readme.md)
 struct Model17 : LinearModel {
     explicit Model17(const Params& P) : LinearModel("1.7", "История управления (3 шага)") {
-        setCoefficients({P.get("a", .8)}, {P.get("b1", .5), P.get("b2", .3), P.get("b3", .2)}); }
+        setCoefficients({param(P, "a", .8)}, {param(P, "b1", .5), param(P, "b2", .3), param(P, "b3", .2)}); }
 };
 // Модель 1.8 (уравнение — в readme.md)
 struct Model18 : LinearModel {
     explicit Model18(const Params& P) : LinearModel("1.8", "Обобщённая авторегрессионная модель") {
-        setCoefficients({P.get("a1", .5), P.get("a2", .2)}, {P.get("b1", .5), P.get("b2", .3)}); }
+        setCoefficients({param(P, "a1", .5), param(P, "a2", .2)}, {param(P, "b1", .5), param(P, "b2", .3)}); }
 };
 // Модель 1.9 (уравнение — в readme.md)
 struct Model19 : LinearModel {
     explicit Model19(const Params& P) : LinearModel("1.9", "Трёхшаговая модель состояния") {
-        setCoefficients({P.get("a1", .5), P.get("a2", .2), P.get("a3", .1)}, {P.get("b1", .5)}); }
+        setCoefficients({param(P, "a1", .5), param(P, "a2", .2), param(P, "a3", .1)}, {param(P, "b1", .5)}); }
 };
 // Модель 1.10 (уравнение — в readme.md)
 struct Model110 : LinearModel {
     explicit Model110(const Params& P) : LinearModel("1.10", "Распределённое окно управления") {
-        setCoefficients({P.get("a1", .8)}, {P.get("b1", .5), 0.0, P.get("b2", .3)}); }
+        setCoefficients({param(P, "a1", .8)}, {param(P, "b1", .5), 0.0, param(P, "b2", .3)}); }
 };
