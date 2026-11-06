@@ -88,15 +88,13 @@ inline void printTable(const std::vector<double>& u, const std::vector<double>& 
 inline bool isSafeCsvPath(const std::string& path) {
     const std::filesystem::path p(path);
     if (p.is_absolute() || p.has_root_name() || p.has_root_directory()) return false;
-    for (const auto& part : p) {
-        if (part == "..") return false;
-    }
-    return true;
+    return std::none_of(p.begin(), p.end(), [](const auto& part) { return part == ".."; });
 }
 
 inline bool saveCsv(const std::string& path, const std::vector<double>& u, const std::vector<double>& y) {
     if (!isSafeCsvPath(path)) return false;
-    std::ofstream f(path);
+    // Путь проверен выше: он относительный, без ".." и без корня.
+    std::ofstream f(path);  // NOSONAR
     if (!f) return false;
     f << "tau,u,y\n";
     for (size_t t = 0; t < y.size(); ++t) {

@@ -1,4 +1,6 @@
 // Лабораторная работа №1. Моделирование объекта управления.
+#include <algorithm>
+#include <cctype>
 #include <cstdlib>
 #include <filesystem>
 #include <iomanip>
@@ -89,10 +91,12 @@ bool isSafeRelativeDir(const std::string& dir) {
     if (dir.empty()) return false;
     const std::filesystem::path p(dir);
     if (p.is_absolute() || p.has_root_name() || p.has_root_directory()) return false;
-    for (const auto& part : p) {
-        if (part == "..") return false;
-    }
-    return true;
+    if (std::any_of(p.begin(), p.end(), [](const auto& part) { return part == ".."; })) return false;
+    // Разрешаем только буквы, цифры, точку, дефис и подчёркивание:
+    // так в путь не попадут ни разделители, ни спецсимволы оболочки.
+    return std::all_of(dir.begin(), dir.end(), [](unsigned char c) {
+        return std::isalnum(c) != 0 || c == '.' || c == '-' || c == '_';
+    });
 }
 
 // Применяет одну пару "--ключ значение" к настройкам.
@@ -145,15 +149,18 @@ ParseResult parseArgs(const std::vector<std::string>& args, Options& opt) {
 // ---------------------------------------------------------------- интерактив
 
 // Признак того, что ввод закончился (EOF): дальше спрашивать бессмысленно.
-bool g_inputClosed = false;
+bool& inputClosed() {
+    static bool closed = false;
+    return closed;
+}
 
 // Читает строку; пустая строка означает "оставить значение по умолчанию".
 std::string ask(const std::string& prompt) {
-    if (g_inputClosed) return {};
+    if (inputClosed()) return {};
     std::cout << prompt << std::flush;
     std::string line;
     if (!std::getline(std::cin, line)) {
-        g_inputClosed = true;
+        inputClosed() = true;
         return {};
     }
     return line;
@@ -185,7 +192,7 @@ int askInt(const std::string& name, int def, int minValue) {
 }
 
 // Печатает модели одного блока (id начинается с prefix).
-void printBlock(const std::string& prefix, const char* header) {
+void printBlock(std::string_view prefix, const char* header) {
     std::cout << header << "\n";
     for (const auto& id : allIds()) {
         if (id.rfind(prefix, 0) != 0) continue;
@@ -205,14 +212,18 @@ void printModelList() {
 // Спрашивает у пользователя модель, N, y0, амплитуду, вход и параметры модели.
 void askInteractive(Options& opt) {
     printModelList();
-    for (;;) {
+    bool chosen = false;
+    while (!chosen) {
         const std::string id = ask("\nВыберите модель (например 1.3): ");
-        if (makeModel(id, Params{})) { opt.model = id; break; }
-        if (g_inputClosed) {
+        chosen = static_cast<bool>(makeModel(id, Params{}));
+        if (chosen) {
+            opt.model = id;
+        } else if (inputClosed()) {
             std::cout << "\nВвод завершён — используется модель " << opt.model << ".\n";
-            break;
+            chosen = true;
+        } else {
+            std::cout << "  Модели '" << id << "' нет в списке, повторите ввод.\n";
         }
-        std::cout << "  Модели '" << id << "' нет в списке, повторите ввод.\n";
     }
 
     const auto probe = makeModel(opt.model, Params{});
@@ -263,18 +274,24 @@ std::filesystem::path findPlotScript(const char* argv0) {
 // поэтому имена файлов с пробелами и кавычками не могут внедрить команду.
 // Возвращает true, если процесс завершился с кодом 0.
 bool runProcess(const std::vector<std::string>& argv) {
+    if (argv.empty()) return false;
+#ifdef _WIN32
     std::vector<const char*> raw;
     raw.reserve(argv.size() + 1);
     for (const auto& a : argv) raw.push_back(a.c_str());
     raw.push_back(nullptr);
-#ifdef _WIN32
-    const intptr_t rc = _spawnvp(_P_WAIT, raw[0], raw.data());
-    return rc == 0;
+    return _spawnvp(_P_WAIT, raw[0], raw.data()) == 0;
 #else
+    // execvp требует char* const[], поэтому держим изменяемые копии строк.
+    std::vector<std::string> storage = argv;
+    std::vector<char*> raw;
+    raw.reserve(storage.size() + 1);
+    for (auto& a : storage) raw.push_back(a.data());
+    raw.push_back(nullptr);
     const pid_t pid = fork();
     if (pid < 0) return false;
     if (pid == 0) {
-        execvp(raw[0], const_cast<char* const*>(raw.data()));
+        execvp(raw[0], raw.data());
         _exit(127);  // exec не удался
     }
     int status = 0;
@@ -317,8 +334,8 @@ bool runInput(const Model& model, const Options& opt, Input type,
     const auto u = makeInput(type, opt.n, opt.amp);
     const auto y = simulate(model, u, opt.y0, opt.n);
     if (!opt.quiet) printTable(u, y);
-    const std::string path = opt.out + "/model_" + model.id() + "_" + inputName(type) + ".csv";
-    if (saveCsv(path, u, y)) {
+    if (const std::string path = opt.out + "/model_" + model.id() + "_" + inputName(type) + ".csv";
+        saveCsv(path, u, y)) {
         std::cout << "  CSV: " << path << "\n";
         csvFiles.push_back(path);
     }
@@ -350,8 +367,7 @@ int main(int argc, char** argv) {
     SetConsoleOutputCP(65001);
 #endif
     Options opt;
-    const std::vector<std::string> args(argv + 1, argv + argc);
-    if (args.empty()) {
+    if (const std::vector<std::string> args(argv + 1, argv + argc); args.empty()) {
         askInteractive(opt);  // без аргументов — всё спрашиваем у пользователя
     } else {
         switch (parseArgs(args, opt)) {
@@ -361,6 +377,11 @@ int main(int argc, char** argv) {
         }
     }
 
+    // Повторная проверка: каталог мог прийти и из интерактивного режима.
+    if (!isSafeRelativeDir(opt.out)) {
+        std::cerr << "Недопустимый каталог результатов: '" << opt.out << "'\n";
+        return 1;
+    }
     std::error_code ec;
     std::filesystem::create_directories(opt.out, ec);
     if (ec) {
