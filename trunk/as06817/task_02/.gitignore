@@ -1,0 +1,13 @@
+build/
+build-*/
+*.gcda
+*.gcno
+*.gcov
+coverage.html
+coverage*.html
+coverage_report.txt
+test_report.txt
+test_report.xml
+model17.csv
+model21.csv
+model35.csv
