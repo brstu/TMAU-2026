@@ -1,6 +1,9 @@
 #include <iostream>
 #include <memory>
+
+#ifdef _WIN32
 #include <windows.h>
+#endif
 
 #include "Model17.h"
 #include "Model21.h"
@@ -8,8 +11,10 @@
 #include "Simulator.h"
 
 int main() {
+#ifdef _WIN32
     SetConsoleCP(65001);
     SetConsoleOutputCP(65001);
+#endif
 
     int n;
 
