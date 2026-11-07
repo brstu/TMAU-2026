@@ -1,4 +1,4 @@
-add_executable(task_01
+add_executable(as06817_task_01
     main.cpp
     InputSignal.cpp
     Model17.cpp
