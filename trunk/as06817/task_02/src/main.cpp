@@ -1,8 +1,8 @@
 #include <cctype>
-#include <exception>
 #include <iomanip>
 #include <iostream>
 #include <memory>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -20,6 +20,42 @@
 
 namespace {
 
+const char* const kInvalidInputMessage = "Некорректный ввод, повторите.\n";
+
+bool tryParseInt(const std::string& text, int& value) {
+    try {
+        std::size_t processed = 0;
+        const int parsed = std::stoi(text, &processed);
+        if (processed != text.size()) {
+            return false;
+        }
+
+        value = parsed;
+        return true;
+    } catch (const std::invalid_argument&) {
+        return false;
+    } catch (const std::out_of_range&) {
+        return false;
+    }
+}
+
+bool tryParseDouble(const std::string& text, double& value) {
+    try {
+        std::size_t processed = 0;
+        const double parsed = std::stod(text, &processed);
+        if (processed != text.size()) {
+            return false;
+        }
+
+        value = parsed;
+        return true;
+    } catch (const std::invalid_argument&) {
+        return false;
+    } catch (const std::out_of_range&) {
+        return false;
+    }
+}
+
 int readInt(const std::string& prompt, int defaultValue) {
     while (true) {
         std::cout << prompt << " [" << defaultValue << "]: ";
@@ -28,17 +64,12 @@ int readInt(const std::string& prompt, int defaultValue) {
             return defaultValue;
         }
 
-        try {
-            std::size_t processed = 0;
-            const int value = std::stoi(line, &processed);
-            if (processed == line.size()) {
-                return value;
-            }
-        } catch (const std::exception&) {
-            // Ниже будет выведено сообщение и запрошен повторный ввод.
+        int value = 0;
+        if (tryParseInt(line, value)) {
+            return value;
         }
 
-        std::cout << "Некорректный ввод, повторите.\n";
+        std::cout << kInvalidInputMessage;
     }
 }
 
@@ -50,17 +81,12 @@ double readDouble(const std::string& prompt, double defaultValue) {
             return defaultValue;
         }
 
-        try {
-            std::size_t processed = 0;
-            const double value = std::stod(line, &processed);
-            if (processed == line.size()) {
-                return value;
-            }
-        } catch (const std::exception&) {
-            // Ниже будет выведено сообщение и запрошен повторный ввод.
+        double value = 0.0;
+        if (tryParseDouble(line, value)) {
+            return value;
         }
 
-        std::cout << "Некорректный ввод, повторите.\n";
+        std::cout << kInvalidInputMessage;
     }
 }
 
@@ -91,7 +117,7 @@ int main() {
         return 1;
     }
 
-    const SignalType signalType = static_cast<SignalType>(signalChoice);
+    const auto signalType = static_cast<SignalType>(signalChoice);
 
     std::cout << "\nКоэффициенты по умолчанию:\n";
     std::cout << "  Model 1.7: a=0.7, b1=0.5, b2=0.2, b3=0.1\n";

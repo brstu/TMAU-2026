@@ -23,7 +23,7 @@ void CsvWriter::write(const std::string& fileName,
                       const SimulationResult& result) {
     std::ofstream file(fileName);
     if (!file.is_open()) {
-        throw std::runtime_error("Не удалось открыть файл: " + fileName);
+        throw CsvWriterException("Не удалось открыть файл: " + fileName);
     }
 
     file << toCsv(result);

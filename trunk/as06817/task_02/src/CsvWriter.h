@@ -2,7 +2,16 @@
 
 #include "Simulator.h"
 
+#include <stdexcept>
 #include <string>
+
+// Исключение при работе с CSV-файлами.
+class CsvWriterException : public std::runtime_error {
+public:
+    explicit CsvWriterException(const std::string& message)
+        : std::runtime_error(message) {
+    }
+};
 
 class CsvWriter {
 public:

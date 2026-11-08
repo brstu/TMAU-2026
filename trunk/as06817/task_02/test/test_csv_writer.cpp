@@ -56,5 +56,5 @@ TEST(CsvWriterTest, ThrowsWhenFileCannotBeOpened) {
 
     EXPECT_THROW(
         CsvWriter::write("task02_missing_directory/output.csv", result),
-        std::runtime_error);
+        CsvWriterException);
 }

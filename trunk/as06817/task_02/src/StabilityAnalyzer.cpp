@@ -9,11 +9,16 @@
 
 namespace {
 
+constexpr double kCoefficientEpsilon = 1e-15;
+constexpr double kDenominatorEpsilon = 1e-300;
+constexpr double kConvergenceEpsilon = 1e-14;
+constexpr int kMaxIterations = 5000;
+
 std::vector<double> normalizeCoefficients(const std::vector<double>& coefficients) {
     const auto first = std::find_if(
         coefficients.begin(),
         coefficients.end(),
-        [](double value) { return std::abs(value) > 1e-15; });
+        [](double value) { return std::abs(value) > kCoefficientEpsilon; });
 
     return std::vector<double>(first, coefficients.end());
 }
@@ -27,6 +32,76 @@ std::complex<double> evaluatePolynomial(const std::vector<double>& coefficients,
     return value;
 }
 
+// Приводит полином к виду z^n + a1*z^(n-1) + ... + an.
+std::vector<double> toMonic(const std::vector<double>& coefficients) {
+    std::vector<double> monic(coefficients.size());
+    for (std::size_t i = 0; i < coefficients.size(); ++i) {
+        monic[i] = coefficients[i] / coefficients[0];
+    }
+    return monic;
+}
+
+// Начальное приближение Дюрана - Кернера.
+std::vector<std::complex<double>> initialApproximation(int degree) {
+    std::vector<std::complex<double>> roots(static_cast<std::size_t>(degree));
+    const std::complex<double> seed(0.4, 0.9);
+    std::complex<double> current(1.0, 0.0);
+
+    for (int i = 0; i < degree; ++i) {
+        roots[static_cast<std::size_t>(i)] = current;
+        current *= seed;
+    }
+
+    return roots;
+}
+
+// Знаменатель шага Дюрана - Кернера: произведение (z_i - z_j), j != i.
+std::complex<double> evaluateDenominator(
+    const std::vector<std::complex<double>>& roots,
+    std::size_t index) {
+    std::complex<double> denominator(1.0, 0.0);
+
+    for (std::size_t j = 0; j < roots.size(); ++j) {
+        if (j != index) {
+            denominator *= roots[index] - roots[j];
+        }
+    }
+
+    return denominator;
+}
+
+std::vector<std::complex<double>> durandKerner(
+    const std::vector<double>& monic) {
+    const int degree = static_cast<int>(monic.size()) - 1;
+    std::vector<std::complex<double>> roots = initialApproximation(degree);
+
+    for (int iteration = 0; iteration < kMaxIterations; ++iteration) {
+        double maxDelta = 0.0;
+
+        for (int i = 0; i < degree; ++i) {
+            const std::size_t index = static_cast<std::size_t>(i);
+            const std::complex<double> denominator =
+                evaluateDenominator(roots, index);
+
+            if (std::abs(denominator) < kDenominatorEpsilon) {
+                continue;
+            }
+
+            const std::complex<double> delta =
+                evaluatePolynomial(monic, roots[index]) / denominator;
+
+            roots[index] -= delta;
+            maxDelta = std::max(maxDelta, std::abs(delta));
+        }
+
+        if (maxDelta < kConvergenceEpsilon) {
+            break;
+        }
+    }
+
+    return roots;
+}
+
 } // namespace
 
 std::vector<std::complex<double>> StabilityAnalyzer::findRoots(
@@ -38,61 +113,19 @@ std::vector<std::complex<double>> StabilityAnalyzer::findRoots(
 
     // Множитель z^k соответствует k корням в начале координат.
     int zeroRoots = 0;
-    while (normalized.size() > 1 && std::abs(normalized.back()) <= 1e-15) {
+    while (normalized.size() > 1
+           && std::abs(normalized.back()) <= kCoefficientEpsilon) {
         normalized.pop_back();
         ++zeroRoots;
     }
 
     const int degree = static_cast<int>(normalized.size()) - 1;
     std::vector<std::complex<double>> roots;
-    roots.reserve(static_cast<std::size_t>(degree + zeroRoots));
 
     if (degree == 1) {
         roots.emplace_back(-normalized[1] / normalized[0], 0.0);
     } else if (degree >= 2) {
-        std::vector<double> monic(normalized.size());
-        for (std::size_t i = 0; i < normalized.size(); ++i) {
-            monic[i] = normalized[i] / normalized[0];
-        }
-
-        // Начальное приближение Дюрана - Кернера.
-        std::vector<std::complex<double>> z(static_cast<std::size_t>(degree));
-        const std::complex<double> seed(0.4, 0.9);
-        std::complex<double> current(1.0, 0.0);
-        for (int i = 0; i < degree; ++i) {
-            z[static_cast<std::size_t>(i)] = current;
-            current *= seed;
-        }
-
-        for (int iteration = 0; iteration < 5000; ++iteration) {
-            double maxDelta = 0.0;
-            for (int i = 0; i < degree; ++i) {
-                std::complex<double> denominator(1.0, 0.0);
-                for (int j = 0; j < degree; ++j) {
-                    if (i != j) {
-                        denominator *= (z[static_cast<std::size_t>(i)]
-                            - z[static_cast<std::size_t>(j)]);
-                    }
-                }
-
-                if (std::abs(denominator) < 1e-300) {
-                    continue;
-                }
-
-                const std::complex<double> delta =
-                    evaluatePolynomial(monic, z[static_cast<std::size_t>(i)])
-                    / denominator;
-
-                z[static_cast<std::size_t>(i)] -= delta;
-                maxDelta = std::max(maxDelta, std::abs(delta));
-            }
-
-            if (maxDelta < 1e-14) {
-                break;
-            }
-        }
-
-        roots = z;
+        roots = durandKerner(toMonic(normalized));
     }
 
     for (int i = 0; i < zeroRoots; ++i) {
