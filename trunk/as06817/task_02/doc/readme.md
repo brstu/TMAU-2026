@@ -334,7 +334,7 @@ gcovr -r . --filter "src/.*" --exclude "src/main.cpp"
 | `StabilityAnalyzer.cpp` | 98.4 % | 100 % | OK |
 | `Simulator.cpp` | 95.2 % | 100 % | OK |
 | `CsvWriter.cpp` | 100 % | 100 % | OK |
-| `IModel.h`, `InputSignal.h`, `ISignalSource.h`, `CsvWriter.h` | 100 % | 100 % | OK |
+| `IModel.h`, `InputSignal.h`, `ISignalSource.h` | 100 % | 100 % | OK |
 | **Итоговый результат** | **98.9 %** | **100 %** | **Success** |
 
 > **Примечание.** `main.cpp` исключён из расчёта покрытия как точка входа

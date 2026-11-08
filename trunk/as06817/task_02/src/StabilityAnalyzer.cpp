@@ -79,7 +79,7 @@ std::vector<std::complex<double>> durandKerner(
         double maxDelta = 0.0;
 
         for (int i = 0; i < degree; ++i) {
-            const std::size_t index = static_cast<std::size_t>(i);
+            const auto index = static_cast<std::size_t>(i);
             const std::complex<double> denominator =
                 evaluateDenominator(roots, index);
 

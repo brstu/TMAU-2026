@@ -64,8 +64,7 @@ int readInt(const std::string& prompt, int defaultValue) {
             return defaultValue;
         }
 
-        int value = 0;
-        if (tryParseInt(line, value)) {
+        if (int value = 0; tryParseInt(line, value)) {
             return value;
         }
 
@@ -81,8 +80,7 @@ double readDouble(const std::string& prompt, double defaultValue) {
             return defaultValue;
         }
 
-        double value = 0.0;
-        if (tryParseDouble(line, value)) {
+        if (double value = 0.0; tryParseDouble(line, value)) {
             return value;
         }
 
