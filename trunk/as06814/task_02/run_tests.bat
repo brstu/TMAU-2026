@@ -15,7 +15,7 @@ cd build
 echo ===== Конфигурация CMake =====
 cmake -G "MinGW Makefiles" ^
   -DCMAKE_CXX_COMPILER="%MSYS_BIN%/g++.exe" ^
-  -DCMAKE_MAKE_PROGRAM="%MSYS_BIN%/mingw32-make.exe" ..
+  -DCMAKE_MAKE_PROGRAM="%MSYS_BIN%/mingw32-make.exe" ..\src
 if %errorlevel% neq 0 (
     echo [ОШИБКА] Ошибка конфигурации CMake.
     pause
@@ -47,8 +47,8 @@ echo  Генерация отчета о покрытии кода (gcovr)...
 echo ========================================================
 where gcovr >nul 2>nul
 if %errorlevel% equ 0 (
-    gcovr -r .. --filter "../src/.*" --txt coverage_report.txt
-    gcovr -r .. --filter "../src/.*"
+    gcovr -r .. --filter ".*/src/.*" --txt coverage_report.txt
+    gcovr -r .. --filter ".*/src/.*"
     echo Отчет сохранен в build/coverage_report.txt
 ) else (
     echo [ИНФО] gcovr не найден в PATH. Отчет покрытия пропущен.

@@ -46,7 +46,7 @@ TEST(ModelInvariantTest, ZeroInputZeroState) {
     NonlinearModel2_8 nonlinModel(0.5, 0.3, 0.1);
     DiffModel3_2 diffModel(0.5, 0.1);
 
-    std::vector<double> zero_input(5, 0.0);
+    std::vector zero_input(5, 0.0);
 
     auto res_lin = linModel.simulate(zero_input);
     auto res_nonlin = nonlinModel.simulate(zero_input);
@@ -65,12 +65,12 @@ TEST(DiffModelTest, EulerAnalyticalComparison) {
     double dt = 0.1;
     DiffModel3_2 model(b, dt);
 
-    std::vector<double> u(10, 2.0); // u = 2.0
+    std::vector u(10, 2.0); // u = 2.0
     auto result = model.simulate(u);
 
     // Аналитическое решение: y_next = y_prev + dt * b * u = y_prev + 0.1 * 0.5 * 2.0 = y_prev + 0.1
     for (size_t t = 0; t < result.size(); ++t) {
-        double expected = (t + 1) * 0.1;
+        double expected = (static_cast<double>(t) + 1.0) * 0.1;
         EXPECT_NEAR(result[t], expected, 1e-7);
     }
 }

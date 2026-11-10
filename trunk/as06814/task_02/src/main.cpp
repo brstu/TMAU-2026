@@ -15,7 +15,7 @@ int main() {
     StabilityAnalyzer::checkAndWarnStability(lin_a);
 
     LinearModel1_4 model(lin_a, lin_b);
-    std::vector<double> input = {1.0, 1.0, 1.0, 1.0, 1.0};
+    std::vector input = {1.0, 1.0, 1.0, 1.0, 1.0};
     auto output = model.simulate(input);
 
     std::cout << "Симуляция выполнена успешно. Шагов: " << output.size() << std::endl;
