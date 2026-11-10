@@ -18,16 +18,15 @@ public:
     virtual void reset() = 0;
 
     std::vector<double> simulate(const std::vector<double>& inputSignal) {
-        std::vector<double> outputSignal;
-        outputSignal.reserve(inputSignal.size());
-        for (double u : inputSignal) {
-            outputSignal.push_back(calculateNext(u));
+        std::vector outputSignal(inputSignal.size(), 0.0);
+        for (size_t i = 0; i < inputSignal.size(); ++i) {
+            outputSignal[i] = calculateNext(inputSignal[i]);
         }
         return outputSignal;
     }
 
     std::vector<double> simulateWithProvider(const ISignalProvider& provider, int steps) {
-        std::vector<double> inputSignal(steps, 0.0);
+        std::vector inputSignal(steps, 0.0);
         for (int t = 0; t < steps; ++t) {
             inputSignal[t] = provider.getSignal(t);
         }
@@ -44,6 +43,8 @@ private:
 
 public:
     LinearModel1_4(double a_val, double b_val);
+    ~LinearModel1_4() override = default;
+
     double calculateNext(double u) override;
     void reset() override;
     double getA() const { return a; }
@@ -60,6 +61,8 @@ private:
 
 public:
     NonlinearModel2_8(double a_val, double b_val, double c_val);
+    ~NonlinearModel2_8() override = default;
+
     double calculateNext(double u) override;
     void reset() override;
 };
@@ -72,6 +75,8 @@ private:
 
 public:
     explicit DiffModel3_2(double b_val, double dt_val = 0.1);
+    ~DiffModel3_2() override = default;
+
     double calculateNext(double u) override;
     void reset() override;
 };
