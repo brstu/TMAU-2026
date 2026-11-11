@@ -57,15 +57,16 @@ private:
     double currentOutput = 0.0;
 
 protected:
-    // Доступ к состоянию для наследников через защищённые аксессоры.
     double currentOutputValue() const noexcept { return currentOutput; }
     double previousOutputValue() const noexcept { return previousOutput; }
 
     virtual double calculateNext(int tau, double input, double dt) = 0;
 
     // Хук для сброса внутреннего состояния наследника.
-    // По умолчанию наследнику сбрасывать нечего — тело намеренно пустое.
-    virtual void resetInternal() noexcept {}
+    virtual void resetInternal() noexcept {
+        // Намеренно пусто: у базовой модели нет внутреннего состояния,
+        // которое нужно сбрасывать. Наследники переопределяют при необходимости.
+    }
 
 public:
     virtual ~Model() = default;
@@ -184,8 +185,8 @@ int readIntDefault(const string& prompt, int minValue, int maxValue, int default
         if (line.empty()) return defaultValue;
 
         istringstream input(line);
-        int value;
-        if ((input >> value) && !(input >> ws).eof() && value >= minValue && value <= maxValue) {
+        if (int value; (input >> value) && !(input >> ws).eof()
+                && value >= minValue && value <= maxValue) {
             return value;
         }
         cout << "Ошибка: введите целое число от " << minValue << " до " << maxValue
@@ -204,8 +205,7 @@ double readDoubleDefault(const string& prompt, double defaultValue) {
 
         istringstream input(line);
         input.imbue(locale::classic());
-        double value;
-        if ((input >> value) && !(input >> ws).eof() && isfinite(value)) {
+        if (double value; (input >> value) && !(input >> ws).eof() && isfinite(value)) {
             return value;
         }
         cout << "Ошибка: введите конечное число (десятичный разделитель — точка или запятая).\n";
