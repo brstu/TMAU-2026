@@ -52,11 +52,21 @@ public:
 };
 
 class Model {
-protected:
+private:
     double previousOutput = 0.0;
     double currentOutput = 0.0;
+
+protected:
+    // Доступ к состоянию для наследников через защищённые аксессоры.
+    double currentOutputValue() const noexcept { return currentOutput; }
+    double previousOutputValue() const noexcept { return previousOutput; }
+
     virtual double calculateNext(int tau, double input, double dt) = 0;
-    virtual void resetInternal() {}
+
+    // Хук для сброса внутреннего состояния наследника.
+    // По умолчанию наследнику сбрасывать нечего — тело намеренно пустое.
+    virtual void resetInternal() noexcept {}
+
 public:
     virtual ~Model() = default;
     virtual string name() const = 0;
@@ -78,53 +88,57 @@ public:
     }
 };
 
-// Model 1.4: y(t+1) = a*y(t) + b*(u(t) - u(t-1))
 class Model14 : public Model {
 private:
     double a;
     double b;
     double previousInput = 0.0;
+
 protected:
     double calculateNext(int, double input, double) override {
-        double result = a * currentOutput + b * (input - previousInput);
+        double result = a * currentOutputValue() + b * (input - previousInput);
         previousInput = input;
         return result;
     }
-    void resetInternal() override { previousInput = 0.0; }
+    void resetInternal() noexcept override { previousInput = 0.0; }
+
 public:
     Model14(double aValue, double bValue) : a(aValue), b(bValue) {}
     string name() const override { return "Model 1.4 — дискретный интегратор с потерями"; }
     double coefficientA() const { return a; }
 };
 
-// Model 2.6: y(t+1) = a1*y(t)^3 - a2*y(t-1) + b*u(t)^2
 class Model26 : public Model {
 private:
     double a1;
     double a2;
     double b;
+
 protected:
     double calculateNext(int, double input, double) override {
-        return a1 * currentOutput * currentOutput * currentOutput
-            - a2 * previousOutput + b * input * input;
+        double y = currentOutputValue();
+        return a1 * y * y * y - a2 * previousOutputValue() + b * input * input;
     }
+
 public:
     Model26(double a1Value, double a2Value, double bValue)
         : a1(a1Value), a2(a2Value), b(bValue) {}
     string name() const override { return "Model 2.6 — асимметричная полиномиальная модель"; }
 };
 
-// Model 3.8: dy/dt = -a1*y - a2*y^2 + b*u; explicit Euler method
 class Model38 : public Model {
 private:
     double a1;
     double a2;
     double b;
+
 protected:
     double calculateNext(int, double input, double dt) override {
-        double derivative = -a1 * currentOutput - a2 * currentOutput * currentOutput + b * input;
-        return currentOutput + dt * derivative;
+        double y = currentOutputValue();
+        double derivative = -a1 * y - a2 * y * y + b * input;
+        return y + dt * derivative;
     }
+
 public:
     Model38(double a1Value, double a2Value, double bValue)
         : a1(a1Value), a2(a2Value), b(bValue) {}
@@ -144,11 +158,22 @@ struct SimulationResult {
     vector<Row> rows;
 };
 
+class InputClosedError : public runtime_error {
+public:
+    InputClosedError() : runtime_error("Ввод был неожиданно завершён.") {}
+};
+
+class FileOpenError : public runtime_error {
+public:
+    explicit FileOpenError(const string& fileName)
+        : runtime_error("Не удалось создать файл " + fileName) {}
+};
+
 string readLine(const string& prompt) {
     cout << prompt;
     string line;
     if (!getline(cin, line)) {
-        throw runtime_error("Ввод был неожиданно завершён.");
+        throw InputClosedError();
     }
     return line;
 }
@@ -160,8 +185,7 @@ int readIntDefault(const string& prompt, int minValue, int maxValue, int default
 
         istringstream input(line);
         int value;
-        char extra;
-        if ((input >> value) && !(input >> extra) && value >= minValue && value <= maxValue) {
+        if ((input >> value) && !(input >> ws).eof() && value >= minValue && value <= maxValue) {
             return value;
         }
         cout << "Ошибка: введите целое число от " << minValue << " до " << maxValue
@@ -181,8 +205,7 @@ double readDoubleDefault(const string& prompt, double defaultValue) {
         istringstream input(line);
         input.imbue(locale::classic());
         double value;
-        char extra;
-        if ((input >> value) && !(input >> extra) && isfinite(value)) {
+        if ((input >> value) && !(input >> ws).eof() && isfinite(value)) {
             return value;
         }
         cout << "Ошибка: введите конечное число (десятичный разделитель — точка или запятая).\n";
@@ -206,7 +229,7 @@ void printTable(const vector<Row>& rows, const string& modelName, const string& 
 void saveCsv(const vector<Row>& rows, const string& fileName) {
     ofstream file(fileName);
     if (!file.is_open()) {
-        throw runtime_error("Не удалось создать файл " + fileName);
+        throw FileOpenError(fileName);
     }
     file.imbue(locale::classic());
     file << "tau;u_tau;y_tau\n";
