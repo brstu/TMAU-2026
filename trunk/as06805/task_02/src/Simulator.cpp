@@ -9,7 +9,7 @@ namespace {
 // Ширина строки в символах UTF-8 (по кодовым точкам, а не по байтам).
 size_t utf8Width(std::string_view text) {
     const auto count = std::count_if(text.begin(), text.end(), [](char c) {
-        const std::byte byte = static_cast<std::byte>(c);
+        const auto byte = static_cast<std::byte>(c);
         // Продолжающий байт UTF-8 имеет маску 10xxxxxx.
         return (byte & std::byte{0xC0}) != std::byte{0x80};
     });
