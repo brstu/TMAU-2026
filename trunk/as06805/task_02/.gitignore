@@ -1,0 +1,27 @@
+# Каталоги сборки
+build/
+build_coverage/
+build_*/
+out/
+
+# Результаты работы программы
+results.csv
+results.txt
+
+# Служебные файлы Visual Studio / CMake
+.vs/
+CMakeUserPresets.json
+*.user
+*.suo
+*.VC.db
+*.VC.VC.opendb
+
+# Автоматически генерируемые отчёты о покрытии кода (gcovr)
+doc/coverage_report.html
+doc/coverage_report.txt
+
+# Вендорённый Google Test (при отсутствии загружается через FetchContent)
+third_party/
+
+# Служебные скрипты (построение графиков для отчёта)
+tools/
