@@ -16,7 +16,7 @@
 <p align="right">Группы АС-67</p>
 <p align="right">Гришкевич А.Н.</p>
 <p align="right">Проверил:</p>
-<p align="right">Дворанович Д.А.</p>
+<p align="right">Дворанинович Д.А.</p>
 
 <br><br><br><br><br>
 
@@ -212,12 +212,12 @@ classDiagram
 
 ### Model 1.4 — дискретный интегратор с потерями
 
-![График Model 1.4](../src/results_plot1.png)
+![График Model 1.4](results_plot1.png)
 
 ### Model 2.6 — асимметричная полиномиальная модель
 
-![График Model 2.6](../src/results_plot2.png)
+![График Model 2.6](results_plot2.png)
 
 ### Model 3.8 — линейно-квадратичное затухание
 
-![График Model 3.8](../src/results_plot3.png)
+![График Model 3.8](results_plot3.png)
