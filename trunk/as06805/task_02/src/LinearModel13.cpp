@@ -24,8 +24,8 @@ std::string LinearModel13::name() const {
 }
 
 std::vector<std::complex<double>> LinearModel13::poles() const {
-    // z^2 - a1*z - a2 = 0  =>  z = (a1 +/- sqrt(a1^2 + 4*a2)) / 2
-    std::complex<double> disc = std::complex<double>(a1_ * a1_ + 4.0 * a2_, 0.0);
+    // Корни характеристического уравнения (см. LinearModel13.h).
+    const auto disc = std::complex<double>(a1_ * a1_ + 4.0 * a2_, 0.0);
     std::complex<double> sq = std::sqrt(disc);
     std::complex<double> half(0.5, 0.0);
 
@@ -42,6 +42,6 @@ std::string LinearModel13::equation() const {
 }
 
 void LinearModel13::setInitialState(const std::vector<double>& init) {
-    yCurr_ = init.size() > 0 ? init[0] : 0.0;
+    yCurr_ = init.empty() ? 0.0 : init[0];
     yPrev_ = init.size() > 1 ? init[1] : 0.0;
 }

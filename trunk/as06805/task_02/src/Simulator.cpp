@@ -1,16 +1,17 @@
 #include "Simulator.h"
 
+#include <algorithm>
+#include <cstddef>
+
 namespace {
 
 // Ширина строки в символах UTF-8 (по кодовым точкам, а не по байтам).
 size_t utf8Width(const std::string& text) {
-    size_t width = 0;
-    for (unsigned char c : text) {
-        if ((c & 0xC0) != 0x80) {
-            ++width;
-        }
-    }
-    return width;
+    const auto count = std::count_if(text.begin(), text.end(), [](char c) {
+        const auto byte = static_cast<std::byte>(c);
+        return (std::to_integer<unsigned char>(byte) & 0xC0) != 0x80;
+    });
+    return static_cast<size_t>(count);
 }
 
 // Выравнивание строки по правому краю до заданной ширины в символах.

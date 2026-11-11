@@ -47,7 +47,7 @@ add_executable(task_02_tests
     MockModelTest.cpp
 )
 
-target_link_libraries(task_02_tests PRIVATE tmau_models gtest gmock)
+target_link_libraries(task_02_tests PRIVATE as06805_models gtest gmock)
 
 if(MSVC)
     target_compile_options(task_02_tests PRIVATE /W4 /utf-8)

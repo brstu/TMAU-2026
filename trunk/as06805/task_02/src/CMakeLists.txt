@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.10)
-project(task_02_as06805 LANGUAGES CXX)
+project(as06805_task_02 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Библиотека с моделями и модулем анализа устойчивости.
-add_library(tmau_models STATIC
+add_library(as06805_models STATIC
     ConsoleApp.cpp
     ConsoleApp.h
     Model.h
@@ -29,24 +29,24 @@ add_library(tmau_models STATIC
     StabilityAnalyzer.h
 )
 
-target_include_directories(tmau_models PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(as06805_models PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Основное приложение (интерактивная симуляция + предупреждение об устойчивости).
-add_executable(task_02_as06805 main.cpp)
-target_link_libraries(task_02_as06805 PRIVATE tmau_models)
+add_executable(as06805_task_02 main.cpp)
+target_link_libraries(as06805_task_02 PRIVATE as06805_models)
 
 if(MSVC)
-    target_compile_options(tmau_models PRIVATE /W4 /utf-8)
-    target_compile_options(task_02_as06805 PRIVATE /W4 /utf-8)
+    target_compile_options(as06805_models PRIVATE /W4 /utf-8)
+    target_compile_options(as06805_task_02 PRIVATE /W4 /utf-8)
 else()
-    target_compile_options(tmau_models PRIVATE -Wall -Wextra -O2)
-    target_compile_options(task_02_as06805 PRIVATE -Wall -Wextra -O2)
+    target_compile_options(as06805_models PRIVATE -Wall -Wextra -O2)
+    target_compile_options(as06805_task_02 PRIVATE -Wall -Wextra -O2)
 endif()
 
 # Инструментирование кода для анализа покрытия (gcovr / lcov).
 if(TMAU_ENABLE_COVERAGE AND NOT MSVC)
-    target_compile_options(tmau_models PUBLIC --coverage -O0 -g)
-    target_link_options(tmau_models PUBLIC --coverage)
-    target_compile_options(task_02_as06805 PRIVATE --coverage -O0 -g)
-    target_link_options(task_02_as06805 PRIVATE --coverage)
+    target_compile_options(as06805_models PUBLIC --coverage -O0 -g)
+    target_link_options(as06805_models PUBLIC --coverage)
+    target_compile_options(as06805_task_02 PRIVATE --coverage -O0 -g)
+    target_link_options(as06805_task_02 PRIVATE --coverage)
 endif()

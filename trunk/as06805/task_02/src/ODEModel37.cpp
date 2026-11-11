@@ -25,7 +25,7 @@ std::string ODEModel37::name() const {
 }
 
 std::vector<std::complex<double>> ODEModel37::poles() const {
-    // y(tau+1) = (1 - dt*exp(a)) * y(tau) + ...
+    // Дискретный полюс метода Эйлера (см. ODEModel37.h).
     return {std::complex<double>(1.0 - dt_ * std::exp(a_), 0.0)};
 }
 

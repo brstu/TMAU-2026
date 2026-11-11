@@ -181,11 +181,10 @@ int runApplication(std::istream& in, std::ostream& out, const AppOptions& option
     // --- Анализ устойчивости: проверка полюсов на Z-плоскости ---
     out << "\n" << StabilityAnalyzer::formatReport(*model);
 
-    if (StabilityAnalyzer::warnIfUnstable(*model, out)) {
-        if (!confirm(in, out, "Продолжить симуляцию неустойчивого процесса? (1 — да, 0 — нет): ")) {
-            out << "\nСимуляция прервана пользователем.\n";
-            return 0;
-        }
+    if (StabilityAnalyzer::warnIfUnstable(*model, out) &&
+        !confirm(in, out, "Продолжить симуляцию неустойчивого процесса? (1 — да, 0 — нет): ")) {
+        out << "\nСимуляция прервана пользователем.\n";
+        return 0;
     }
 
     Simulator simulator(std::move(model), steps);

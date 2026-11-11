@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cmath>
 #include <iomanip>
+#include <iterator>
 #include <ostream>
 #include <sstream>
 
@@ -34,11 +35,10 @@ std::string formatRoot(const std::complex<double>& z) {
 }  // namespace
 
 double StabilityAnalyzer::Result::maxModulus() const noexcept {
-    double maxVal = 0.0;
-    for (double m : moduli) {
-        maxVal = std::max(maxVal, m);
+    if (moduli.empty()) {
+        return 0.0;
     }
-    return maxVal;
+    return *std::max_element(moduli.begin(), moduli.end());
 }
 
 std::string StabilityAnalyzer::Result::summary() const {
@@ -64,12 +64,10 @@ StabilityAnalyzer::Result StabilityAnalyzer::analyze(const Model& model) {
     result.roots = model.poles();
 
     result.moduli.reserve(result.roots.size());
-    for (const auto& root : result.roots) {
-        result.moduli.push_back(std::abs(root));
-    }
+    std::transform(result.roots.begin(), result.roots.end(), std::back_inserter(result.moduli),
+                   [](const std::complex<double>& root) { return std::abs(root); });
 
-    const double maxMod = result.maxModulus();
-    if (maxMod < 1.0 - kEps) {
+    if (const double maxMod = result.maxModulus(); maxMod < 1.0 - kEps) {
         result.status = Status::Stable;
     } else if (maxMod <= 1.0 + kEps) {
         result.status = Status::Marginal;
@@ -97,9 +95,9 @@ StabilityAnalyzer::Result StabilityAnalyzer::analyzeFirstOrder(double a) {
 }
 
 StabilityAnalyzer::Result StabilityAnalyzer::analyzeSecondOrder(double a1, double a2) {
-    // z^2 - a1*z - a2 = 0
+    // Корни характеристического уравнения (см. StabilityAnalyzer.h).
     const std::complex<double> disc(a1 * a1 + 4.0 * a2, 0.0);
-    const std::complex<double> sq = std::sqrt(disc);
+    const auto sq = std::sqrt(disc);
     const std::complex<double> half(0.5, 0.0);
 
     Result result;
@@ -107,12 +105,10 @@ StabilityAnalyzer::Result StabilityAnalyzer::analyzeSecondOrder(double a1, doubl
                     half * (std::complex<double>(a1, 0.0) - sq)};
 
     result.moduli.reserve(result.roots.size());
-    for (const auto& root : result.roots) {
-        result.moduli.push_back(std::abs(root));
-    }
+    std::transform(result.roots.begin(), result.roots.end(), std::back_inserter(result.moduli),
+                   [](const std::complex<double>& root) { return std::abs(root); });
 
-    const double maxMod = result.maxModulus();
-    if (maxMod < 1.0 - kEps) {
+    if (const double maxMod = result.maxModulus(); maxMod < 1.0 - kEps) {
         result.status = Status::Stable;
     } else if (maxMod <= 1.0 + kEps) {
         result.status = Status::Marginal;
@@ -124,34 +120,25 @@ StabilityAnalyzer::Result StabilityAnalyzer::analyzeSecondOrder(double a1, doubl
 }
 
 StabilityAnalyzer::Result StabilityAnalyzer::analyzeEuler(double a, double dt) {
-    // y(tau+1) = (1 - dt*exp(a)) * y(tau) + dt*b*u(tau)
+    // Дискретный полюс метода Эйлера (см. StabilityAnalyzer.h).
     const double pole = 1.0 - dt * std::exp(a);
     return analyzeFirstOrder(pole);
 }
 
 bool StabilityAnalyzer::jurySecondOrder(double p1, double p0, double eps) {
-    // Критерий Джури для z^2 + p1*z + p0 = 0:
-    //   |p0| < 1, 1 + p1 + p0 > 0, 1 - p1 + p0 > 0.
+    // Аналитический критерий Джури (см. StabilityAnalyzer.h).
     return (std::abs(p0) < 1.0 - eps) && (1.0 + p1 + p0 > eps) &&
            (1.0 - p1 + p0 > eps);
 }
 
 bool StabilityAnalyzer::allInsideUnitCircle(const std::vector<double>& moduli, double eps) {
-    for (double m : moduli) {
-        if (!(m < 1.0 - eps)) {
-            return false;
-        }
-    }
-    return true;
+    return std::all_of(moduli.begin(), moduli.end(),
+                       [eps](double m) { return m < 1.0 - eps; });
 }
 
 bool StabilityAnalyzer::allOnOrInsideUnitCircle(const std::vector<double>& moduli, double eps) {
-    for (double m : moduli) {
-        if (m > 1.0 + eps) {
-            return false;
-        }
-    }
-    return true;
+    return std::none_of(moduli.begin(), moduli.end(),
+                         [eps](double m) { return m > 1.0 + eps; });
 }
 
 std::string StabilityAnalyzer::warningMessage(const Result& result) {
