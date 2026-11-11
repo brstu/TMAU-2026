@@ -7,6 +7,8 @@
 #include <memory>
 #include <ostream>
 #include <sstream>
+#include <string>
+#include <string_view>
 #include <utility>
 #include <vector>
 
@@ -34,7 +36,7 @@ bool tryParseDouble(std::string input, double& outValue) {
     return (ss >> outValue) && ss.eof();
 }
 
-double getValidDouble(std::istream& in, std::ostream& out, const std::string& prompt) {
+double getValidDouble(std::istream& in, std::ostream& out, std::string_view prompt) {
     double value = 0.0;
     std::string input;
     while (true) {
@@ -48,7 +50,7 @@ double getValidDouble(std::istream& in, std::ostream& out, const std::string& pr
     }
 }
 
-int getValidInt(std::istream& in, std::ostream& out, const std::string& prompt,
+int getValidInt(std::istream& in, std::ostream& out, std::string_view prompt,
                 int minVal = 1, int maxVal = 10000) {
     int value = 0;
     while (true) {
@@ -62,7 +64,7 @@ int getValidInt(std::istream& in, std::ostream& out, const std::string& prompt,
     }
 }
 
-bool confirm(std::istream& in, std::ostream& out, const std::string& prompt) {
+bool confirm(std::istream& in, std::ostream& out, std::string_view prompt) {
     out << prompt;
     std::string answer;
     if (!(in >> answer)) {
@@ -135,13 +137,13 @@ std::unique_ptr<Model> createModel(int modelChoice, std::istream& in, std::ostre
     }
 }
 
-void exportResultsTxt(const std::string& fileName, const std::string& modelName,
-                       const std::string& signalName, const SignalGenerator& signal,
+void exportResultsTxt(std::string_view fileName, std::string_view modelName,
+                       std::string_view signalName, const SignalGenerator& signal,
                        const std::vector<double>& results) {
     if (fileName.empty()) {
         return;
     }
-    std::ofstream fout(fileName);
+    std::ofstream fout{std::string(fileName)};
     if (!fout.is_open()) {
         return;
     }

@@ -9,6 +9,7 @@
 #include <memory>
 #include <ostream>
 #include <string>
+#include <string_view>
 #include <utility>
 #include <vector>
 
@@ -27,7 +28,7 @@ public:
 
     // Экспорт результатов в CSV-файл.
     void exportCSV(const std::vector<double>& results, const ISignalSource& signal,
-                   const std::string& filePath) const;
+                   std::string_view filePath) const;
 
     std::string modelName() const;
     int stepsCount() const noexcept { return totalSteps_; }

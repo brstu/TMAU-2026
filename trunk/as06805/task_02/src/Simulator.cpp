@@ -2,22 +2,25 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <string_view>
 
 namespace {
 
 // Ширина строки в символах UTF-8 (по кодовым точкам, а не по байтам).
-size_t utf8Width(const std::string& text) {
+size_t utf8Width(std::string_view text) {
     const auto count = std::count_if(text.begin(), text.end(), [](char c) {
-        const auto byte = static_cast<std::byte>(c);
-        return (std::to_integer<unsigned char>(byte) & 0xC0) != 0x80;
+        const std::byte byte = static_cast<std::byte>(c);
+        // Продолжающий байт UTF-8 имеет маску 10xxxxxx.
+        return (byte & std::byte{0xC0}) != std::byte{0x80};
     });
     return static_cast<size_t>(count);
 }
 
 // Выравнивание строки по правому краю до заданной ширины в символах.
-std::string padRight(const std::string& text, size_t width) {
+std::string padRight(std::string_view text, size_t width) {
     const size_t len = utf8Width(text);
-    return (len >= width) ? text : text + std::string(width - len, ' ');
+    return (len >= width) ? std::string(text)
+                           : std::string(text) + std::string(width - len, ' ');
 }
 
 }  // namespace
@@ -60,8 +63,8 @@ void Simulator::printTable(const std::vector<double>& results, const ISignalSour
 }
 
 void Simulator::exportCSV(const std::vector<double>& results, const ISignalSource& signal,
-                          const std::string& filePath) const {
-    std::ofstream fileOut(filePath);
+                          std::string_view filePath) const {
+    std::ofstream fileOut{std::string(filePath)};
     if (!fileOut.is_open()) {
         std::cerr << "Ошибка: Не удалось открыть файл " << filePath << " для записи!\n";
         return;
