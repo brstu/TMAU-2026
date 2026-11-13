@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 #include "../src/models.h"
 
-// Структура тестового набора данных
 struct ModelTestCase {
     double a;
     double b;
@@ -26,20 +25,11 @@ INSTANTIATE_TEST_SUITE_P(
     LinearModelCalculations,
     LinearModelParamTest,
     ::testing::Values(
-        // Тест 1: Ступенчатое воздействие [1.0, 1.0, 1.0] при a=0.8, b=0.2
-        // t=0: y=0.8*0 + 0.2*(1-0) = 0.2
-        // t=1: y=0.8*0.2 + 0.2*(1-1) = 0.16
-        // t=2: y=0.8*0.16 + 0.2*(1-1) = 0.128
         ModelTestCase{0.8, 0.2, {1.0, 1.0, 1.0}, {0.2, 0.16, 0.128}},
-        // Тест 2: Импульсное воздействие [1.0, 0.0, 0.0] при a=0.5, b=0.4
-        // t=0: y=0.5*0 + 0.4*(1-0) = 0.4
-        // t=1: y=0.5*0.4 + 0.4*(0-1) = 0.2 - 0.4 = -0.2
-        // t=2: y=0.5*(-0.2) + 0.4*(0-0) = -0.1
-        ModelTestCase{0.5, 0.4, {1.0, 0.0, 0.0}, {0.4, -0.2, -0.1}}
+        ModelTestCase{0.5, 0.4, {1.0, 0.0, 0.0}, {0.4, -0.2, -0.1}},
+        ModelTestCase{0.6, 0.3, {2.0, 2.0, 1.0}, {0.6, 0.36, -0.084}}
     )
 );
-
-// --- Тесты физических инвариантов ---
 
 TEST(ModelInvariantTest, ZeroInputZeroState) {
     LinearModel1_4 linModel(0.8, 0.2);
@@ -59,18 +49,83 @@ TEST(ModelInvariantTest, ZeroInputZeroState) {
     }
 }
 
-// Проверка интегратора Эйлера (Model 3.2) по сравнению с аналитическим решением y(t) = b * u * t
 TEST(DiffModelTest, EulerAnalyticalComparison) {
     double b = 0.5;
     double dt = 0.1;
     DiffModel3_2 model(b, dt);
 
-    std::vector u(10, 2.0); // u = 2.0
+    std::vector u(10, 2.0);
     auto result = model.simulate(u);
 
-    // Аналитическое решение: y_next = y_prev + dt * b * u = y_prev + 0.1 * 0.5 * 2.0 = y_prev + 0.1
     for (size_t t = 0; t < result.size(); ++t) {
         double expected = (static_cast<double>(t) + 1.0) * 0.1;
         EXPECT_NEAR(result[t], expected, 1e-7);
     }
+}
+
+TEST(NonlinearModelTest, StepByStepCalculation) {
+    NonlinearModel2_8 model(0.5, 0.1, 0.2);
+
+    double y1 = model.calculateNext(1.0);
+    double expected_y1 = 0.2 + std::sin(1.0);
+    EXPECT_NEAR(y1, expected_y1, 1e-6);
+
+    double y2 = model.calculateNext(0.5);
+    double expected_y2 = 0.5 * y1 + 0.2 * 0.5 + std::sin(0.5);
+    EXPECT_NEAR(y2, expected_y2, 1e-6);
+
+    double y3 = model.calculateNext(0.0);
+    double expected_y3 = 0.5 * y2 - 0.1 * (y1 * y1);
+    EXPECT_NEAR(y3, expected_y3, 1e-6);
+}
+
+TEST(NonlinearModelTest, ResetRestoresInitialState) {
+    NonlinearModel2_8 model(0.5, 0.1, 0.2);
+    double first = model.calculateNext(1.0);
+    model.calculateNext(2.0);
+
+    model.reset();
+    EXPECT_DOUBLE_EQ(model.calculateNext(1.0), first);
+}
+
+TEST(LinearModelTest, ResetAndGetters) {
+    LinearModel1_4 model(0.75, 0.25);
+    EXPECT_DOUBLE_EQ(model.getA(), 0.75);
+    EXPECT_DOUBLE_EQ(model.getB(), 0.25);
+
+    double first = model.calculateNext(4.0);
+    model.calculateNext(10.0);
+
+    model.reset();
+    EXPECT_DOUBLE_EQ(model.calculateNext(4.0), first);
+}
+
+TEST(DiffModelTest, ResetRestoresZeroState) {
+    DiffModel3_2 model(1.5, 0.2);
+    double first = model.calculateNext(2.0);
+    model.calculateNext(2.0);
+
+    model.reset();
+    EXPECT_DOUBLE_EQ(model.calculateNext(2.0), first);
+}
+
+TEST(ModelEdgeCaseTest, EmptyInputReturnsEmptyOutput) {
+    LinearModel1_4 lin(0.5, 0.5);
+    NonlinearModel2_8 nonlin(0.5, 0.1, 0.2);
+    DiffModel3_2 diff(1.0, 0.1);
+
+    std::vector<double> empty;
+    EXPECT_TRUE(lin.simulate(empty).empty());
+    EXPECT_TRUE(nonlin.simulate(empty).empty());
+    EXPECT_TRUE(diff.simulate(empty).empty());
+}
+
+TEST(ModelEdgeCaseTest, NegativeInputValues) {
+    LinearModel1_4 model(0.5, 0.5);
+    std::vector inputs{-2.0, -2.0};
+    auto outputs = model.simulate(inputs);
+
+    ASSERT_EQ(outputs.size(), 2);
+    EXPECT_DOUBLE_EQ(outputs[0], -1.0);
+    EXPECT_DOUBLE_EQ(outputs[1], -0.5);
 }

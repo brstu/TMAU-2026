@@ -1,6 +1,5 @@
 #include "models.h"
 
-// Realization LinearModel1_4
 LinearModel1_4::LinearModel1_4(double a_val, double b_val)
     : a(a_val), b(b_val) {}
 
@@ -15,7 +14,6 @@ void LinearModel1_4::reset() {
     u_prev = 0.0;
 }
 
-// Realization NonlinearModel2_8
 NonlinearModel2_8::NonlinearModel2_8(double a_val, double b_val, double c_val)
     : a(a_val), b(b_val), c(c_val) {}
 
@@ -31,7 +29,6 @@ void NonlinearModel2_8::reset() {
     y_prev = 0.0;
 }
 
-// Realization DiffModel3_2
 DiffModel3_2::DiffModel3_2(double b_val, double dt_val)
     : b(b_val), dt(dt_val) {}
 

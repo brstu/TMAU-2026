@@ -32,9 +32,9 @@ if %errorlevel% neq 0 (
 
 echo.
 echo ========================================================
-echo  Запуск модульных тестов (Google Test / CTest)...
+echo  Запуск модульных тестов (Google Test)...
 echo ========================================================
-ctest --output-on-failure
+.\unit_tests.exe --gtest_brief=1
 if %errorlevel% neq 0 (
     echo [ОШИБКА] Часть тестов не пройдена!
     pause
@@ -43,12 +43,12 @@ if %errorlevel% neq 0 (
 
 echo.
 echo ========================================================
-echo  Генерация отчета о покрытии кода (gcovr)...
+echo  Отчет о покрытии кода (только исходники src/)...
 echo ========================================================
 where gcovr >nul 2>nul
 if %errorlevel% equ 0 (
-    gcovr -r .. --filter ".*/src/.*" --txt coverage_report.txt
-    gcovr -r .. --filter ".*/src/.*"
+    gcovr -r .. --filter ".*/src/.*" --exclude ".*gtest_local.*" --exclude ".*/src/main\.cpp" --txt coverage_report.txt
+    gcovr -r .. --filter ".*/src/.*" --exclude ".*gtest_local.*" --exclude ".*/src/main\.cpp"
     echo Отчет сохранен в build/coverage_report.txt
 ) else (
     echo [ИНФО] gcovr не найден в PATH. Отчет покрытия пропущен.
