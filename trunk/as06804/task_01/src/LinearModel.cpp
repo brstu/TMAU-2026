@@ -9,7 +9,7 @@ void LinearModel::step(double u) {
         first_step = false;
     }
     // Формула: y(t+1) = a*y(t) + b*(u(t) - u(t-1))
-    double y_next = a * y + b * (u - u_prev);
-    y = y_next;
+    double y_next = a * getY() + b * (u - u_prev);
+setY(y_next);
     u_prev = u;
 }
