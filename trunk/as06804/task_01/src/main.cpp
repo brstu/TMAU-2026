@@ -5,7 +5,9 @@
 #include <fstream>
 #include <algorithm>
 #include <string>
+#ifdef _WIN32
 #include <windows.h>
+#endif
 
 // Подключаем заголовочные файлы моделей
 #include "LinearModel.h"
