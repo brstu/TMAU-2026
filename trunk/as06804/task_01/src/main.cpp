@@ -5,6 +5,7 @@
 #include <fstream>
 #include <algorithm>
 #include <string>
+#include <memory>
 #ifdef _WIN32
 #include <windows.h>
 #endif
@@ -120,23 +121,23 @@ int main() {
     std::cin >> dt;
 
     // Создаем нужную модель на основе выбора
-    Model* currentModel = nullptr;
+  std::unique_ptr<Model> currentModel = nullptr;
     std::string modelName;
 
     if (choiceModel == 1) {
-        currentModel = new LinearModel(a, b, y0, dt);
+       currentModel = std::make_unique<LinearModel>(a, b, y0, dt);
         modelName = "Linear_1_4";
     } else if (choiceModel == 2) {
-        currentModel = new NonLinearModel(a1, a2, b, y0, dt);
+      currentModel = std::make_unique<NonLinearModel>(a1, a2, b, y0, dt);
         modelName = "NonLinear_2_6";
     } else if (choiceModel == 3) {
-        currentModel = new DiffEqModel(a1, a2, b, y0, dt);
+        currentModel = std::make_unique<DiffEqModel>(a1, a2, b, y0, dt);
         modelName = "DiffEq_3_8";
     }
 
     // Запуск симуляции
     runSimulation(currentModel, modelName, choiceSignal, steps, dt);
 
-    delete currentModel;
+    
     return 0;
 }   
