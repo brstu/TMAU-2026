@@ -5,6 +5,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)  # <--- ДОБАВИТЬ ЭТУ СТРОКУ
 
 # Ищем все cpp файлы прямо в текущей папке
-file(GLOB SOURCES "src/*.cpp")
+file(GLOB SOURCES "*.cpp")
 
 add_executable(lab1_app ${SOURCES})
