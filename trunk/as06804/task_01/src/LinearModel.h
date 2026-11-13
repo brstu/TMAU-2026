@@ -3,12 +3,13 @@
 
 #include "Model.h"
 
-// Model 1.4: y(t+1) = a*y(t) + b*(u(t) - u(t-1))
 class LinearModel : public Model {
 private:
-    double a, b;
-    double u_prev;
-    bool first_step;
+    double a;
+    double b;
+    double u_prev = 0.0;
+    bool first_step = true;
+
 public:
     LinearModel(double a, double b, double start_y, double dt);
     void step(double u) override;
