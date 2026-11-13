@@ -3,14 +3,17 @@
 
 #include "Model.h"
 
-// Model 2.6: y(t+1) = a1*y(t)^3 - a2*y(t-1) + b*u(t)^2
 class NonLinearModel : public Model {
 private:
-    double a1, a2, b;
-    double y_prev;
-    bool first_step;
+    double a1;
+    double a2;
+    double b;
+    double y_prev = 0.0;
+    bool first_step = true;
+
 public:
     NonLinearModel(double a1, double a2, double b, double start_y, double dt);
     void step(double u) override;
 };
+
 #endif
