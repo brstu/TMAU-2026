@@ -5,7 +5,8 @@
 #include <fstream>
 #include <algorithm>
 #include <string>
-#include <memory>
+#include <memory> // Подключаем для умных указателей
+
 #ifdef _WIN32
 #include <windows.h>
 #endif
@@ -23,6 +24,7 @@ double getInputSignal(int type, double t) {
     return 0.0;
 }
 
+// Обратите внимание: функция принимает обычный указатель Model*
 void runSimulation(Model* model, const std::string& modelName, int signalType, int steps, double dt) {
     std::cout << "\n--- Simulating " << modelName << " | Signal: " << signalType << " ---\n";
     std::cout << std::setw(10) << "Step" << std::setw(15) << "Time" << std::setw(15) << "Input U" << std::setw(15) << "Output Y" << std::endl;
@@ -55,15 +57,21 @@ void runSimulation(Model* model, const std::string& modelName, int signalType, i
 }
 
 int main() {
-    // Настройка кодировки консоли
+    // Настройка кодировки консоли (только для Windows)
     #ifdef _WIN32
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
-#endif
+    #endif
 
-    int choiceModel, choiceSignal, steps;
-    double y0, dt;
-    double a, b, a1, a2;
+    int choiceModel;
+    int choiceSignal;
+    int steps;
+    double y0;
+    double dt;
+    double a;
+    double b;
+    double a1;
+    double a2;
 
     std::cout << "=== LAB 1: VARIANT 4 ===\n";
     
@@ -78,8 +86,10 @@ int main() {
     // 2. Ввод коэффициентов в зависимости от выбранной модели
     if (choiceModel == 1) {
         std::cout << "\nEnter coefficients for Linear Model 1.4:\n";
-        std::cout << "Enter a: "; std::cin >> a;
-        std::cout << "Enter b: "; std::cin >> b;
+        std::cout << "Enter a: ";
+        std::cin >> a;
+        std::cout << "Enter b: ";
+        std::cin >> b;
         
         if (std::abs(a) >= 1.0) {
             std::cout << "\n[WARNING] Coefficient 'a' >= 1. System is UNSTABLE!\n";
@@ -87,15 +97,21 @@ int main() {
     } 
     else if (choiceModel == 2) {
         std::cout << "\nEnter coefficients for NonLinear Model 2.6:\n";
-        std::cout << "Enter a1: "; std::cin >> a1;
-        std::cout << "Enter a2: "; std::cin >> a2;
-        std::cout << "Enter b: "; std::cin >> b;
+        std::cout << "Enter a1: ";
+        std::cin >> a1;
+        std::cout << "Enter a2: ";
+        std::cin >> a2;
+        std::cout << "Enter b: ";
+        std::cin >> b;
     } 
     else if (choiceModel == 3) {
         std::cout << "\nEnter coefficients for DiffEq Model 3.8:\n";
-        std::cout << "Enter a1: "; std::cin >> a1;
-        std::cout << "Enter a2: "; std::cin >> a2;
-        std::cout << "Enter b: "; std::cin >> b;
+        std::cout << "Enter a1: ";
+        std::cin >> a1;
+        std::cout << "Enter a2: ";
+        std::cin >> a2;
+        std::cout << "Enter b: ";
+        std::cin >> b;
     } 
     else {
         std::cout << "Invalid model choice!\n";
@@ -120,24 +136,26 @@ int main() {
     std::cout << "Enter time step dt [e.g., 0.1]: ";
     std::cin >> dt;
 
-    // Создаем нужную модель на основе выбора
-  std::unique_ptr<Model> currentModel = nullptr;
+    // Создаем нужную модель на основе выбора (используем умный указатель)
+    std::unique_ptr<Model> currentModel = nullptr;
     std::string modelName;
 
     if (choiceModel == 1) {
-       currentModel = std::make_unique<LinearModel>(a, b, y0, dt);
+        currentModel = std::make_unique<LinearModel>(a, b, y0, dt);
         modelName = "Linear_1_4";
     } else if (choiceModel == 2) {
-      currentModel = std::make_unique<NonLinearModel>(a1, a2, b, y0, dt);
+        currentModel = std::make_unique<NonLinearModel>(a1, a2, b, y0, dt);
         modelName = "NonLinear_2_6";
     } else if (choiceModel == 3) {
         currentModel = std::make_unique<DiffEqModel>(a1, a2, b, y0, dt);
         modelName = "DiffEq_3_8";
     }
 
-    // Запуск симуляции
-    runSimulation(currentModel, modelName, choiceSignal, steps, dt);
+    // Запуск симуляции. 
+    // ВАЖНО: используем .get(), чтобы передать обычный указатель в функцию
+    runSimulation(currentModel.get(), modelName, choiceSignal, steps, dt);
 
+    // Удалять currentModel через delete НЕ НУЖНО, unique_ptr сделает это сам.
     
     return 0;
-}   
+}
