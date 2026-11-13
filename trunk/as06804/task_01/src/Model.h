@@ -5,9 +5,14 @@
 #include <string>
 
 class Model {
-protected:
+private:
     double y;      // Текущее состояние
     double dt;     // Шаг времени
+
+protected:
+    // Защищенный геттер, чтобы наследники могли узнать шаг dt
+    double getDt() const { return dt; }
+
 public:
     Model(double start_y, double step_size) : y(start_y), dt(step_size) {}
     virtual ~Model() = default;
