@@ -55,8 +55,10 @@ void runSimulation(Model* model, const std::string& modelName, int signalType, i
 
 int main() {
     // Настройка кодировки консоли
-    SetConsoleCP(1251);       
-    SetConsoleOutputCP(1251); 
+    #ifdef _WIN32
+    SetConsoleCP(1251);
+    SetConsoleOutputCP(1251);
+#endif
 
     int choiceModel, choiceSignal, steps;
     double y0, dt;
