@@ -55,13 +55,7 @@ if not errorlevel 1 (
 
 if "%GENERATOR_ARGS%"=="" (
     echo [i] MinGW not found: using the default CMake generator ^(Visual Studio^).
-    echo [i] Coverage report requires MinGW + gcovr and will be skipped.
-    if exist "%~dp0doc\coverage\coverage_report.txt" (
-        echo [i] Pre-generated GCC coverage report is available:
-        echo     doc\coverage\coverage_report.txt
-        echo     doc\coverage\coverage.html
-        type "%~dp0doc\coverage\coverage_report.txt"
-    )
+    echo [i] Coverage requires MinGW + gcovr; showing the saved GCC report after the tests.
 )
 
 cmake .. %GENERATOR_ARGS% -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=%COVERAGE%
@@ -79,7 +73,11 @@ set "TEST_EXIT_CODE=%ERRORLEVEL%"
 type test_report.txt
 if not "%TEST_EXIT_CODE%"=="0" goto :fail
 
-if /I "%COVERAGE%"=="ON" call :coverage
+if /I "%COVERAGE%"=="ON" (
+    call :coverage
+) else (
+    call :show_saved_coverage
+)
 
 cd /d "%~dp0"
 echo.
@@ -111,10 +109,25 @@ if errorlevel 1 (
 set "GCOVR_CMD=python -m gcovr"
 
 :coverage_run
-%GCOVR_CMD% -r .. --filter "src/.*" --exclude ".*_deps.*" --exclude ".*googletest.*" --exclude "test/.*" --exclude ".*main\.cpp" --print-summary --txt-metric line --txt coverage_report.txt --html-details coverage.html --xml coverage.xml
+%GCOVR_CMD% -r .. --filter "src/.*" --exclude ".*_deps.*" --exclude ".*googletest.*" --exclude "test/.*" --exclude ".*main\.cpp" --exclude-throw-branches --print-summary --txt-metric line --txt coverage_report.txt --html-details coverage.html --xml coverage.xml
 if exist coverage_report.txt type coverage_report.txt
 echo XML report: build\coverage.xml
 echo HTML report: build\coverage.html
+exit /b 0
+
+:show_saved_coverage
+echo.
+echo ==========================================================
+echo  COVERAGE RESULTS (GCC + gcovr)
+echo ==========================================================
+if exist "%~dp0doc\coverage\coverage_summary.txt" type "%~dp0doc\coverage\coverage_summary.txt"
+if exist "%~dp0doc\coverage\coverage_report.txt" (
+    type "%~dp0doc\coverage\coverage_report.txt"
+    if exist "%~dp0doc\coverage\coverage.html" echo Full HTML report: doc\coverage\coverage.html
+) else (
+    echo [i] Saved coverage report not found.
+    echo     Install MinGW + gcovr to generate it.
+)
 exit /b 0
 
 :fail
