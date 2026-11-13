@@ -10,7 +10,7 @@ void NonLinearModel::step(double u) {
         first_step = false;
     }
     // Формула: y(t+1) = a1*y^3 - a2*y(t-1) + b*u^2
-    double y_next = a1 * std::pow(y, 3) - a2 * y_prev + b * std::pow(u, 2);
-    y_prev = y;
+  double y_next = a * getY() + b * (u - u_prev);
+setY(y_next);
     y = y_next;
 }
