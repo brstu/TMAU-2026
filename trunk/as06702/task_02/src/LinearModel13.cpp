@@ -6,10 +6,11 @@ LinearModel13::LinearModel13(double a1, double a2, double b,
       previousY_(initialPreviousY), initialPreviousY_(initialPreviousY) {}
 
 double LinearModel13::step(double u, double /*dt*/) {
-    const double nextY = a1_ * y_ + a2_ * previousY_ + b_ * u;
-    previousY_ = y_;
-    y_ = nextY;
-    return y_;
+    // Используем getY() для чтения и setY() для записи
+    const double nextY = a1_ * getY() + a2_ * previousY_ + b_ * u;
+    previousY_ = getY();
+    setY(nextY);
+    return getY();
 }
 
 std::string LinearModel13::name() const {
