@@ -36,7 +36,7 @@ int main()
 
     std::cout << "TMAU-2026 | Лабораторная работа №2 | Вариант 1\n";
 
-    const int choice = static_cast<int>(ask("\nМодель (1 - Model 1.1, 2 - Model 2.3, 3 - Model 3.5): "));
+    const auto choice = static_cast<int>(ask("\nМодель (1 - Model 1.1, 2 - Model 2.3, 3 - Model 3.5): "));
 
     std::unique_ptr<Model> model;
     double dt = 1.0;
@@ -67,9 +67,9 @@ int main()
         return 1;
     }
 
-    const int type = static_cast<int>(ask("Воздействие (1 - ступень, 2 - импульс, 3 - гармоника): "));
+    const auto type = static_cast<int>(ask("Воздействие (1 - ступень, 2 - импульс, 3 - гармоника): "));
     const double amplitude = ask("Амплитуда A = ");
-    const int n = static_cast<int>(ask("Количество шагов n = "));
+    const auto n = static_cast<int>(ask("Количество шагов n = "));
     double y = ask("Начальное значение y0 = ");
 
     if (choice == 1)
