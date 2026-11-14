@@ -3,9 +3,14 @@
 #include <string>
 
 class Model {
-protected:
+private:
     double y_;
     double initialY_;
+
+protected:
+    // Добавляем методы для доступа наследников
+    double getY() const { return y_; }
+    void setY(double val) { y_ = val; }
 
 public:
     explicit Model(double initialY);
