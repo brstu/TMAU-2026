@@ -6,12 +6,14 @@ RelayModel27::RelayModel27(double a, double b, double epsilon, double initialY)
 double RelayModel27::relay(double u) const {
     if (u > epsilon_) return 1.0;
     if (u < -epsilon_) return -1.0;
-    return y_ > 0.0 ? 1.0 : -1.0;
+    // Используем getY() для чтения
+    return getY() > 0.0 ? 1.0 : -1.0;
 }
 
 double RelayModel27::step(double u, double /*dt*/) {
-    y_ = a_ * y_ + b_ * relay(u);
-    return y_;
+    // Используем getY() для чтения и setY() для записи
+    setY(a_ * getY() + b_ * relay(u));
+    return getY();
 }
 
 std::string RelayModel27::name() const {
