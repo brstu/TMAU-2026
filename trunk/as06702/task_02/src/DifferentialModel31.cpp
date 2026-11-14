@@ -9,9 +9,10 @@ double DifferentialModel31::step(double /*u*/, double dt) {
     if (dt <= 0.0) {
         throw std::invalid_argument("The integration step dt must be positive");
     }
-    const double derivative = -a_ * y_;
-    y_ += dt * derivative;
-    return y_;
+    // Используем getY() для чтения и setY() для записи
+    const double derivative = -a_ * getY();
+    setY(getY() + dt * derivative);
+    return getY();
 }
 
 std::string DifferentialModel31::name() const {
