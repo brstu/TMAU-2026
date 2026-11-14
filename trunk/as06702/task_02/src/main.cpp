@@ -11,6 +11,7 @@
 #include <memory>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 #ifdef _WIN32
 #include <direct.h>
@@ -28,11 +29,15 @@ int readInt(const std::string& prompt, int defaultValue, int minValue, int maxVa
         std::string line;
         std::getline(std::cin, line);
         if (line.empty()) return defaultValue;
+        
         try {
             std::size_t pos = 0;
             const int value = std::stoi(line, &pos);
             if (pos == line.size() && value >= minValue && value <= maxValue) return value;
-        } catch (const std::exception&) {
+        } catch (const std::invalid_argument&) {
+            std::cerr << "Ошибка: введен некорректный формат числа.\n";
+        } catch (const std::out_of_range&) {
+            std::cerr << "Ошибка: число выходит за допустимые пределы.\n";
         }
         std::cout << "Введите целое число от " << minValue << " до " << maxValue << ".\n";
     }
@@ -44,12 +49,17 @@ double readDouble(const std::string& prompt, double defaultValue) {
         std::string line;
         std::getline(std::cin, line);
         if (line.empty()) return defaultValue;
+        
         for (char& ch : line) if (ch == ',') ch = '.';
+        
         try {
             std::size_t pos = 0;
             const double value = std::stod(line, &pos);
             if (pos == line.size()) return value;
-        } catch (const std::exception&) {
+        } catch (const std::invalid_argument&) {
+            std::cerr << "Ошибка: введен некорректный формат числа.\n";
+        } catch (const std::out_of_range&) {
+            std::cerr << "Ошибка: число выходит за допустимые пределы.\n";
         }
         std::cout << "Введите корректное число.\n";
     }
@@ -70,6 +80,7 @@ int main() {
     const int inputChoice = readInt("Номер воздействия", 1, 1, 3);
     const int n = readInt("Количество шагов n", 50, 1, 100000);
     const double dt = readDouble("Шаг интегрирования dt", 0.1);
+    
     if (dt <= 0.0) {
         std::cerr << "Ошибка: dt должен быть положительным.\n";
         return 1;
@@ -117,13 +128,13 @@ int main() {
     }
 
 #ifdef _WIN32
-    const int plotResult = std::system("py plot.py");
+    if (const int plotResult = std::system("py plot.py"); plotResult != 0) {
 #else
-    const int plotResult = std::system("python3 plot.py");
+    if (const int plotResult = std::system("python3 plot.py"); plotResult != 0) {
 #endif
-    if (plotResult != 0) {
         std::cerr << "Не удалось запустить plot.py.\n";
         return 1;
     }
+    
     return 0;
 }
