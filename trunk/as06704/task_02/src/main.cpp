@@ -1,14 +1,11 @@
 #define NOMINMAX
-
 #ifdef _WIN32
 #include <windows.h>
 #endif
-
 #include "csv_writer.h"
 #include "input_signal.h"
 #include "model.h"
 #include "simulator.h"
-
 #include <cstdlib>
 #include <filesystem>
 #include <iostream>
@@ -20,93 +17,92 @@
 
 namespace {
 
-template <typename T>
-T readNumber(const std::string& prompt) {
-    T value{};
-    while (true) {
-        std::cout << prompt;
-        if (std::cin >> value) {
-            return value;
+    template <typename T>
+    T readNumber(const std::string& prompt) {
+        T value{};
+        while (true) {
+            std::cout << prompt;
+            if (std::cin >> value) {
+                return value;
+            }
+            std::cout << "Некорректный ввод. Попробуйте еще раз.\n";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
-        std::cout << "Некорректный ввод. Попробуйте еще раз.\n";
-        std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     }
-}
 
-int readChoice(const std::string& prompt, int minValue, int maxValue) {
-    while (true) {
-        const int choice = readNumber<int>(prompt);
-        if (choice >= minValue && choice <= maxValue) {
-            return choice;
+    int readChoice(const std::string& prompt, int minValue, int maxValue) {
+        while (true) {
+            if (const int choice = readNumber<int>(prompt); choice >= minValue && choice <= maxValue) {
+                return choice;
+            }
+            std::cout << "Введите число от " << minValue
+                << " до " << maxValue << ".\n";
         }
-        std::cout << "Введите число от " << minValue
-                  << " до " << maxValue << ".\n";
-    }
-}
-
-std::unique_ptr<InputSignal> createSignal(int choice) {
-    switch (choice) {
-    case 1:
-        return std::make_unique<StepSignal>();
-    case 2:
-        return std::make_unique<ImpulseSignal>();
-    default:
-        return std::make_unique<HarmonicSignal>();
-    }
-}
-
-std::filesystem::path findPlotScript(const char* argv0) {
-    std::vector<std::filesystem::path> searchDirectories;
-    std::error_code error;
-
-    const auto currentDirectory = std::filesystem::current_path(error);
-    if (!error) {
-        searchDirectories.push_back(currentDirectory);
     }
 
-    if (argv0 != nullptr && *argv0 != '\0') {
-        error.clear();
-        const auto executablePath = std::filesystem::absolute(argv0, error);
+    std::unique_ptr<InputSignal> createSignal(int choice) {
+        switch (choice) {
+        case 1:
+            return std::make_unique<StepSignal>();
+        case 2:
+            return std::make_unique<ImpulseSignal>();
+        default:
+            return std::make_unique<HarmonicSignal>();
+        }
+    }
+
+    std::filesystem::path findPlotScript(const char* argv0) {
+        std::vector<std::filesystem::path> searchDirectories;
+        std::error_code error;
+
+        const auto currentDirectory = std::filesystem::current_path(error);
         if (!error) {
-            searchDirectories.push_back(executablePath.parent_path());
+            searchDirectories.push_back(currentDirectory);
         }
-    }
 
-    for (const auto& startDirectory : searchDirectories) {
-        auto directory = startDirectory;
-        while (!directory.empty()) {
-            const auto candidate = directory / "plot.py";
+        if (argv0 != nullptr && *argv0 != '\0') {
             error.clear();
-            if (std::filesystem::is_regular_file(candidate, error)) {
-                return candidate;
+            const auto executablePath = std::filesystem::absolute(argv0, error);
+            if (!error) {
+                searchDirectories.push_back(executablePath.parent_path());
             }
-            const auto parent = directory.parent_path();
-            if (parent == directory || parent.empty()) {
-                break;
+        }
+
+        for (const auto& startDirectory : searchDirectories) {
+            auto directory = startDirectory;
+            while (!directory.empty()) {
+                const auto candidate = directory / "plot.py";
+                error.clear();
+                if (std::filesystem::is_regular_file(candidate, error)) {
+                    return candidate;
+                }
+                const auto parent = directory.parent_path();
+                if (parent == directory || parent.empty()) {
+                    break;
+                }
+                directory = parent;
             }
-            directory = parent;
+        }
+
+        return {};
+    }
+
+    void launchPlot(const std::filesystem::path& plotPath) {
+        std::cout << "\nЗапуск построения графика...\n";
+#ifdef _WIN32
+        const std::wstring command = L"py \"" + plotPath.wstring() + L"\"";
+        const int result = _wsystem(command.c_str());
+#else
+        const std::string command = "python3 \"" + plotPath.string() + "\"";
+        const int result = std::system(command.c_str());
+#endif
+        if (result != 0) {
+            std::cout << "Не удалось построить график. Проверьте Python и Matplotlib.\n";
         }
     }
 
-    return {};
-}
-
-void launchPlot(const std::filesystem::path& plotPath) {
-    std::cout << "\nЗапуск построения графика...\n";
-#ifdef _WIN32
-    const std::wstring command = L"py \"" + plotPath.wstring() + L"\"";
-    const int result = _wsystem(command.c_str());
-#else
-    const std::string command = "python3 \"" + plotPath.string() + "\"";
-    const int result = std::system(command.c_str());
-#endif
-    if (result != 0) {
-        std::cout << "Не удалось построить график. Проверьте Python и Matplotlib.\n";
-    }
-}
-
-}
+} // namespace
 
 int main(int argc, char* argv[]) {
 #ifdef _WIN32
@@ -139,7 +135,7 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    const std::size_t steps = static_cast<std::size_t>(enteredSteps);
+    const auto steps = static_cast<std::size_t>(enteredSteps);
     const double initialY = readNumber<double>(
         "Начальное значение y(0) (например, 0): "
     );
@@ -156,12 +152,14 @@ int main(int argc, char* argv[]) {
             delay = readNumber<int>("Задержка k (например, 1): ");
         }
         model = std::make_unique<LinearModel12>(a, b, static_cast<std::size_t>(delay));
-    } else if (modelChoice == 2) {
+    }
+    else if (modelChoice == 2) {
         const double a1 = readNumber<double>("Коэффициент a1 (например, 0.1): ");
         const double a2 = readNumber<double>("Коэффициент a2 (например, 0.2): ");
         const double b = readNumber<double>("Коэффициент b (например, 0.1): ");
         model = std::make_unique<NonlinearModel26>(a1, a2, b);
-    } else {
+    }
+    else {
         const double a = readNumber<double>("Коэффициент a (например, 0.5): ");
         const double b = readNumber<double>("Коэффициент b (например, 0.2): ");
         do {
@@ -182,8 +180,7 @@ int main(int argc, char* argv[]) {
         std::cout << "Шаг интегрирования dt = " << dt << '\n';
     }
 
-    const std::string stability = model->stabilityInfo();
-    if (!stability.empty()) {
+    if (const std::string stability = model->stabilityInfo(); !stability.empty()) {
         std::cout << '\n' << stability << '\n';
     }
 
@@ -205,11 +202,12 @@ int main(int argc, char* argv[]) {
 
     if (!plotPath.empty()) {
         csvPath = plotPath.parent_path() / "results.csv";
-    } else {
+    }
+    else {
         std::error_code error;
         csvPath = std::filesystem::current_path(error) / "results.csv";
         std::cout << "\nПредупреждение: plot.py не найден.\n"
-                  << "CSV будет сохранен в рабочую папку программы.\n";
+            << "CSV будет сохранен в рабочую папку программы.\n";
     }
 
     if (!CsvWriter::save(csvPath.string(), samples, model->name(), signal->name())) {
@@ -220,7 +218,8 @@ int main(int argc, char* argv[]) {
     std::cout << "\nТаблица сохранена в файл: " << csvPath.string() << '\n';
     if (!plotPath.empty()) {
         launchPlot(plotPath);
-    } else {
+    }
+    else {
         std::cout << "Построение графика пропущено: файл plot.py не найден.\n";
     }
 

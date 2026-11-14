@@ -1,11 +1,10 @@
 #include "stability_analyzer.h"
-
 #include <cmath>
 #include <iomanip>
 #include <sstream>
 
 namespace {
-constexpr double kBoundaryTolerance = 1e-12;
+    constexpr double kBoundaryTolerance = 1e-12;
 }
 
 StabilityReport StabilityAnalyzer::analyzeModel12(
@@ -15,20 +14,20 @@ StabilityReport StabilityAnalyzer::analyzeModel12(
     StabilityReport report;
     report.coefficientA = a;
     report.inputDelay = inputDelay;
-    report.characteristicRoot = {a, 0.0};
+    report.characteristicRoot = { a, 0.0 };
 
     if (!std::isfinite(a) || inputDelay < 1) {
         report.status = StabilityStatus::InvalidParameters;
         return report;
     }
 
-    const double modulus = std::abs(report.characteristicRoot);
-
-    if (modulus < 1.0 - kBoundaryTolerance) {
+    if (const double modulus = std::abs(report.characteristicRoot); modulus < 1.0 - kBoundaryTolerance) {
         report.status = StabilityStatus::AsymptoticallyStable;
-    } else if (modulus <= 1.0 + kBoundaryTolerance) {
+    }
+    else if (modulus <= 1.0 + kBoundaryTolerance) {
         report.status = StabilityStatus::MarginallyStable;
-    } else {
+    }
+    else {
         report.status = StabilityStatus::Unstable;
     }
 
