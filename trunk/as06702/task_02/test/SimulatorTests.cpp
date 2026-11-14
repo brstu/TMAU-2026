@@ -11,7 +11,10 @@
 class SimulatorSignalTest : public testing::TestWithParam<std::tuple<InputKind, double, double>> {};
 
 TEST_P(SimulatorSignalTest, CalculatesTheFirstStepForSelectedInput) {
-    const auto [kind, expectedU, expectedY] = GetParam();
+    // БЫЛО: const auto [kind, expectedU, expectedY] = GetParam();
+    // СТАЛО (добавили &):
+    const auto& [kind, expectedU, expectedY] = GetParam();
+    
     std::unique_ptr<InputSignal> signal = createInputSignal(kind);
     LinearModel13 model(0.0, 0.0, 2.0);
 
