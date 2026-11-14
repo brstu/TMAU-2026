@@ -15,14 +15,14 @@ else()
 endif()
 
 add_library(simulation_core
-    src/Model.cpp
-    src/InputSignal.cpp
-    src/LinearModel13.cpp
-    src/RelayModel27.cpp
-    src/DifferentialModel31.cpp
-    src/StabilityAnalyzer.cpp
-    src/Simulator.cpp
-    src/ResultWriter.cpp
+    Model.cpp
+    InputSignal.cpp
+    LinearModel13.cpp
+    RelayModel27.cpp
+    DifferentialModel31.cpp
+    StabilityAnalyzer.cpp
+    Simulator.cpp
+    ResultWriter.cpp
 )
 target_include_directories(simulation_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
