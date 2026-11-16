@@ -58,13 +58,16 @@ public:
 
 class Model1_8 : public Model {
 private:
-    double a1, a2, b1, b2;
+    double a1;
+    double a2;
+    double b1;
+    double b2;
     double y_curr = 0.0;
     double y_prev = 0.0;
     double u_prev = 0.0;
 
 public:
-    Model1_8(double a1 = 0.5, double a2 = 0.2, double b1 = 0.3, double b2 = 0.1)
+    explicit Model1_8(double a1 = 0.5, double a2 = 0.2, double b1 = 0.3, double b2 = 0.1)
         : a1(a1), a2(a2), b1(b1), b2(b2) {}
 
     void reset() override {
@@ -88,8 +91,10 @@ public:
 
 class Model2_2 : public Model {
 private:
-    double a, b;
-    double u_min, u_max;
+    double a;
+    double b;
+    double u_min;
+    double u_max;
     double y_curr = 0.0;
 
     double sat(double u) const {
@@ -97,7 +102,7 @@ private:
     }
 
 public:
-    Model2_2(double a = 0.7, double b = 0.5, double u_min = -0.5, double u_max = 0.5)
+    explicit Model2_2(double a = 0.7, double b = 0.5, double u_min = -0.5, double u_max = 0.5)
         : a(a), b(b), u_min(u_min), u_max(u_max) {}
 
     void reset() override {
@@ -114,11 +119,13 @@ public:
 
 class Model3_6 : public Model {
 private:
-    double a, b, dt;
+    double a;
+    double b;
+    double dt;
     double y_curr = 0.0;
 
 public:
-    Model3_6(double a = -0.1, double b = 0.5, double dt = 0.1)
+    explicit Model3_6(double a = -0.1, double b = 0.5, double dt = 0.1)
         : a(a), b(b), dt(dt) {}
 
     void reset() override {
