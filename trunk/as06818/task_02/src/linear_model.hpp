@@ -29,8 +29,8 @@ private:
     double b2;
     double y_start;
     double y_curr;
-    double y_prev;
-    double u_prev;
+    double y_prev = 0.0;
+    double u_prev = 0.0;
 };
 
 #endif

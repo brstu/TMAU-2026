@@ -3,7 +3,7 @@
 LinearModel18::LinearModel18(double a1, double a2, double b1, double b2,
                              double y_start)
     : a1(a1), a2(a2), b1(b1), b2(b2), y_start(y_start),
-      y_curr(y_start), y_prev(0.0), u_prev(0.0) {}
+      y_curr(y_start) {}
 
 double LinearModel18::step(double u) {
     const double y_next =

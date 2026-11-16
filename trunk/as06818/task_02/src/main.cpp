@@ -85,8 +85,8 @@ void run_linear_model(SignalType type, int steps) {
               << ", z2 = " << report.z2
               << ", спектральный радиус = " << report.spectral_radius << '\n';
 
-    const std::string warning = stability_warning(report);
-    if (!warning.empty()) {
+    if (const std::string warning = stability_warning(report);
+        !warning.empty()) {
         std::cout << warning << '\n';
     }
 

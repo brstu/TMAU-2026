@@ -1,7 +1,8 @@
 #include "stability_analyzer.hpp"
 
 #include <cmath>
-#include <cstdio>
+#include <iomanip>
+#include <sstream>
 
 StabilityReport analyze_stability(double a1, double a2) {
     // Дискриминант D = a1^2 + 4*a2 может быть отрицательным,
@@ -32,11 +33,11 @@ std::string stability_warning(const StabilityReport& report) {
         return std::string();
     }
 
-    char buffer[256];
-    std::snprintf(buffer, sizeof(buffer),
-                  "ПРЕДУПРЕЖДЕНИЕ: процесс расходится (неустойчив): "
-                  "спектральный радиус характеристического уравнения "
-                  "z^2 - a1*z - a2 = 0 равен %.6f >= 1.",
-                  report.spectral_radius);
-    return std::string(buffer);
+    std::ostringstream result;
+    result << std::fixed << std::setprecision(6)
+           << "ПРЕДУПРЕЖДЕНИЕ: процесс расходится (неустойчив): "
+              "спектральный радиус характеристического уравнения "
+              "z^2 - a1*z - a2 = 0 равен "
+           << report.spectral_radius << " >= 1.";
+    return result.str();
 }
