@@ -4,4 +4,4 @@ project(task_01 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_executable(task_01 main.cpp models.hpp)
+add_executable(task_01_as06818 main.cpp models.hpp)

@@ -36,12 +36,12 @@ void run_and_export(Model& model, const std::string& model_name, int steps, cons
             << res_harm[i].u << "," << res_harm[i].y << "\n";
     }
 
-    std::cout << "ланные сохранены в файл: " << filename << std::endl;
+    std::cout << "Данные сохранены в файл: " << filename << std::endl;
 }
 
 int main() {
     int steps = 30;
-    std::cout << "введите количество шагов симуляции N (по умолчанию 30): ";
+    std::cout << "Введите количество шагов симуляции N (по умолчанию 30): ";
     if (!(std::cin >> steps) || steps <= 0) {
         steps = 30;
     }
