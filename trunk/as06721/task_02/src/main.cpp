@@ -132,7 +132,7 @@ double readDouble(const std::string& prompt) {
     while (true) {
         std::cout << prompt;
         if (std::cin >> value && std::isfinite(value)) return value;
-        if (std::cin.eof()) throw std::runtime_error("Ввод завершён.");
+        if (std::cin.eof()) throw std::ios_base::failure("Ввод завершён.");
         std::cout << "Ошибка: введите конечное числовое значение.\n";
         std::cin.clear();
         clearInputLine();
@@ -144,7 +144,7 @@ int readInt(const std::string& prompt, int minValue, int maxValue) {
     while (true) {
         std::cout << prompt;
         if (std::cin >> value && value >= minValue && value <= maxValue) return value;
-        if (std::cin.eof()) throw std::runtime_error("Ввод завершён.");
+        if (std::cin.eof()) throw std::ios_base::failure("Ввод завершён.");
         std::cout << "Ошибка: введите целое число от " << minValue
                   << " до " << maxValue << ".\n";
         std::cin.clear();
@@ -213,13 +213,13 @@ int main(int argc, char* argv[]) {
             model = std::make_unique<HarmonicForce>(b);
         }
 
-        const auto signal = makeInputSignal(static_cast<InputType>(signalChoice));
-        const auto samples = model->simulate(n, y0, dt, signal);
+        const InputSignal signal = makeInputSignal(static_cast<InputType>(signalChoice));
+        const std::vector<Sample> samples = model->simulate(n, y0, dt, signal);
 
         const std::filesystem::path projectDir = std::filesystem::path(PROJECT_SOURCE_DIR);
         const std::filesystem::path csvPath = projectDir / "results.csv";
         std::ofstream csv(csvPath);
-        if (!csv) throw std::runtime_error("Не удалось создать results.csv в каталоге проекта.");
+        if (!csv) throw std::ios_base::failure("Не удалось создать results.csv в каталоге проекта.");
         csv << "tau,u,y\n" << std::setprecision(12);
         std::cout << "\n" << model->name() << "\n";
         std::cout << std::left << std::setw(10) << "tau"
