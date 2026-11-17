@@ -153,7 +153,7 @@ int readInt(const std::string& prompt, int minValue, int maxValue) {
 }
 
 int runPlot(const std::filesystem::path& csvPath, int modelChoice) {
-    const std::filesystem::path plotPath = std::filesystem::path(TASK02_PLOT_SCRIPT);
+    const auto plotPath = std::filesystem::path(TASK02_PLOT_SCRIPT);
 
 #ifdef _WIN32
     const std::wstring command = L"py \"" + plotPath.wstring() +
@@ -216,7 +216,7 @@ int main(int argc, char* argv[]) {
         const InputSignal signal = makeInputSignal(static_cast<InputType>(signalChoice));
         const std::vector<Sample> samples = model->simulate(n, y0, dt, signal);
 
-        const std::filesystem::path projectDir = std::filesystem::path(PROJECT_SOURCE_DIR);
+        const auto projectDir = std::filesystem::path(PROJECT_SOURCE_DIR);
         const std::filesystem::path csvPath = projectDir / "results.csv";
         std::ofstream csv(csvPath);
         if (!csv) throw std::ios_base::failure("Не удалось создать results.csv в каталоге проекта.");
