@@ -3,6 +3,7 @@
 // при неустойчивых коэффициентах в консоль выводится предупреждение.
 
 #include <cstdio>
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -22,20 +23,15 @@ namespace {
         std::printf("%s (default %g): ", title, preset);
         std::string text;
         std::getline(std::cin, text);
-        try {
-            size_t used = 0;
-            const double parsed = std::stod(text, &used);
-            if (used > 0) {
-                return parsed;
-            }
-        } catch (const std::exception&) {
-            // некорректный ввод - берём значение по умолчанию
-        }
-        return preset;
+        const char* begin = text.c_str();
+        char* end = nullptr;
+        const double parsed = std::strtod(begin, &end);
+        // если не удалось прочитать ни одного символа числа, берём значение по умолчанию
+        return (end != begin) ? parsed : preset;
     }
 
     int readOption(const char* title, int count) {
-        const int picked = static_cast<int>(readParam(title, 1.0));
+        const auto picked = static_cast<int>(readParam(title, 1.0));
         return (picked >= 1 && picked <= count) ? picked : 1;
     }
 
@@ -52,7 +48,7 @@ namespace {
             const double a1 = readParam("a1", 0.5);
             const double a2 = readParam("a2", 0.3);
             const double b = readParam("b", 1.0);
-            const int k = static_cast<int>(readParam("delay k", 2.0));
+            const auto k = static_cast<int>(readParam("delay k", 2.0));
             plant.object = std::make_unique<Model1_5>(a1, a2, b, k);
             plant.check = analyzeModel1_5(a1, a2, k);
             plant.label = "Model_1_5";
@@ -101,13 +97,14 @@ int main() {
     std::puts("\nSignals: 1) step   2) impulse   3) harmonic");
     const int signalKind = readOption("Signal number", 3);
     const double amplitude = readParam("Amplitude A", 1.0);
-    const int count = static_cast<int>(readParam("Steps", 20.0));
+    const auto count = static_cast<int>(readParam("Steps", 20.0));
 
     const auto signal = buildSignal(signalKind, amplitude);
     const auto trace = runSimulation(*plant.object, *signal, count);
 
-    const std::string csvName = plant.label + "_" + signal->name() + ".csv";
-    std::ofstream csv(csvName);
+    // имя файла фиксированное: путь не зависит от пользовательского ввода
+    std::ofstream csv("simulation_result.csv");
+    csv << "# " << plant.label << ", signal " << signal->name() << '\n';
     csv << "t,u,y\n";
 
     std::printf("\n%5s %12s %14s\n", "t", "u(t)", "y(t+1)");
@@ -115,6 +112,6 @@ int main() {
         std::printf("%5d %12.5f %14.6f\n", point.step, point.u, point.y);
         csv << point.step << ',' << point.u << ',' << point.y << '\n';
     }
-    std::printf("\nSaved: %s\n", csvName.c_str());
+    std::puts("\nSaved: simulation_result.csv");
     return 0;
 }

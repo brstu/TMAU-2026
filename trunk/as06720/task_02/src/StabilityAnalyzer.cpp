@@ -47,6 +47,15 @@ namespace {
         return result;
     }
 
+    // Произведение (z_i - z_j) по всем j != i - знаменатель поправки Дюрана-Кернера
+    Complex productOfDifferences(const std::vector<Complex>& roots, size_t i) {
+        Complex product = 1.0;
+        for (size_t j = 0; j < roots.size(); ++j) {
+            product *= (j == i) ? Complex(1.0) : (roots[i] - roots[j]);
+        }
+        return product;
+    }
+
     std::string number(double value) {
         std::ostringstream out;
         out << value;
@@ -70,13 +79,7 @@ std::vector<std::complex<double>> polynomialRoots(const std::vector<double>& coe
     for (int iter = 0; iter < maxIterations; ++iter) {
         double maxShift = 0.0;
         for (size_t i = 0; i < n; ++i) {
-            Complex denom = 1.0;
-            for (size_t j = 0; j < n; ++j) {
-                if (j != i) {
-                    denom *= (roots[i] - roots[j]);
-                }
-            }
-            const Complex shift = evaluate(coeffs, roots[i]) / denom;
+            const Complex shift = evaluate(coeffs, roots[i]) / productOfDifferences(roots, i);
             roots[i] -= shift;
             maxShift = std::max(maxShift, std::abs(shift));
         }
@@ -100,7 +103,7 @@ Stability classify(double maxModulus) {
 StabilityResult analyzeModel1_5(double a1, double a2, int k) {
     const int delay = k < 1 ? 1 : k;  // как в конструкторе Model1_5
 
-    std::vector<double> coeffs(static_cast<size_t>(delay) + 2, 0.0);
+    std::vector coeffs(static_cast<size_t>(delay) + 2, 0.0);
     coeffs[0] = 1.0;
     coeffs[1] = -a1;
     coeffs[static_cast<size_t>(delay) + 1] -= a2;

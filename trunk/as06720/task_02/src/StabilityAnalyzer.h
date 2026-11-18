@@ -33,24 +33,24 @@ public:
     using std::runtime_error::runtime_error;
 };
 
-// Все корни полинома со старшим коэффициентом 1 (метод Дюрана-Кернера).
+// Все корни полинома со старшим коэффициентом, равным единице (метод Дюрана-Кернера).
 // Коэффициенты перечислены от старшей степени к младшей.
 std::vector<std::complex<double>> polynomialRoots(const std::vector<double>& coeffs);
 
 // Классификация по наибольшему модулю корня
 Stability classify(double maxModulus);
 
-// Model 1.5: z^(k+1) - a1*z^k - a2 = 0
+// Model 1.5: полином степени k+1 с коэффициентами 1, -a1, 0, ..., 0, -a2
 StabilityResult analyzeModel1_5(double a1, double a2, int k);
 
-// Model 2.9: z - a = 0 (нелинейность действует только на вход)
+// Model 2.9: единственный корень равен a (нелинейность действует только на вход)
 StabilityResult analyzeModel2_9(double a);
 
-// Model 3.3, схема Эйлера: z - (1 - a*dt) = 0
+// Model 3.3, схема Эйлера: единственный корень равен 1 - a*dt
 StabilityResult analyzeModel3_3(double a, double dt);
 
-// Аналитический критерий Джури для Model 1.5 при k = 1:
-// z^2 - a1*z - a2 = 0 устойчиво <=> |a2| < 1, 1 - a1 - a2 > 0, 1 + a1 - a2 > 0
+// Аналитический критерий Джури для Model 1.5 при k = 1 (квадратный полином):
+// модуль a2 меньше единицы, а суммы 1 - a1 - a2 и 1 + a1 - a2 положительны
 bool juryCriterionK1(double a1, double a2);
 
 // true только для асимптотически устойчивой модели
