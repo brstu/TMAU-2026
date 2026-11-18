@@ -14,6 +14,7 @@ else()
     add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
+# Так как мы находимся в папке src, файлы .cpp лежат прямо здесь (без src/)
 add_library(simulation_core
     Model.cpp
     InputSignal.cpp
@@ -24,13 +25,12 @@ add_library(simulation_core
     Simulator.cpp
     ResultWriter.cpp
 )
-# Убрали лишний /src в конце
 target_include_directories(simulation_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
-# Убрали src/ перед main.cpp
+# main.cpp тоже лежит здесь
 add_executable(controlled_object main.cpp)
 target_link_libraries(controlled_object PRIVATE simulation_core)
-# Добавили /.. чтобы программа искала файлы в корне task_02
+# Указываем путь на уровень выше, так как PROJECT_ROOT должен указывать на корень task_02
 target_compile_definitions(controlled_object PRIVATE PROJECT_ROOT="${CMAKE_CURRENT_SOURCE_DIR}/..")
 set_property(TARGET controlled_object PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/..")
 
@@ -44,6 +44,7 @@ if(BUILD_TESTING)
     )
     FetchContent_MakeAvailable(googletest)
 
+    # Тесты лежат в папке test, которая находится на уровень выше (в task_02)
     add_executable(unit_tests
         ../test/LinearModelTests.cpp
         ../test/RelayModelTests.cpp
