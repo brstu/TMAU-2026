@@ -8,21 +8,22 @@ FetchContent_Declare(googletest
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
+set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/../src)
 set(LAB1 ${CMAKE_CURRENT_SOURCE_DIR}/../../task_01/src)
 
 add_executable(task2_as06720_tests
     test_models.cpp
     test_stability.cpp
     test_signals.cpp
-    ../src/StabilityAnalyzer.cpp
-    ../src/Simulator.cpp
+    ${SRC}/StabilityAnalyzer.cpp
+    ${SRC}/Simulator.cpp
     ${LAB1}/Model1_5.cpp
     ${LAB1}/Model2_9.cpp
     ${LAB1}/Model3_3.cpp
     ${LAB1}/InputSignal.cpp
 )
 target_include_directories(task2_as06720_tests PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/../src
+    ${SRC}
     ${LAB1}
 )
 # gmock_main содержит и Google Test, и Google Mock

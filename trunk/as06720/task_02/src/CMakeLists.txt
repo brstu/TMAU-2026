@@ -1,7 +1,7 @@
-# Модели и сигналы не копируются: берутся из исходников лабораторной работы №1
+# Модели и сигналы берутся из лабораторной работы №1 (без копирования)
 set(LAB1 ${CMAKE_CURRENT_SOURCE_DIR}/../../task_01/src)
 
-add_executable(tmau_task_02
+add_executable(as06720_task_02
     main.cpp
     StabilityAnalyzer.cpp
     Simulator.cpp
@@ -10,4 +10,11 @@ add_executable(tmau_task_02
     ${LAB1}/Model3_3.cpp
     ${LAB1}/InputSignal.cpp
 )
-target_include_directories(tmau_task_02 PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${LAB1})
+target_include_directories(as06720_task_02 PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${LAB1})
+# Каталог src подключается и из корневого CMakeLists.txt репозитория,
+# поэтому стандарт задаётся для цели, а не для проекта
+set_target_properties(as06720_task_02 PROPERTIES
+    CXX_STANDARD 17
+    CXX_STANDARD_REQUIRED ON
+    CXX_EXTENSIONS OFF
+)

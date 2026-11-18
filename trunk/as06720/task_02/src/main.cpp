@@ -1,15 +1,12 @@
-#include <algorithm>
-#include <cctype>
-#include <filesystem>
+// Лабораторная работа №2, вариант 15.
+// Перед симуляцией выбранная модель проверяется модулем StabilityAnalyzer:
+// при неустойчивых коэффициентах в консоль выводится предупреждение.
+
+#include <cstdio>
 #include <fstream>
-#include <iomanip>
 #include <iostream>
-#include <limits>
 #include <memory>
-#include <sstream>
 #include <string>
-#include <string_view>
-#include <vector>
 
 #include "InputSignal.h"
 #include "Model1_5.h"
@@ -20,185 +17,104 @@
 
 namespace {
 
-    constexpr double kAnyLow = std::numeric_limits<double>::lowest();
-    constexpr double kAnyHigh = std::numeric_limits<double>::max();
-    const std::string kOutputDir = "doc";
-
-    // ===================== Консольный ввод =====================
-
-    bool isBlank(std::string_view text) {
-        return std::all_of(text.begin(), text.end(),
-                           [](unsigned char c) { return std::isspace(c) != 0; });
-    }
-
-    template <typename T>
-    bool parseWhole(const std::string& text, T& value) {
-        std::istringstream stream(text);
-        std::string tail;
-        return static_cast<bool>(stream >> value) && !(stream >> tail);
-    }
-
-    // Пустая строка или конец ввода дают значение по умолчанию
-    template <typename T>
-    T ask(std::string_view label, T fallback, T low, T high) {
-        while (true) {
-            std::cout << label << " [" << fallback << "]: ";
-            std::string line;
-            if (!std::getline(std::cin, line) || isBlank(line)) {
-                return fallback;
+    // Читает число; при пустой или ошибочной строке остаётся значение по умолчанию
+    double readParam(const char* title, double preset) {
+        std::printf("%s (default %g): ", title, preset);
+        std::string text;
+        std::getline(std::cin, text);
+        try {
+            size_t used = 0;
+            const double parsed = std::stod(text, &used);
+            if (used > 0) {
+                return parsed;
             }
-            if (T value{}; parseWhole(line, value) && value >= low && value <= high) {
-                return value;
-            }
-            std::cout << "  ! expected a number from " << low << " to " << high << '\n';
+        } catch (const std::exception&) {
+            // некорректный ввод - берём значение по умолчанию
         }
+        return preset;
     }
 
-    double askCoefficient(std::string_view label, double fallback) {
-        return ask(label, fallback, kAnyLow, kAnyHigh);
+    int readOption(const char* title, int count) {
+        const int picked = static_cast<int>(readParam(title, 1.0));
+        return (picked >= 1 && picked <= count) ? picked : 1;
     }
 
-    int askMenu(std::string_view title, const std::vector<std::string>& items) {
-        std::cout << '\n' << title << '\n';
-        for (size_t i = 0; i < items.size(); ++i) {
-            std::cout << "  " << (i + 1) << ") " << items[i] << '\n';
-        }
-        const auto last = static_cast<int>(items.size());
-        return ask("Your choice", last, 1, last);
-    }
-
-    // ===================== Создание моделей =====================
-
-    struct NamedModel {
-        std::string tag;
-        std::unique_ptr<Model> model;
-        StabilityResult stability;  // результат модуля анализа устойчивости
+    // Выбранная пользователем модель вместе с результатом анализа
+    struct Plant {
+        std::unique_ptr<Model> object;
+        StabilityResult check;
+        std::string label;
     };
 
-    NamedModel setupLinear() {
-        std::cout << "\n[Model 1.5] linear, state delay\n";
-        const double a1 = askCoefficient("  a1", 0.5);
-        const double a2 = askCoefficient("  a2", 0.3);
-        const double b = askCoefficient("  b", 1.0);
-        const int delay = ask("  k (delay)", 2, 1, 50);
-        return { "Linear_1_5", std::make_unique<Model1_5>(a1, a2, b, delay),
-                 analyzeModel1_5(a1, a2, delay) };
-    }
-
-    NamedModel setupNonlinear() {
-        std::cout << "\n[Model 2.9] nonlinear, square root action\n";
-        const double a = askCoefficient("  a", 0.7);
-        const double b = askCoefficient("  b", 1.0);
-        return { "Nonlinear_2_9", std::make_unique<Model2_9>(a, b), analyzeModel2_9(a) };
-    }
-
-    NamedModel setupDifferential() {
-        std::cout << "\n[Model 3.3] first-order ODE, Euler method\n";
-        const double a = askCoefficient("  a", 1.0);
-        const double b = askCoefficient("  b", 1.0);
-        const double dt = askCoefficient("  dt", 0.1);
-        return { "DiffEquation_3_3", std::make_unique<Model3_3>(a, b, dt),
-                 analyzeModel3_3(a, dt) };
-    }
-
-    std::vector<NamedModel> selectModels(int choice) {
-        using Factory = NamedModel (*)();
-        const std::vector<Factory> factories = { setupLinear, setupNonlinear, setupDifferential };
-
-        std::vector<NamedModel> chosen;
-        for (size_t i = 0; i < factories.size(); ++i) {
-            if (choice == 4 || choice == static_cast<int>(i) + 1) {
-                chosen.push_back(factories[i]());
-            }
+    Plant buildPlant(int kind) {
+        Plant plant;
+        if (kind == 1) {
+            const double a1 = readParam("a1", 0.5);
+            const double a2 = readParam("a2", 0.3);
+            const double b = readParam("b", 1.0);
+            const int k = static_cast<int>(readParam("delay k", 2.0));
+            plant.object = std::make_unique<Model1_5>(a1, a2, b, k);
+            plant.check = analyzeModel1_5(a1, a2, k);
+            plant.label = "Model_1_5";
+        } else if (kind == 2) {
+            const double a = readParam("a", 0.7);
+            const double b = readParam("b", 1.0);
+            plant.object = std::make_unique<Model2_9>(a, b);
+            plant.check = analyzeModel2_9(a);
+            plant.label = "Model_2_9";
+        } else {
+            const double a = readParam("a", 1.0);
+            const double b = readParam("b", 1.0);
+            const double dt = readParam("dt", 0.1);
+            plant.object = std::make_unique<Model3_3>(a, b, dt);
+            plant.check = analyzeModel3_3(a, dt);
+            plant.label = "Model_3_3";
         }
-        return chosen;
+        return plant;
     }
 
-    // ===================== Устойчивость =====================
-
-    void reportStability(const NamedModel& item) {
-        std::cout << "\n* Stability of " << item.tag << '\n'
-                  << "  " << item.stability.equation
-                  << "; max |z| = " << item.stability.maxModulus << '\n';
-        if (!warnIfUnstable(item.tag, item.stability, std::cout)) {
-            std::cout << "  result: stable, the process converges\n";
+    std::unique_ptr<InputSignal> buildSignal(int kind, double amplitude) {
+        if (kind == 2) {
+            return std::make_unique<ImpulseSignal>(amplitude);
         }
-    }
-
-    // ===================== Симуляция и вывод =====================
-
-    void printRule() {
-        std::cout << std::string(38, '-') << '\n';
-    }
-
-    std::string simulate(NamedModel& item, const InputSignal& input, int steps) {
-        const std::string fileName = kOutputDir + "/" + item.tag + "_" + input.name() + ".csv";
-        std::ofstream csv(fileName);
-        if (!csv) {
-            std::cout << "  ! cannot open " << fileName << '\n';
-            return {};
+        if (kind == 3) {
+            return std::make_unique<HarmonicSignal>(amplitude);
         }
-        csv << "Step,u,y\n";
-
-        std::cout << "\n== " << item.tag << " / " << input.name() << " ==\n";
-        printRule();
-        std::cout << std::setw(8) << "step" << " | " << std::setw(10) << "input u"
-                  << " | " << std::setw(12) << "output y" << '\n';
-        printRule();
-
-        for (const auto& p : runSimulation(*item.model, input, steps)) {
-            csv << p.step << "," << p.u << "," << p.y << "\n";
-            std::cout << std::setw(8) << p.step << " | "
-                      << std::setw(10) << std::fixed << std::setprecision(4) << p.u << " | "
-                      << std::setw(12) << p.y << '\n';
-        }
-        std::cout.unsetf(std::ios::fixed);
-        printRule();
-        std::cout << "  -> " << fileName << '\n';
-        return fileName;
+        return std::make_unique<StepSignal>(amplitude);
     }
 
 } // namespace
 
 int main() {
-    std::cout << "Lab 2, variant 15: simulation with stability analysis\n"
-              << "  1.5  y(t+1) = a1*y(t) + a2*y(t-k) + b*u(t)\n"
-              << "  2.9  y(t+1) = a*y(t) + b*sqrt(|u(t)|)*sign(u(t))\n"
-              << "  3.3  dy/dt = -a*y + b*u, Euler method\n"
-              << "Press Enter to keep the value shown in brackets.\n\n";
+    std::puts("TMAU lab 2 (variant 15): stability check + simulation");
+    std::puts("Models: 1) linear 1.5   2) nonlinear 2.9   3) Euler 3.3");
 
-    const int steps = ask("Number of simulation steps n", 30, 1, 1000);
+    Plant plant = buildPlant(readOption("Model number", 3));
 
-    const int modelChoice = askMenu("Which model to simulate?",
-        { "linear 1.5", "nonlinear 2.9", "differential 3.3", "all three" });
-    const int signalChoice = askMenu("Which input signal?",
-        { "step, u = 1", "impulse, u(0) = 1", "harmonic, u = sin(t)", "all three" });
-
-    std::vector<NamedModel> models = selectModels(modelChoice);
-    const auto inputs = makeSignals(signalChoice);
-
-    // Анализ устойчивости выполняется ДО начала симуляции
-    for (const auto& item : models) {
-        reportStability(item);
+    // ---- анализ устойчивости до начала расчёта ----
+    std::printf("\nCharacteristic equation: %s\n", plant.check.equation.c_str());
+    std::printf("Largest root modulus: %.5f\n", plant.check.maxModulus);
+    if (!warnIfUnstable(plant.label, plant.check, std::cout)) {
+        std::puts("Stable: all roots lie inside the unit circle.");
     }
 
-    std::error_code ignored;
-    std::filesystem::create_directories(kOutputDir, ignored);
+    std::puts("\nSignals: 1) step   2) impulse   3) harmonic");
+    const int signalKind = readOption("Signal number", 3);
+    const double amplitude = readParam("Amplitude A", 1.0);
+    const int count = static_cast<int>(readParam("Steps", 20.0));
 
-    std::vector<std::string> written;
-    for (auto& item : models) {
-        for (const auto& input : inputs) {
-            if (std::string path = simulate(item, *input, steps); !path.empty()) {
-                written.push_back(path);
-            }
-        }
+    const auto signal = buildSignal(signalKind, amplitude);
+    const auto trace = runSimulation(*plant.object, *signal, count);
+
+    const std::string csvName = plant.label + "_" + signal->name() + ".csv";
+    std::ofstream csv(csvName);
+    csv << "t,u,y\n";
+
+    std::printf("\n%5s %12s %14s\n", "t", "u(t)", "y(t+1)");
+    for (const auto& point : trace) {
+        std::printf("%5d %12.5f %14.6f\n", point.step, point.u, point.y);
+        csv << point.step << ',' << point.u << ',' << point.y << '\n';
     }
-
-    std::ofstream index(kOutputDir + "/last_run.txt");
-    for (const auto& path : written) {
-        index << path << "\n";
-    }
-
-    std::cout << "\nDone, CSV files created: " << written.size() << '\n';
+    std::printf("\nSaved: %s\n", csvName.c_str());
     return 0;
 }
