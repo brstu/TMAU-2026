@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
+set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
 project(TiMAY_Task02_Variant13 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
