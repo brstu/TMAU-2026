@@ -50,6 +50,7 @@ if(BUILD_TESTING)
         ../test/LinearModelTests.cpp
         ../test/RelayModelTests.cpp
         ../test/DifferentialModelTests.cpp
+        ../test/DifferentialModel31.cpp
         ../test/StabilityAnalyzerTests.cpp
         ../test/SimulatorTests.cpp
     )
