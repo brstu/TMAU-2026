@@ -15,9 +15,19 @@ bool allFinite(double a1, double a2, double a3) {
     return std::isfinite(a1) && std::isfinite(a2) && std::isfinite(a3);
 }
 
-// z^3 + c2*z^2 + c1*z + c0
 Complex evaluate(const Complex& z, double c2, double c1, double c0) {
     return ((z + c2) * z + c1) * z + c0;
+}
+
+Complex productOfDifferences(const std::vector<Complex>& roots, std::size_t i) {
+    Complex product(1.0, 0.0);
+    for (std::size_t j = 0; j < roots.size(); ++j) {
+        if (j != i) {
+            product *= roots[i] - roots[j];
+        }
+    }
+
+    return product;
 }
 
 }  // namespace
@@ -34,13 +44,7 @@ std::vector<Complex> characteristicRoots(double a1, double a2, double a3) {
     for (int iteration = 0; iteration < MAX_ITERATIONS; ++iteration) {
         double delta = 0.0;
         for (std::size_t i = 0; i < roots.size(); ++i) {
-            Complex denominator(1.0, 0.0);
-            for (std::size_t j = 0; j < roots.size(); ++j) {
-                if (j != i) {
-                    denominator *= roots[i] - roots[j];
-                }
-            }
-            const Complex correction = evaluate(roots[i], c2, c1, c0) / denominator;
+            const Complex correction = evaluate(roots[i], c2, c1, c0) / productOfDifferences(roots, i);
             roots[i] -= correction;
             delta = std::max(delta, std::abs(correction));
         }
@@ -57,24 +61,24 @@ bool isStable(double a1, double a2, double a3) {
         return false;
     }
 
-    // P(z) = z^3 + c2*z^2 + c1*z + c0
     const double c2 = -a1;
     const double c1 = -a2;
     const double c0 = -a3;
 
-    const double atPlusOne = 1.0 + c2 + c1 + c0;       // P(1)  > 0
-    const double atMinusOne = -1.0 + c2 - c1 + c0;     // P(-1) < 0
-    if (!(atPlusOne > 0.0) || !(atMinusOne < 0.0)) {
+    if (const double atPlusOne = 1.0 + c2 + c1 + c0; !(atPlusOne > 0.0)) {
         return false;
     }
-    if (!(std::abs(c0) < 1.0)) {                       // |c0| < 1
+    if (const double atMinusOne = -1.0 + c2 - c1 + c0; !(atMinusOne < 0.0)) {
+        return false;
+    }
+    if (!(std::abs(c0) < 1.0)) {
         return false;
     }
 
     const double b0 = c0 * c0 - 1.0;
     const double b2 = c0 * c2 - c1;
 
-    return std::abs(b0) > std::abs(b2);                // |b0| > |b2|
+    return std::abs(b0) > std::abs(b2);
 }
 
 Report analyze(double a1, double a2, double a3) {
