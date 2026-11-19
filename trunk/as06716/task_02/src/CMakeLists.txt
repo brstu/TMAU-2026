@@ -3,7 +3,7 @@ project(task_02_as06716 LANGUAGES CXX)
 
 option(ENABLE_COVERAGE "Instrument code for gcov/gcovr (gcc/clang only)" OFF)
 
-add_library(task02_core STATIC
+add_library(task02_as06716_core STATIC
     app.cpp
     models.cpp
     console.cpp
@@ -18,20 +18,20 @@ add_library(task02_core STATIC
     signals.hpp
     simulator.hpp
     stability.hpp)
-target_include_directories(task02_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_compile_features(task02_core PUBLIC cxx_std_17)
+target_include_directories(task02_as06716_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_compile_features(task02_as06716_core PUBLIC cxx_std_17)
 
 if(MSVC)
-    target_compile_options(task02_core PUBLIC /W4 /utf-8)
+    target_compile_options(task02_as06716_core PUBLIC /W4 /utf-8)
 else()
-    target_compile_options(task02_core PUBLIC -Wall -Wextra)
+    target_compile_options(task02_as06716_core PUBLIC -Wall -Wextra)
 endif()
 
 if(ENABLE_COVERAGE AND NOT MSVC)
-    target_compile_options(task02_core PUBLIC --coverage -O0 -g)
-    target_link_options(task02_core PUBLIC --coverage)
+    target_compile_options(task02_as06716_core PUBLIC --coverage -O0 -g)
+    target_link_options(task02_as06716_core PUBLIC --coverage)
 endif()
 
 add_executable(task_02_as06716 main.cpp)
-target_link_libraries(task_02_as06716 PRIVATE task02_core)
+target_link_libraries(task_02_as06716 PRIVATE task02_as06716_core)
 target_compile_definitions(task_02_as06716 PRIVATE DOC_DIR="${CMAKE_CURRENT_SOURCE_DIR}/../doc")
