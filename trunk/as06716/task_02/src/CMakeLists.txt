@@ -5,6 +5,7 @@ option(ENABLE_COVERAGE "Instrument code for gcov/gcovr (gcc/clang only)" OFF)
 
 add_library(task02_core STATIC
     app.cpp
+    models.cpp
     console.cpp
     results.cpp
     signals.cpp
