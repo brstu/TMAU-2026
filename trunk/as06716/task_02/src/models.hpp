@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cmath>
 #include <string>
 
 
@@ -19,20 +18,11 @@ public:
 // model 1.6
 class LinearModel16 : public Model {
 public:
-    LinearModel16(double a1, double a2, double a3, double b) : a1_(a1), a2_(a2), a3_(a3), b_(b) {}
+    LinearModel16(double a1, double a2, double a3, double b);
 
-    double step(double u) override {
-        const double next = a1_ * y0_ + a2_ * y1_ + a3_ * y2_ + b_ * u;
-        y2_ = y1_;
-        y1_ = y0_;
-        y0_ = next;
-
-        return next;
-    }
-
-    double output() const override { return y0_; }
-
-    std::string name() const override { return "Model 1.6"; }
+    double step(double u) override;
+    double output() const override;
+    std::string name() const override;
 
 private:
     double a1_;
@@ -48,17 +38,11 @@ private:
 // model 2.10
 class NonlinearModel210 : public Model {
 public:
-    NonlinearModel210(double a, double b) : a_(a), b_(b) {}
+    NonlinearModel210(double a, double b);
 
-    double step(double u) override {
-        y_ = a_ * std::tanh(y_) + b_ * u * u * u;
-
-        return y_;
-    }
-
-    double output() const override { return y_; }
-
-    std::string name() const override { return "Model 2.10"; }
+    double step(double u) override;
+    double output() const override;
+    std::string name() const override;
 
 private:
     double a_;
@@ -70,17 +54,11 @@ private:
 // model 3.4
 class DiffModel34 : public Model {
 public:
-    DiffModel34(double a, double dt, double y0) : a_(a), dt_(dt), y_(y0) {}
+    DiffModel34(double a, double dt, double y0);
 
-    double step(double /*u*/) override {
-        y_ -= dt_ * a_ * y_ * y_;
-
-        return y_;
-    }
-
-    double output() const override { return y_; }
-
-    std::string name() const override { return "Model 3.4"; }
+    double step(double u) override;
+    double output() const override;
+    std::string name() const override;
 
 private:
     double a_;
@@ -89,6 +67,4 @@ private:
 };
 
 
-inline double diffModel34Exact(double a, double y0, double t) {
-    return y0 / (1.0 + a * y0 * t);
-}
+double diffModel34Exact(double a, double y0, double t);
