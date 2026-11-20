@@ -14,6 +14,10 @@ import matplotlib.pyplot as plt
 
 OUT_DIR = os.path.join("doc", "img")
 
+TAU_LABEL = "такт t"
+TEMP_LABEL = "температура y"
+LINEAR_OPEN_CSV = "task03_open_linear.csv"
+
 
 def read_csv(filename):
     """Чтение CSV с заголовком; возвращает список строк-словарей."""
@@ -44,7 +48,7 @@ def draw_process(csv_name, open_csv_name, title, ylabel, png_name):
                  label="задание w")
     ax_u.plot(tau, u, color="red", linewidth=1.5, label="u(t)")
 
-    ax_y.set_xlabel("такт t")
+    ax_y.set_xlabel(TAU_LABEL)
     ax_y.set_ylabel(ylabel, color="blue")
     ax_u.set_ylabel("управление u", color="red")
     ax_y.set_title(title)
@@ -74,11 +78,11 @@ def draw_setpoints():
         ax_u.plot(tau, [float(row["u"]) for row in rows], label=label)
         ax_y.axhline(float(rows[0]["w"]), linestyle=":", linewidth=1)
 
-    ax_y.set_ylabel("температура y")
+    ax_y.set_ylabel(TEMP_LABEL)
     ax_y.set_title("ПИД-регулятор (Kp=1.0, Ki=0.5, Kd=1.0) при разных заданиях")
     ax_y.grid(True, linestyle=":")
     ax_y.legend()
-    ax_u.set_xlabel("такт t")
+    ax_u.set_xlabel(TAU_LABEL)
     ax_u.set_ylabel("управление u")
     ax_u.grid(True, linestyle=":")
     ax_u.axhline(100, color="red", linestyle="--", linewidth=1)
@@ -105,8 +109,8 @@ def draw_mode_b():
         ax.axvline(tau[-1], linestyle=":", linewidth=1)
 
     ax.axhline(25, color="gray", linestyle="--", linewidth=1, label="задание w = 25")
-    ax.set_xlabel("такт t")
-    ax.set_ylabel("температура y")
+    ax.set_xlabel(TAU_LABEL)
+    ax.set_ylabel(TEMP_LABEL)
     ax.set_title("Режим Б: останов при |e| < eps (окно 3 такта)")
     ax.grid(True, linestyle=":")
     ax.legend()
@@ -135,7 +139,7 @@ def draw_tuning_comparison(csv_names, labels, title, ylabel, png_name,
 
     w = float(read_csv(csv_names[0])[0]["w"])
     ax.axhline(w, color="gray", linestyle="--", linewidth=1, label="задание w")
-    ax.set_xlabel("такт t")
+    ax.set_xlabel(TAU_LABEL)
     ax.set_ylabel(ylabel)
     ax.set_title(title)
     ax.grid(True, linestyle=":")
@@ -150,18 +154,18 @@ def draw_tuning_comparison(csv_names, labels, title, ylabel, png_name,
 def main():
     os.makedirs(OUT_DIR, exist_ok=True)
 
-    draw_process("task03_tune1_p.csv", "task03_open_linear.csv",
+    draw_process("task03_tune1_p.csv", LINEAR_OPEN_CSV,
                  "Настройка, шаг 1: П-регулятор, Kp = 0.4 (w = 25)",
-                 "температура y", "tune1_p.png")
-    draw_process("task03_tune2_p.csv", "task03_open_linear.csv",
+                 TEMP_LABEL, "tune1_p.png")
+    draw_process("task03_tune2_p.csv", LINEAR_OPEN_CSV,
                  "Настройка, шаг 2: П-регулятор, Kp = 2.0 (w = 25)",
-                 "температура y", "tune2_p.png")
-    draw_process("task03_tune3_pi.csv", "task03_open_linear.csv",
+                 TEMP_LABEL, "tune2_p.png")
+    draw_process("task03_tune3_pi.csv", LINEAR_OPEN_CSV,
                  "Настройка, шаг 3: ПИ-регулятор, Kp = 0.4, Ki = 0.3 (w = 25)",
-                 "температура y", "tune3_pi.png")
-    draw_process("task03_tune4_pid.csv", "task03_open_linear.csv",
+                 TEMP_LABEL, "tune3_pi.png")
+    draw_process("task03_tune4_pid.csv", LINEAR_OPEN_CSV,
                  "Настройка, шаг 4: ПИД, Kp = 1.0, Ki = 0.5, Kd = 1.0 (w = 25)",
-                 "температура y", "tune4_pid.png")
+                 TEMP_LABEL, "tune4_pid.png")
     draw_setpoints()
     draw_mode_b()
     draw_tuning_comparison(

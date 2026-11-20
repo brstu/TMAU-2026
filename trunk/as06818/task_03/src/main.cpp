@@ -140,9 +140,8 @@ void run_interactive() {
     std::vector<ControllerPoint> points;
     std::cout << "\nРежим симуляции:\n  1 — А: фиксированное число тактов\n"
               << "  2 — Б: до установившегося режима (|e| < eps)\n";
-    const int mode = read_int("Выбор", 2);
 
-    if (mode == 1) {
+    if (const int mode = read_int("Выбор", 2); mode == 1) {
         const int n = read_int("Число тактов n", 60);
         points = run_fixed_steps(system, w, n);
     } else {
