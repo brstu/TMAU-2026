@@ -1,0 +1,36 @@
+name: Doxygen Pages (task 03)
+
+on:
+  push:
+    branches: [task_03, main]
+    paths:
+      - "trunk/as06818/task_03/doc/html/**"
+      - ".github/workflows/task03-pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    # Публикация документации на GitHub Pages форка
+    # (в основном репозитории курса Pages не используется).
+    if: github.repository == 'empty513/TMAU-2026'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: trunk/as06818/task_03/doc/html
+      - id: deployment
+        uses: actions/deploy-pages@v4

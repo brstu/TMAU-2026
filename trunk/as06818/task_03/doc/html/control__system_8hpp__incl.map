@@ -1,0 +1,9 @@
+<map id="src/control_system.hpp" name="src/control_system.hpp">
+<area shape="rect" id="Node000001" title="Замкнутая система регулирования и режимы симуляции." alt="" coords="49,5,204,30"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,78,62,103"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="114,31,62,71,59,66,109,31"/>
+<area shape="rect" id="Node000003" href="$model_8hpp.html" title="Абстрактный объект управления." alt="" coords="86,78,168,103"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="129,29,129,64,124,61,125,33"/>
+<area shape="rect" id="Node000004" href="$pid_8hpp.html" title="Дискретный ПИД&#45;регулятор в инкрементной форме." alt="" coords="191,78,254,103"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="144,28,198,69,193,69,142,33"/>
+</map>
