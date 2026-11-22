@@ -15,24 +15,22 @@ else()
     add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-# Теперь пути указывают на папку src
 add_library(simulation_core
-    src/Model.cpp
-    src/InputSignal.cpp
-    src/LinearModel13.cpp
-    src/RelayModel27.cpp
-    src/DifferentialModel31.cpp
-    src/StabilityAnalyzer.cpp
-    src/Simulator.cpp
-    src/ResultWriter.cpp
+    Model.cpp
+    InputSignal.cpp
+    LinearModel13.cpp
+    RelayModel27.cpp
+    DifferentialModel31.cpp
+    StabilityAnalyzer.cpp
+    Simulator.cpp
+    ResultWriter.cpp
 )
-target_include_directories(simulation_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
+target_include_directories(simulation_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
-# И здесь путь на src
-add_executable(controlled_object src/main.cpp)
+add_executable(controlled_object main.cpp)
 target_link_libraries(controlled_object PRIVATE simulation_core)
-target_compile_definitions(controlled_object PRIVATE PROJECT_ROOT="${CMAKE_CURRENT_SOURCE_DIR}")
-set_property(TARGET controlled_object PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
+target_compile_definitions(controlled_object PRIVATE PROJECT_ROOT="${CMAKE_CURRENT_SOURCE_DIR}/..")
+set_property(TARGET controlled_object PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 option(BUILD_TESTING "Build Google Test unit tests" ON)
 if(BUILD_TESTING)
@@ -44,13 +42,12 @@ if(BUILD_TESTING)
     )
     FetchContent_MakeAvailable(googletest)
 
-    # Пути к тестам (без ../, так как мы уже в task_02)
     add_executable(unit_tests
-        test/LinearModelTests.cpp
-        test/RelayModelTests.cpp
-        test/DifferentialModelTests.cpp
-        test/StabilityAnalyzerTests.cpp
-        test/SimulatorTests.cpp
+        ../test/LinearModelTests.cpp
+        ../test/RelayModelTests.cpp
+        ../test/DifferentialModelTests.cpp
+        ../test/StabilityAnalyzerTests.cpp
+        ../test/SimulatorTests.cpp
     )
     target_link_libraries(unit_tests PRIVATE simulation_core GTest::gtest_main GTest::gmock)
     include(GoogleTest)
