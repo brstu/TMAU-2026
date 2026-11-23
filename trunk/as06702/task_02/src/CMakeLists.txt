@@ -27,10 +27,10 @@ add_library(simulation_core
 )
 target_include_directories(simulation_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
-add_executable(controlled_object main.cpp)
-target_link_libraries(controlled_object PRIVATE simulation_core)
-target_compile_definitions(controlled_object PRIVATE PROJECT_ROOT="${CMAKE_CURRENT_SOURCE_DIR}/..")
-set_property(TARGET controlled_object PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/..")
+add_executable(controlled_object_task02 main.cpp)
+target_link_libraries(controlled_object_task02 PRIVATE simulation_core)
+target_compile_definitions(controlled_object_task02 PRIVATE PROJECT_ROOT="${CMAKE_CURRENT_SOURCE_DIR}/..")
+set_property(TARGET controlled_object_task02 PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 option(BUILD_TESTING "Build Google Test unit tests" ON)
 if(BUILD_TESTING)
@@ -42,17 +42,17 @@ if(BUILD_TESTING)
     )
     FetchContent_MakeAvailable(googletest)
 
-    add_executable(unit_tests
-        ../test/LinearModelTests.cpp
-        ../test/RelayModelTests.cpp
-        ../test/DifferentialModelTests.cpp
-        ../test/StabilityAnalyzerTests.cpp
-        ../test/SimulatorTests.cpp
-    )
-    target_link_libraries(unit_tests PRIVATE simulation_core GTest::gtest_main GTest::gmock)
-    include(GoogleTest)
-    gtest_discover_tests(unit_tests)
-    set_target_properties(unit_tests PROPERTIES
+    add_executable(unit_tests_task02
+    ../test/LinearModelTests.cpp
+    ../test/RelayModelTests.cpp
+    ../test/DifferentialModelTests.cpp
+    ../test/StabilityAnalyzerTests.cpp
+    ../test/SimulatorTests.cpp
+)
+target_link_libraries(unit_tests_task02 PRIVATE simulation_core GTest::gtest_main GTest::gmock)
+include(GoogleTest)
+gtest_discover_tests(unit_tests_task02)
+set_target_properties(unit_tests_task02 PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
         RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/bin"
         RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/bin"
