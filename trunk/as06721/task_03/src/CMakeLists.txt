@@ -1,0 +1,15 @@
+add_library(as06721_lab03_control STATIC control.cpp)
+target_compile_features(as06721_lab03_control PUBLIC cxx_std_17)
+target_include_directories(as06721_lab03_control PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
+
+add_executable(as06721_lab03 main.cpp)
+target_link_libraries(as06721_lab03 PRIVATE as06721_lab03_control)
+set_target_properties(as06721_lab03 PROPERTIES OUTPUT_NAME task03)
+
+foreach(target as06721_lab03_control as06721_lab03)
+    if(MSVC)
+        target_compile_options(${target} PRIVATE /W4 /utf-8)
+    elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+        target_compile_options(${target} PRIVATE -Wall -Wextra -Wpedantic)
+    endif()
+endforeach()

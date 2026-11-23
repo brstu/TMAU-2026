@@ -1,0 +1,40 @@
+name: Publish as06721 lab 03 documentation
+
+on:
+  push:
+    branches: [main, lab3]
+    paths:
+      - trunk/as06721/task_03/doc/html/**
+      - .github/workflows/as06721-task03-pages.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.repository == 'krixiszzzz/TMAU-2026'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: trunk/as06721/task_03/doc/html
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.pages.outputs.page_url }}
+    steps:
+      - name: Deploy Doxygen documentation
+        id: pages
+        uses: actions/deploy-pages@v4

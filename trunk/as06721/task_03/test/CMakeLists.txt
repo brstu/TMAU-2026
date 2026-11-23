@@ -1,0 +1,4 @@
+add_executable(as06721_lab03_tests test_control.cpp)
+target_link_libraries(as06721_lab03_tests PRIVATE as06721_lab03_control GTest::gtest_main)
+include(GoogleTest)
+gtest_discover_tests(as06721_lab03_tests DISCOVERY_MODE PRE_TEST NO_PRETTY_VALUES)
