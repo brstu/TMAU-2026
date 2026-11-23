@@ -82,7 +82,7 @@ double trackingError(double target, double output) {
 
 } // namespace
 
-Pid::Pid(PidSettings settings, double dt) : settings_(settings), dt_(dt) {
+Pid::Pid(const PidSettings& settings, double dt) : settings_(settings), dt_(dt) {
     if (!std::isfinite(dt) || dt <= 0.0 ||
         !std::isfinite(settings.kp) || !std::isfinite(settings.ki) ||
         !std::isfinite(settings.kd) || settings.kp < 0.0 ||
@@ -134,11 +134,11 @@ SimulationResult simulate(const PlantSettings& plantSettings, const PidSettings&
     for (std::size_t step = 0; ; ++step) {
         result.samples.push_back({step, settings.dt * static_cast<double>(step),
                                   settings.target, output, error, command});
-        if (byError && std::abs(error) <= settings.tolerance) {
+        const bool toleranceReached = byError && std::abs(error) <= settings.tolerance;
+        if (toleranceReached) {
             result.reason = StopReason::toleranceReached;
-            break;
         }
-        if (step == settings.steps) {
+        if (toleranceReached || step == settings.steps) {
             break;
         }
         command = pid.advance(error);

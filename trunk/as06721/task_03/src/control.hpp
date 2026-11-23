@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <vector>
 
-/** @mainpage Laboratory 03 — PID control, variant 21
+/** @mainpage Laboratory 03 вЂ” PID control, variant 21
  *
  * The simulator closes the loop around models 1.2, 2.7 and 3.5.
  * The controller receives the tracking error and returns a limited actuator command.
@@ -43,7 +43,7 @@ struct PidSettings {
 class Pid {
 public:
     /** @param settings Gains and limits. @param dt Positive sampling period. */
-    Pid(PidSettings settings, double dt);
+    Pid(const PidSettings& settings, double dt);
 
     /** Advance the controller from two previous errors, initially zero.
      *  @param error Current target minus plant output.

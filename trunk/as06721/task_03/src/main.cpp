@@ -27,12 +27,17 @@ const std::array<Preset, 3> presets{{
     {"model35", {PlantKind::harmonic, 0, 12}, {0.09, 0.025, 0.02, -1.3, 1.3}},
 }};
 
+class InputEnded : public std::runtime_error {
+public:
+    InputEnded() : std::runtime_error("Input ended.") {}
+};
+
 template <typename Value>
 Value readValue(const char* prompt, Value minimum, Value maximum) {
     std::cout << prompt << std::flush;
     std::string line;
     if (!std::getline(std::cin, line)) {
-        throw std::runtime_error("Input ended.");
+        throw InputEnded();
     }
     std::istringstream input(line);
     input.imbue(std::locale::classic());
@@ -91,16 +96,32 @@ void runInteractive() {
         ? readValue("Absolute error tolerance: ", 0.0, 1e6) : 0.0;
     const auto result = simulate(preset.plant, preset.pid, {mode, steps, dt, initial, target, tolerance});
     writeCsv("results.csv", result);
-    const auto& final = result.samples.back();
+    const auto& lastSample = result.samples.back();
     std::cout << "step,time,target,output,error,command\n"
-              << final.step << ',' << final.time << ',' << final.target << ',' << final.output
-              << ',' << final.error << ',' << final.command << '\n';
+              << lastSample.step << ',' << lastSample.time << ',' << lastSample.target << ',' << lastSample.output
+              << ',' << lastSample.error << ',' << lastSample.command << '\n';
     switch (result.reason) {
         case StopReason::completed: std::cout << "Fixed number of steps completed.\n"; break;
         case StopReason::toleranceReached: std::cout << "Error tolerance reached.\n"; break;
         case StopReason::stepLimit: std::cout << "Step limit reached before the error tolerance.\n"; break;
     }
     std::cout << "Trajectory saved to results.csv\n";
+}
+
+void writeToleranceExample(const std::filesystem::path& directory, std::ostream& summary,
+                           const Preset& preset, int target, double tolerance) {
+    const auto result = simulate(preset.plant, preset.pid,
+        {StopMode::errorTolerance, 200, 0.2, 20.0,
+         static_cast<double>(target), tolerance});
+    const auto& last = result.samples.back();
+    summary << preset.key << ',' << target << ',' << tolerance << ','
+            << last.step << ',' << last.time << ',' << last.output << ','
+            << last.error << ',' << (result.reason == StopReason::toleranceReached
+                ? "toleranceReached" : "stepLimit") << '\n';
+    if (tolerance == 0.2) {
+        writeCsv(directory / (std::string("modeb_") + preset.key + "_" +
+            std::to_string(target) + ".csv"), result);
+    }
 }
 
 void runExamples() {
@@ -131,18 +152,7 @@ void runExamples() {
     for (const auto& preset : presets) {
         for (const int target : {40, 60}) {
             for (const double tolerance : {0.5, 0.2, 0.05}) {
-                const auto result = simulate(preset.plant, preset.pid,
-                    {StopMode::errorTolerance, 200, 0.2, 20.0,
-                     static_cast<double>(target), tolerance});
-                const auto& last = result.samples.back();
-                summary << preset.key << ',' << target << ',' << tolerance << ','
-                        << last.step << ',' << last.time << ',' << last.output << ','
-                        << last.error << ',' << (result.reason == StopReason::toleranceReached
-                            ? "toleranceReached" : "stepLimit") << '\n';
-                if (tolerance == 0.2) {
-                    writeCsv(directory / (std::string("modeb_") + preset.key + "_" +
-                        std::to_string(target) + ".csv"), result);
-                }
+                writeToleranceExample(directory, summary, preset, target, tolerance);
             }
         }
     }

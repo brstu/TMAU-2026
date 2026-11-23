@@ -25,7 +25,7 @@
 var NAVTREE =
 [
   [ "Lab 03 - PID Control (Variant 21)", "index.html", [
-    [ "Laboratory 03 — PID control, variant 21", "index.html", null ],
+    [ "Laboratory 03 вЂ” PID control, variant 21", "index.html", null ],
     [ "Namespaces", "namespaces.html", [
       [ "Namespace List", "namespaces.html", "namespaces_dup" ],
       [ "Namespace Members", "namespacemembers.html", [
