@@ -91,11 +91,17 @@ if errorlevel 1 goto :no_coverage
 
 if not exist "%REPORT_DIR%" mkdir "%REPORT_DIR%" >nul 2>&1
 
-python -m gcovr --root "%WORK_DIR%" --filter "%WORK_SLASH%/src/" --exclude ".*main\.cpp" --exclude-unreachable-branches --print-summary --output "%REPORT_DIR%\coverage_report.txt" "%WORK_DIR%\build"
+python -m gcovr --root "%WORK_DIR%" --filter "%WORK_SLASH%/src/" --exclude ".*main\.cpp" --exclude-unreachable-branches --print-summary --output "%REPORT_DIR%\coverage_report.txt" "%WORK_DIR%\build" > "%WORK_DIR%\coverage_summary.txt"
 if errorlevel 1 goto :no_coverage
+type "%WORK_DIR%\coverage_summary.txt" >> "%REPORT_DIR%\coverage_report.txt"
 
 python -m gcovr --root "%WORK_DIR%" --filter "%WORK_SLASH%/src/" --exclude ".*main\.cpp" --exclude-unreachable-branches --html "%REPORT_DIR%\coverage_report.html" "%WORK_DIR%\build"
 if errorlevel 1 goto :no_coverage
+
+echo.
+echo [Покрытие кода] отчёт gcovr:
+type "%REPORT_DIR%\coverage_report.txt"
+echo.
 
 echo [OK] Отчёты о покрытии сохранены в %REPORT_DIR%
 exit /b 0
