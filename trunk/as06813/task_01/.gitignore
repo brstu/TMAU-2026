@@ -1,0 +1,10 @@
+build/
+CMakeFiles/
+CMakeCache.txt
+*.exe
+*.o
+*.obj
+*.csv
+src/*.png
+__pycache__/
+*.pyc
