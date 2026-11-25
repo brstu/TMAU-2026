@@ -1,9 +1,15 @@
 name: Check code duplication
 
-on: pull_request_target
+on: 
+  pull_request_target:
+    # Не запускать, если изменены ТОЛЬКО .md файлы
+    paths-ignore:
+      - '**/*.md'
 
 jobs:
   duplicate-code-check:
+    # Запускать задачу только если в названии PR нет [doc]
+    if: "!startsWith(github.event.pull_request.title, '[doc]')"
     name: Check for duplicate code
     runs-on: ubuntu-latest
     steps:
