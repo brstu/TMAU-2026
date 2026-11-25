@@ -140,11 +140,12 @@ TEST(BaseSystemModelTest, HandlesEdgeCasesAndInvalidInputs) {
     EXPECT_THROW(sys.runSimulation(3, inf, 1.0, zeroSignal), std::invalid_argument);
     EXPECT_THROW(sys.runSimulation(3, 0.0, inf, zeroSignal), std::invalid_argument);
     EXPECT_THROW(sys.runSimulation(3, 0.0, -0.1, zeroSignal), std::invalid_argument);
-    EXPECT_THROW(sys.runSimulation(3, 0.0, 1.0, [inf](int) { return inf; }), std::runtime_error);
+        EXPECT_THROW(sys.runSimulation(3, 0.0, 1.0, [inf](int) { return inf; }), SimulationError);
 
     const MultiStepControlSystem exploding(2.0, 0.0, 0.0, 0.0);
     EXPECT_THROW(exploding.runSimulation(1, std::numeric_limits<double>::max(), 1.0, zeroSignal),
-                 std::runtime_error);
+                 SimulationError);
+
 
     const auto singlePoint = sys.runSimulation(0, 4.25, 0.1, buildControlGenerator(SignalKind::Impulse));
     ASSERT_EQ(singlePoint.size(), 1u);

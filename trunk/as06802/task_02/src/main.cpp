@@ -21,38 +21,6 @@ ControlGenerator buildControlGenerator(SignalKind kind) {
     throw std::invalid_argument("Задан неподдерживаемый тип входного сигнала.");
 }
 
-std::vector<TrajectoryPoint> BaseSystemModel::runSimulation(
-    int totalSteps, double initialState, double dt, const ControlGenerator& gen) const {
-    if (totalSteps < 0 || !std::isfinite(initialState) || !std::isfinite(dt) || dt <= 0.0) {
-        throw std::invalid_argument("Параметры моделирования заданы некорректно.");
-    }
-
-    std::vector<TrajectoryPoint> history;
-    history.reserve(static_cast<std::size_t>(totalSteps) + 1);
-    double currentY = initialState;
-
-    for (int k = 0; ; ++k) {
-        const double currentU = gen(k);
-        if (!std::isfinite(currentU)) {
-            throw std::runtime_error("Входное воздействие приняло некорректное значение.");
-        }
-        history.push_back({k, currentU, currentY});
-        if (k == totalSteps) {
-            break;
-        }
-
-        const double prevY = (k >= 1) ? history[static_cast<std::size_t>(k - 1)].state : 0.0;
-        const double prevU1 = (k >= 1) ? history[static_cast<std::size_t>(k - 1)].control : 0.0;
-        const double prevU2 = (k >= 2) ? history[static_cast<std::size_t>(k - 2)].control : 0.0;
-
-        currentY = evaluateNext({currentY, prevY, currentU, prevU1, prevU2, dt});
-        if (!std::isfinite(currentY)) {
-            throw std::runtime_error("Выход модели переполнился или стал нечисловым.");
-        }
-    }
-    return history;
-}
-
 MultiStepControlSystem::MultiStepControlSystem(double a, double b1, double b2, double b3)
     : a_(a), b1_(b1), b2_(b2), b3_(b3) {
     if (!std::isfinite(a) || !std::isfinite(b1) || !std::isfinite(b2) || !std::isfinite(b3)) {
