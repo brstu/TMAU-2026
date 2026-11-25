@@ -1,5 +1,0 @@
-if(EXISTS "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests_e3b0c442_tests.cmake")
-  include("C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests_e3b0c442_tests.cmake")
-else()
-  add_test(task2_as06717_tests_NOT_BUILT task2_as06717_tests_NOT_BUILT)
-endif()

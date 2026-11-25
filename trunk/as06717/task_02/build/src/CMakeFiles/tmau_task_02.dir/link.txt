@@ -1,3 +1,0 @@
-"C:\Program Files\CMake\bin\cmake.exe" -E rm -f CMakeFiles\tmau_task_02.dir/objects.a
-C:\msys64\ucrt64\bin\ar.exe qc CMakeFiles\tmau_task_02.dir/objects.a @CMakeFiles\tmau_task_02.dir\objects1.rsp
-C:\msys64\ucrt64\bin\c++.exe -g -O0 --coverage -Wl,--whole-archive CMakeFiles\tmau_task_02.dir/objects.a -Wl,--no-whole-archive -o tmau_task_02.exe -Wl,--out-implib,libtmau_task_02.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\tmau_task_02.dir\linkLibs.rsp
