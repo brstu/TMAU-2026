@@ -1,0 +1,1002 @@
+Start testing: Nov 25 14:42 Беларусь (зима)
+----------------------------------------------------------
+1/37 Testing: SignalTest.StepIsConstant
+1/37 Test: SignalTest.StepIsConstant
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=SignalTest.StepIsConstant" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"SignalTest.StepIsConstant" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = SignalTest.StepIsConstant
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from SignalTest
+[ RUN      ] SignalTest.StepIsConstant
+[       OK ] SignalTest.StepIsConstant (0 ms)
+[----------] 1 test from SignalTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.07 sec
+----------------------------------------------------------
+Test Passed.
+"SignalTest.StepIsConstant" end time: Nov 25 14:42 Беларусь (зима)
+"SignalTest.StepIsConstant" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/37 Testing: SignalTest.ImpulseIsNonZeroOnlyAtFirstStep
+2/37 Test: SignalTest.ImpulseIsNonZeroOnlyAtFirstStep
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=SignalTest.ImpulseIsNonZeroOnlyAtFirstStep" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"SignalTest.ImpulseIsNonZeroOnlyAtFirstStep" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = SignalTest.ImpulseIsNonZeroOnlyAtFirstStep
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from SignalTest
+[ RUN      ] SignalTest.ImpulseIsNonZeroOnlyAtFirstStep
+[       OK ] SignalTest.ImpulseIsNonZeroOnlyAtFirstStep (0 ms)
+[----------] 1 test from SignalTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.07 sec
+----------------------------------------------------------
+Test Passed.
+"SignalTest.ImpulseIsNonZeroOnlyAtFirstStep" end time: Nov 25 14:42 Беларусь (зима)
+"SignalTest.ImpulseIsNonZeroOnlyAtFirstStep" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/37 Testing: SignalTest.HarmonicFollowsSine
+3/37 Test: SignalTest.HarmonicFollowsSine
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=SignalTest.HarmonicFollowsSine" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"SignalTest.HarmonicFollowsSine" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = SignalTest.HarmonicFollowsSine
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from SignalTest
+[ RUN      ] SignalTest.HarmonicFollowsSine
+[       OK ] SignalTest.HarmonicFollowsSine (0 ms)
+[----------] 1 test from SignalTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.07 sec
+----------------------------------------------------------
+Test Passed.
+"SignalTest.HarmonicFollowsSine" end time: Nov 25 14:42 Беларусь (зима)
+"SignalTest.HarmonicFollowsSine" time elapsed: 00:00:00
+----------------------------------------------------------
+
+4/37 Testing: SignalTest.UnknownTypeGivesHarmonicByDefault
+4/37 Test: SignalTest.UnknownTypeGivesHarmonicByDefault
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=SignalTest.UnknownTypeGivesHarmonicByDefault" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"SignalTest.UnknownTypeGivesHarmonicByDefault" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = SignalTest.UnknownTypeGivesHarmonicByDefault
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from SignalTest
+[ RUN      ] SignalTest.UnknownTypeGivesHarmonicByDefault
+[       OK ] SignalTest.UnknownTypeGivesHarmonicByDefault (0 ms)
+[----------] 1 test from SignalTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.10 sec
+----------------------------------------------------------
+Test Passed.
+"SignalTest.UnknownTypeGivesHarmonicByDefault" end time: Nov 25 14:42 Беларусь (зима)
+"SignalTest.UnknownTypeGivesHarmonicByDefault" time elapsed: 00:00:00
+----------------------------------------------------------
+
+5/37 Testing: VerdictTest.CheckStabilityGivesThreeVerdicts
+5/37 Test: VerdictTest.CheckStabilityGivesThreeVerdicts
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=VerdictTest.CheckStabilityGivesThreeVerdicts" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"VerdictTest.CheckStabilityGivesThreeVerdicts" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = VerdictTest.CheckStabilityGivesThreeVerdicts
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from VerdictTest
+[ RUN      ] VerdictTest.CheckStabilityGivesThreeVerdicts
+[       OK ] VerdictTest.CheckStabilityGivesThreeVerdicts (0 ms)
+[----------] 1 test from VerdictTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.12 sec
+----------------------------------------------------------
+Test Passed.
+"VerdictTest.CheckStabilityGivesThreeVerdicts" end time: Nov 25 14:42 Беларусь (зима)
+"VerdictTest.CheckStabilityGivesThreeVerdicts" time elapsed: 00:00:00
+----------------------------------------------------------
+
+6/37 Testing: WarningTest.NoWarningWhenStable
+6/37 Test: WarningTest.NoWarningWhenStable
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=WarningTest.NoWarningWhenStable" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"WarningTest.NoWarningWhenStable" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = WarningTest.NoWarningWhenStable
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from WarningTest
+[ RUN      ] WarningTest.NoWarningWhenStable
+[       OK ] WarningTest.NoWarningWhenStable (0 ms)
+[----------] 1 test from WarningTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.08 sec
+----------------------------------------------------------
+Test Passed.
+"WarningTest.NoWarningWhenStable" end time: Nov 25 14:42 Беларусь (зима)
+"WarningTest.NoWarningWhenStable" time elapsed: 00:00:00
+----------------------------------------------------------
+
+7/37 Testing: WarningTest.WarningWhenUnstable
+7/37 Test: WarningTest.WarningWhenUnstable
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=WarningTest.WarningWhenUnstable" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"WarningTest.WarningWhenUnstable" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = WarningTest.WarningWhenUnstable
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from WarningTest
+[ RUN      ] WarningTest.WarningWhenUnstable
+[       OK ] WarningTest.WarningWhenUnstable (0 ms)
+[----------] 1 test from WarningTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.07 sec
+----------------------------------------------------------
+Test Passed.
+"WarningTest.WarningWhenUnstable" end time: Nov 25 14:42 Беларусь (зима)
+"WarningTest.WarningWhenUnstable" time elapsed: 00:00:00
+----------------------------------------------------------
+
+8/37 Testing: WarningTest.WarningOnBoundary
+8/37 Test: WarningTest.WarningOnBoundary
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=WarningTest.WarningOnBoundary" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"WarningTest.WarningOnBoundary" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = WarningTest.WarningOnBoundary
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from WarningTest
+[ RUN      ] WarningTest.WarningOnBoundary
+[       OK ] WarningTest.WarningOnBoundary (0 ms)
+[----------] 1 test from WarningTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.07 sec
+----------------------------------------------------------
+Test Passed.
+"WarningTest.WarningOnBoundary" end time: Nov 25 14:42 Беларусь (зима)
+"WarningTest.WarningOnBoundary" time elapsed: 00:00:00
+----------------------------------------------------------
+
+9/37 Testing: BehaviourTest.StableModelDecays
+9/37 Test: BehaviourTest.StableModelDecays
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=BehaviourTest.StableModelDecays" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"BehaviourTest.StableModelDecays" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = BehaviourTest.StableModelDecays
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from BehaviourTest
+[ RUN      ] BehaviourTest.StableModelDecays
+[       OK ] BehaviourTest.StableModelDecays (0 ms)
+[----------] 1 test from BehaviourTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.07 sec
+----------------------------------------------------------
+Test Passed.
+"BehaviourTest.StableModelDecays" end time: Nov 25 14:42 Беларусь (зима)
+"BehaviourTest.StableModelDecays" time elapsed: 00:00:00
+----------------------------------------------------------
+
+10/37 Testing: BehaviourTest.UnstableModelGrows
+10/37 Test: BehaviourTest.UnstableModelGrows
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=BehaviourTest.UnstableModelGrows" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"BehaviourTest.UnstableModelGrows" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = BehaviourTest.UnstableModelGrows
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from BehaviourTest
+[ RUN      ] BehaviourTest.UnstableModelGrows
+[       OK ] BehaviourTest.UnstableModelGrows (0 ms)
+[----------] 1 test from BehaviourTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.08 sec
+----------------------------------------------------------
+Test Passed.
+"BehaviourTest.UnstableModelGrows" end time: Nov 25 14:42 Беларусь (зима)
+"BehaviourTest.UnstableModelGrows" time elapsed: 00:00:00
+----------------------------------------------------------
+
+11/37 Testing: IntegratorTest.CumulativeSum
+11/37 Test: IntegratorTest.CumulativeSum
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=IntegratorTest.CumulativeSum" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"IntegratorTest.CumulativeSum" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = IntegratorTest.CumulativeSum
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from IntegratorTest
+[ RUN      ] IntegratorTest.CumulativeSum
+[       OK ] IntegratorTest.CumulativeSum (0 ms)
+[----------] 1 test from IntegratorTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.08 sec
+----------------------------------------------------------
+Test Passed.
+"IntegratorTest.CumulativeSum" end time: Nov 25 14:42 Беларусь (зима)
+"IntegratorTest.CumulativeSum" time elapsed: 00:00:00
+----------------------------------------------------------
+
+12/37 Testing: InvariantTest.ZeroInputAndZeroStateGiveRest
+12/37 Test: InvariantTest.ZeroInputAndZeroStateGiveRest
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=InvariantTest.ZeroInputAndZeroStateGiveRest" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"InvariantTest.ZeroInputAndZeroStateGiveRest" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = InvariantTest.ZeroInputAndZeroStateGiveRest
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from InvariantTest
+[ RUN      ] InvariantTest.ZeroInputAndZeroStateGiveRest
+[       OK ] InvariantTest.ZeroInputAndZeroStateGiveRest (0 ms)
+[----------] 1 test from InvariantTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.07 sec
+----------------------------------------------------------
+Test Passed.
+"InvariantTest.ZeroInputAndZeroStateGiveRest" end time: Nov 25 14:42 Беларусь (зима)
+"InvariantTest.ZeroInputAndZeroStateGiveRest" time elapsed: 00:00:00
+----------------------------------------------------------
+
+13/37 Testing: NameTest.EachModelHasItsName
+13/37 Test: NameTest.EachModelHasItsName
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=NameTest.EachModelHasItsName" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"NameTest.EachModelHasItsName" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = NameTest.EachModelHasItsName
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from NameTest
+[ RUN      ] NameTest.EachModelHasItsName
+[       OK ] NameTest.EachModelHasItsName (0 ms)
+[----------] 1 test from NameTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.06 sec
+----------------------------------------------------------
+Test Passed.
+"NameTest.EachModelHasItsName" end time: Nov 25 14:42 Беларусь (зима)
+"NameTest.EachModelHasItsName" time elapsed: 00:00:00
+----------------------------------------------------------
+
+14/37 Testing: Roots/RootTest.IsStableMatchesRootPosition/case0
+14/37 Test: Roots/RootTest.IsStableMatchesRootPosition/case0
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=Roots/RootTest.IsStableMatchesRootPosition/case0" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"Roots/RootTest.IsStableMatchesRootPosition/case0" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = Roots/RootTest.IsStableMatchesRootPosition/case0
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from Roots/RootTest
+[ RUN      ] Roots/RootTest.IsStableMatchesRootPosition/case0
+[       OK ] Roots/RootTest.IsStableMatchesRootPosition/case0 (0 ms)
+[----------] 1 test from Roots/RootTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.07 sec
+----------------------------------------------------------
+Test Passed.
+"Roots/RootTest.IsStableMatchesRootPosition/case0" end time: Nov 25 14:42 Беларусь (зима)
+"Roots/RootTest.IsStableMatchesRootPosition/case0" time elapsed: 00:00:00
+----------------------------------------------------------
+
+15/37 Testing: Roots/RootTest.IsStableMatchesRootPosition/case1
+15/37 Test: Roots/RootTest.IsStableMatchesRootPosition/case1
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=Roots/RootTest.IsStableMatchesRootPosition/case1" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"Roots/RootTest.IsStableMatchesRootPosition/case1" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = Roots/RootTest.IsStableMatchesRootPosition/case1
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from Roots/RootTest
+[ RUN      ] Roots/RootTest.IsStableMatchesRootPosition/case1
+[       OK ] Roots/RootTest.IsStableMatchesRootPosition/case1 (0 ms)
+[----------] 1 test from Roots/RootTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.07 sec
+----------------------------------------------------------
+Test Passed.
+"Roots/RootTest.IsStableMatchesRootPosition/case1" end time: Nov 25 14:42 Беларусь (зима)
+"Roots/RootTest.IsStableMatchesRootPosition/case1" time elapsed: 00:00:00
+----------------------------------------------------------
+
+16/37 Testing: Roots/RootTest.IsStableMatchesRootPosition/case2
+16/37 Test: Roots/RootTest.IsStableMatchesRootPosition/case2
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=Roots/RootTest.IsStableMatchesRootPosition/case2" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"Roots/RootTest.IsStableMatchesRootPosition/case2" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = Roots/RootTest.IsStableMatchesRootPosition/case2
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from Roots/RootTest
+[ RUN      ] Roots/RootTest.IsStableMatchesRootPosition/case2
+[       OK ] Roots/RootTest.IsStableMatchesRootPosition/case2 (0 ms)
+[----------] 1 test from Roots/RootTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.07 sec
+----------------------------------------------------------
+Test Passed.
+"Roots/RootTest.IsStableMatchesRootPosition/case2" end time: Nov 25 14:42 Беларусь (зима)
+"Roots/RootTest.IsStableMatchesRootPosition/case2" time elapsed: 00:00:00
+----------------------------------------------------------
+
+17/37 Testing: Roots/RootTest.IsStableMatchesRootPosition/case3
+17/37 Test: Roots/RootTest.IsStableMatchesRootPosition/case3
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=Roots/RootTest.IsStableMatchesRootPosition/case3" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"Roots/RootTest.IsStableMatchesRootPosition/case3" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = Roots/RootTest.IsStableMatchesRootPosition/case3
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from Roots/RootTest
+[ RUN      ] Roots/RootTest.IsStableMatchesRootPosition/case3
+[       OK ] Roots/RootTest.IsStableMatchesRootPosition/case3 (0 ms)
+[----------] 1 test from Roots/RootTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.07 sec
+----------------------------------------------------------
+Test Passed.
+"Roots/RootTest.IsStableMatchesRootPosition/case3" end time: Nov 25 14:42 Беларусь (зима)
+"Roots/RootTest.IsStableMatchesRootPosition/case3" time elapsed: 00:00:00
+----------------------------------------------------------
+
+18/37 Testing: Roots/RootTest.IsStableMatchesRootPosition/case4
+18/37 Test: Roots/RootTest.IsStableMatchesRootPosition/case4
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=Roots/RootTest.IsStableMatchesRootPosition/case4" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"Roots/RootTest.IsStableMatchesRootPosition/case4" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = Roots/RootTest.IsStableMatchesRootPosition/case4
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from Roots/RootTest
+[ RUN      ] Roots/RootTest.IsStableMatchesRootPosition/case4
+[       OK ] Roots/RootTest.IsStableMatchesRootPosition/case4 (0 ms)
+[----------] 1 test from Roots/RootTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.08 sec
+----------------------------------------------------------
+Test Passed.
+"Roots/RootTest.IsStableMatchesRootPosition/case4" end time: Nov 25 14:42 Беларусь (зима)
+"Roots/RootTest.IsStableMatchesRootPosition/case4" time elapsed: 00:00:00
+----------------------------------------------------------
+
+19/37 Testing: Roots/RootTest.IsStableMatchesRootPosition/case5
+19/37 Test: Roots/RootTest.IsStableMatchesRootPosition/case5
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=Roots/RootTest.IsStableMatchesRootPosition/case5" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"Roots/RootTest.IsStableMatchesRootPosition/case5" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = Roots/RootTest.IsStableMatchesRootPosition/case5
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from Roots/RootTest
+[ RUN      ] Roots/RootTest.IsStableMatchesRootPosition/case5
+[       OK ] Roots/RootTest.IsStableMatchesRootPosition/case5 (0 ms)
+[----------] 1 test from Roots/RootTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.09 sec
+----------------------------------------------------------
+Test Passed.
+"Roots/RootTest.IsStableMatchesRootPosition/case5" end time: Nov 25 14:42 Беларусь (зима)
+"Roots/RootTest.IsStableMatchesRootPosition/case5" time elapsed: 00:00:00
+----------------------------------------------------------
+
+20/37 Testing: Roots/RootTest.IsStableMatchesRootPosition/case6
+20/37 Test: Roots/RootTest.IsStableMatchesRootPosition/case6
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=Roots/RootTest.IsStableMatchesRootPosition/case6" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"Roots/RootTest.IsStableMatchesRootPosition/case6" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = Roots/RootTest.IsStableMatchesRootPosition/case6
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from Roots/RootTest
+[ RUN      ] Roots/RootTest.IsStableMatchesRootPosition/case6
+[       OK ] Roots/RootTest.IsStableMatchesRootPosition/case6 (0 ms)
+[----------] 1 test from Roots/RootTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.09 sec
+----------------------------------------------------------
+Test Passed.
+"Roots/RootTest.IsStableMatchesRootPosition/case6" end time: Nov 25 14:42 Беларусь (зима)
+"Roots/RootTest.IsStableMatchesRootPosition/case6" time elapsed: 00:00:00
+----------------------------------------------------------
+
+21/37 Testing: Roots/RootTest.IsStableMatchesRootPosition/case7
+21/37 Test: Roots/RootTest.IsStableMatchesRootPosition/case7
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=Roots/RootTest.IsStableMatchesRootPosition/case7" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"Roots/RootTest.IsStableMatchesRootPosition/case7" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = Roots/RootTest.IsStableMatchesRootPosition/case7
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from Roots/RootTest
+[ RUN      ] Roots/RootTest.IsStableMatchesRootPosition/case7
+[       OK ] Roots/RootTest.IsStableMatchesRootPosition/case7 (0 ms)
+[----------] 1 test from Roots/RootTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.07 sec
+----------------------------------------------------------
+Test Passed.
+"Roots/RootTest.IsStableMatchesRootPosition/case7" end time: Nov 25 14:42 Беларусь (зима)
+"Roots/RootTest.IsStableMatchesRootPosition/case7" time elapsed: 00:00:00
+----------------------------------------------------------
+
+22/37 Testing: Modes/ArModelTest.ThirdStepMatchesHandCalculation/case0
+22/37 Test: Modes/ArModelTest.ThirdStepMatchesHandCalculation/case0
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=Modes/ArModelTest.ThirdStepMatchesHandCalculation/case0" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"Modes/ArModelTest.ThirdStepMatchesHandCalculation/case0" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = Modes/ArModelTest.ThirdStepMatchesHandCalculation/case0
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from Modes/ArModelTest
+[ RUN      ] Modes/ArModelTest.ThirdStepMatchesHandCalculation/case0
+[       OK ] Modes/ArModelTest.ThirdStepMatchesHandCalculation/case0 (0 ms)
+[----------] 1 test from Modes/ArModelTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.06 sec
+----------------------------------------------------------
+Test Passed.
+"Modes/ArModelTest.ThirdStepMatchesHandCalculation/case0" end time: Nov 25 14:42 Беларусь (зима)
+"Modes/ArModelTest.ThirdStepMatchesHandCalculation/case0" time elapsed: 00:00:00
+----------------------------------------------------------
+
+23/37 Testing: Modes/ArModelTest.ThirdStepMatchesHandCalculation/case1
+23/37 Test: Modes/ArModelTest.ThirdStepMatchesHandCalculation/case1
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=Modes/ArModelTest.ThirdStepMatchesHandCalculation/case1" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"Modes/ArModelTest.ThirdStepMatchesHandCalculation/case1" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = Modes/ArModelTest.ThirdStepMatchesHandCalculation/case1
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from Modes/ArModelTest
+[ RUN      ] Modes/ArModelTest.ThirdStepMatchesHandCalculation/case1
+[       OK ] Modes/ArModelTest.ThirdStepMatchesHandCalculation/case1 (0 ms)
+[----------] 1 test from Modes/ArModelTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.08 sec
+----------------------------------------------------------
+Test Passed.
+"Modes/ArModelTest.ThirdStepMatchesHandCalculation/case1" end time: Nov 25 14:42 Беларусь (зима)
+"Modes/ArModelTest.ThirdStepMatchesHandCalculation/case1" time elapsed: 00:00:00
+----------------------------------------------------------
+
+24/37 Testing: Modes/ArModelTest.ThirdStepMatchesHandCalculation/case2
+24/37 Test: Modes/ArModelTest.ThirdStepMatchesHandCalculation/case2
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=Modes/ArModelTest.ThirdStepMatchesHandCalculation/case2" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"Modes/ArModelTest.ThirdStepMatchesHandCalculation/case2" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = Modes/ArModelTest.ThirdStepMatchesHandCalculation/case2
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from Modes/ArModelTest
+[ RUN      ] Modes/ArModelTest.ThirdStepMatchesHandCalculation/case2
+[       OK ] Modes/ArModelTest.ThirdStepMatchesHandCalculation/case2 (0 ms)
+[----------] 1 test from Modes/ArModelTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.08 sec
+----------------------------------------------------------
+Test Passed.
+"Modes/ArModelTest.ThirdStepMatchesHandCalculation/case2" end time: Nov 25 14:42 Беларусь (зима)
+"Modes/ArModelTest.ThirdStepMatchesHandCalculation/case2" time elapsed: 00:00:00
+----------------------------------------------------------
+
+25/37 Testing: Modes/TanhModelTest.ThirdStepMatchesHandCalculation/case0
+25/37 Test: Modes/TanhModelTest.ThirdStepMatchesHandCalculation/case0
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=Modes/TanhModelTest.ThirdStepMatchesHandCalculation/case0" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"Modes/TanhModelTest.ThirdStepMatchesHandCalculation/case0" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = Modes/TanhModelTest.ThirdStepMatchesHandCalculation/case0
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from Modes/TanhModelTest
+[ RUN      ] Modes/TanhModelTest.ThirdStepMatchesHandCalculation/case0
+[       OK ] Modes/TanhModelTest.ThirdStepMatchesHandCalculation/case0 (0 ms)
+[----------] 1 test from Modes/TanhModelTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.08 sec
+----------------------------------------------------------
+Test Passed.
+"Modes/TanhModelTest.ThirdStepMatchesHandCalculation/case0" end time: Nov 25 14:42 Беларусь (зима)
+"Modes/TanhModelTest.ThirdStepMatchesHandCalculation/case0" time elapsed: 00:00:00
+----------------------------------------------------------
+
+26/37 Testing: Modes/TanhModelTest.ThirdStepMatchesHandCalculation/case1
+26/37 Test: Modes/TanhModelTest.ThirdStepMatchesHandCalculation/case1
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=Modes/TanhModelTest.ThirdStepMatchesHandCalculation/case1" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"Modes/TanhModelTest.ThirdStepMatchesHandCalculation/case1" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = Modes/TanhModelTest.ThirdStepMatchesHandCalculation/case1
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from Modes/TanhModelTest
+[ RUN      ] Modes/TanhModelTest.ThirdStepMatchesHandCalculation/case1
+[       OK ] Modes/TanhModelTest.ThirdStepMatchesHandCalculation/case1 (0 ms)
+[----------] 1 test from Modes/TanhModelTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.08 sec
+----------------------------------------------------------
+Test Passed.
+"Modes/TanhModelTest.ThirdStepMatchesHandCalculation/case1" end time: Nov 25 14:42 Беларусь (зима)
+"Modes/TanhModelTest.ThirdStepMatchesHandCalculation/case1" time elapsed: 00:00:00
+----------------------------------------------------------
+
+27/37 Testing: Modes/TanhModelTest.ThirdStepMatchesHandCalculation/case2
+27/37 Test: Modes/TanhModelTest.ThirdStepMatchesHandCalculation/case2
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=Modes/TanhModelTest.ThirdStepMatchesHandCalculation/case2" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"Modes/TanhModelTest.ThirdStepMatchesHandCalculation/case2" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = Modes/TanhModelTest.ThirdStepMatchesHandCalculation/case2
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from Modes/TanhModelTest
+[ RUN      ] Modes/TanhModelTest.ThirdStepMatchesHandCalculation/case2
+[       OK ] Modes/TanhModelTest.ThirdStepMatchesHandCalculation/case2 (0 ms)
+[----------] 1 test from Modes/TanhModelTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.10 sec
+----------------------------------------------------------
+Test Passed.
+"Modes/TanhModelTest.ThirdStepMatchesHandCalculation/case2" end time: Nov 25 14:42 Беларусь (зима)
+"Modes/TanhModelTest.ThirdStepMatchesHandCalculation/case2" time elapsed: 00:00:00
+----------------------------------------------------------
+
+28/37 Testing: Modes/IntegratorModelTest.ThirdStepMatchesHandCalculation/case0
+28/37 Test: Modes/IntegratorModelTest.ThirdStepMatchesHandCalculation/case0
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=Modes/IntegratorModelTest.ThirdStepMatchesHandCalculation/case0" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"Modes/IntegratorModelTest.ThirdStepMatchesHandCalculation/case0" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = Modes/IntegratorModelTest.ThirdStepMatchesHandCalculation/case0
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from Modes/IntegratorModelTest
+[ RUN      ] Modes/IntegratorModelTest.ThirdStepMatchesHandCalculation/case0
+[       OK ] Modes/IntegratorModelTest.ThirdStepMatchesHandCalculation/case0 (0 ms)
+[----------] 1 test from Modes/IntegratorModelTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.09 sec
+----------------------------------------------------------
+Test Passed.
+"Modes/IntegratorModelTest.ThirdStepMatchesHandCalculation/case0" end time: Nov 25 14:42 Беларусь (зима)
+"Modes/IntegratorModelTest.ThirdStepMatchesHandCalculation/case0" time elapsed: 00:00:00
+----------------------------------------------------------
+
+29/37 Testing: Modes/IntegratorModelTest.ThirdStepMatchesHandCalculation/case1
+29/37 Test: Modes/IntegratorModelTest.ThirdStepMatchesHandCalculation/case1
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=Modes/IntegratorModelTest.ThirdStepMatchesHandCalculation/case1" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"Modes/IntegratorModelTest.ThirdStepMatchesHandCalculation/case1" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = Modes/IntegratorModelTest.ThirdStepMatchesHandCalculation/case1
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from Modes/IntegratorModelTest
+[ RUN      ] Modes/IntegratorModelTest.ThirdStepMatchesHandCalculation/case1
+[       OK ] Modes/IntegratorModelTest.ThirdStepMatchesHandCalculation/case1 (0 ms)
+[----------] 1 test from Modes/IntegratorModelTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.08 sec
+----------------------------------------------------------
+Test Passed.
+"Modes/IntegratorModelTest.ThirdStepMatchesHandCalculation/case1" end time: Nov 25 14:42 Беларусь (зима)
+"Modes/IntegratorModelTest.ThirdStepMatchesHandCalculation/case1" time elapsed: 00:00:00
+----------------------------------------------------------
+
+30/37 Testing: Modes/IntegratorModelTest.ThirdStepMatchesHandCalculation/case2
+30/37 Test: Modes/IntegratorModelTest.ThirdStepMatchesHandCalculation/case2
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=Modes/IntegratorModelTest.ThirdStepMatchesHandCalculation/case2" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"Modes/IntegratorModelTest.ThirdStepMatchesHandCalculation/case2" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = Modes/IntegratorModelTest.ThirdStepMatchesHandCalculation/case2
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from Modes/IntegratorModelTest
+[ RUN      ] Modes/IntegratorModelTest.ThirdStepMatchesHandCalculation/case2
+[       OK ] Modes/IntegratorModelTest.ThirdStepMatchesHandCalculation/case2 (0 ms)
+[----------] 1 test from Modes/IntegratorModelTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.10 sec
+----------------------------------------------------------
+Test Passed.
+"Modes/IntegratorModelTest.ThirdStepMatchesHandCalculation/case2" end time: Nov 25 14:42 Беларусь (зима)
+"Modes/IntegratorModelTest.ThirdStepMatchesHandCalculation/case2" time elapsed: 00:00:00
+----------------------------------------------------------
+
+31/37 Testing: Edges/EdgeTest.ValueAtAndAroundZero/case0
+31/37 Test: Edges/EdgeTest.ValueAtAndAroundZero/case0
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=Edges/EdgeTest.ValueAtAndAroundZero/case0" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"Edges/EdgeTest.ValueAtAndAroundZero/case0" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = Edges/EdgeTest.ValueAtAndAroundZero/case0
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from Edges/EdgeTest
+[ RUN      ] Edges/EdgeTest.ValueAtAndAroundZero/case0
+[       OK ] Edges/EdgeTest.ValueAtAndAroundZero/case0 (0 ms)
+[----------] 1 test from Edges/EdgeTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.09 sec
+----------------------------------------------------------
+Test Passed.
+"Edges/EdgeTest.ValueAtAndAroundZero/case0" end time: Nov 25 14:42 Беларусь (зима)
+"Edges/EdgeTest.ValueAtAndAroundZero/case0" time elapsed: 00:00:00
+----------------------------------------------------------
+
+32/37 Testing: Edges/EdgeTest.ValueAtAndAroundZero/case1
+32/37 Test: Edges/EdgeTest.ValueAtAndAroundZero/case1
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=Edges/EdgeTest.ValueAtAndAroundZero/case1" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"Edges/EdgeTest.ValueAtAndAroundZero/case1" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = Edges/EdgeTest.ValueAtAndAroundZero/case1
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from Edges/EdgeTest
+[ RUN      ] Edges/EdgeTest.ValueAtAndAroundZero/case1
+[       OK ] Edges/EdgeTest.ValueAtAndAroundZero/case1 (0 ms)
+[----------] 1 test from Edges/EdgeTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.07 sec
+----------------------------------------------------------
+Test Passed.
+"Edges/EdgeTest.ValueAtAndAroundZero/case1" end time: Nov 25 14:42 Беларусь (зима)
+"Edges/EdgeTest.ValueAtAndAroundZero/case1" time elapsed: 00:00:00
+----------------------------------------------------------
+
+33/37 Testing: Edges/EdgeTest.ValueAtAndAroundZero/case2
+33/37 Test: Edges/EdgeTest.ValueAtAndAroundZero/case2
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=Edges/EdgeTest.ValueAtAndAroundZero/case2" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"Edges/EdgeTest.ValueAtAndAroundZero/case2" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = Edges/EdgeTest.ValueAtAndAroundZero/case2
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from Edges/EdgeTest
+[ RUN      ] Edges/EdgeTest.ValueAtAndAroundZero/case2
+[       OK ] Edges/EdgeTest.ValueAtAndAroundZero/case2 (0 ms)
+[----------] 1 test from Edges/EdgeTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.07 sec
+----------------------------------------------------------
+Test Passed.
+"Edges/EdgeTest.ValueAtAndAroundZero/case2" end time: Nov 25 14:42 Беларусь (зима)
+"Edges/EdgeTest.ValueAtAndAroundZero/case2" time elapsed: 00:00:00
+----------------------------------------------------------
+
+34/37 Testing: Edges/EdgeTest.ValueAtAndAroundZero/case3
+34/37 Test: Edges/EdgeTest.ValueAtAndAroundZero/case3
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=Edges/EdgeTest.ValueAtAndAroundZero/case3" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"Edges/EdgeTest.ValueAtAndAroundZero/case3" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = Edges/EdgeTest.ValueAtAndAroundZero/case3
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from Edges/EdgeTest
+[ RUN      ] Edges/EdgeTest.ValueAtAndAroundZero/case3
+[       OK ] Edges/EdgeTest.ValueAtAndAroundZero/case3 (0 ms)
+[----------] 1 test from Edges/EdgeTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.09 sec
+----------------------------------------------------------
+Test Passed.
+"Edges/EdgeTest.ValueAtAndAroundZero/case3" end time: Nov 25 14:42 Беларусь (зима)
+"Edges/EdgeTest.ValueAtAndAroundZero/case3" time elapsed: 00:00:00
+----------------------------------------------------------
+
+35/37 Testing: Edges/EdgeTest.ValueAtAndAroundZero/case4
+35/37 Test: Edges/EdgeTest.ValueAtAndAroundZero/case4
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=Edges/EdgeTest.ValueAtAndAroundZero/case4" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"Edges/EdgeTest.ValueAtAndAroundZero/case4" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = Edges/EdgeTest.ValueAtAndAroundZero/case4
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from Edges/EdgeTest
+[ RUN      ] Edges/EdgeTest.ValueAtAndAroundZero/case4
+[       OK ] Edges/EdgeTest.ValueAtAndAroundZero/case4 (0 ms)
+[----------] 1 test from Edges/EdgeTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.06 sec
+----------------------------------------------------------
+Test Passed.
+"Edges/EdgeTest.ValueAtAndAroundZero/case4" end time: Nov 25 14:42 Беларусь (зима)
+"Edges/EdgeTest.ValueAtAndAroundZero/case4" time elapsed: 00:00:00
+----------------------------------------------------------
+
+36/37 Testing: Convergence/SteadyTest.StepResponseConverges/case0
+36/37 Test: Convergence/SteadyTest.StepResponseConverges/case0
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=Convergence/SteadyTest.StepResponseConverges/case0" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"Convergence/SteadyTest.StepResponseConverges/case0" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = Convergence/SteadyTest.StepResponseConverges/case0
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from Convergence/SteadyTest
+[ RUN      ] Convergence/SteadyTest.StepResponseConverges/case0
+[       OK ] Convergence/SteadyTest.StepResponseConverges/case0 (0 ms)
+[----------] 1 test from Convergence/SteadyTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.07 sec
+----------------------------------------------------------
+Test Passed.
+"Convergence/SteadyTest.StepResponseConverges/case0" end time: Nov 25 14:42 Беларусь (зима)
+"Convergence/SteadyTest.StepResponseConverges/case0" time elapsed: 00:00:00
+----------------------------------------------------------
+
+37/37 Testing: Convergence/SteadyTest.StepResponseConverges/case1
+37/37 Test: Convergence/SteadyTest.StepResponseConverges/case1
+Command: "C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test/task2_as06717_tests.exe" "--gtest_filter=Convergence/SteadyTest.StepResponseConverges/case1" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/user/Desktop/github_univ/TMAU-2026/trunk/as06717/task_02/build/test
+"Convergence/SteadyTest.StepResponseConverges/case1" start time: Nov 25 14:42 Беларусь (зима)
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\user\Desktop\github_univ\TMAU-2026\trunk\as06717\task_02\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = Convergence/SteadyTest.StepResponseConverges/case1
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from Convergence/SteadyTest
+[ RUN      ] Convergence/SteadyTest.StepResponseConverges/case1
+[       OK ] Convergence/SteadyTest.StepResponseConverges/case1 (0 ms)
+[----------] 1 test from Convergence/SteadyTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.08 sec
+----------------------------------------------------------
+Test Passed.
+"Convergence/SteadyTest.StepResponseConverges/case1" end time: Nov 25 14:42 Беларусь (зима)
+"Convergence/SteadyTest.StepResponseConverges/case1" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Nov 25 14:42 Беларусь (зима)
