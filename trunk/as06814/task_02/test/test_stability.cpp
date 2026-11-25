@@ -30,6 +30,15 @@ TEST(StabilityAnalyzerTest, RootCalculation) {
 
 // 5. Проверка функции предупреждения
 TEST(StabilityAnalyzerTest, CheckAndWarnOutput) {
-    EXPECT_TRUE(StabilityAnalyzer::checkAndWarnStability(0.5));
-    EXPECT_FALSE(StabilityAnalyzer::checkAndWarnStability(1.5));
+    testing::internal::CaptureStdout();
+    bool stable_ok = StabilityAnalyzer::checkAndWarnStability(0.5);
+    std::string out_ok = testing::internal::GetCapturedStdout();
+    EXPECT_TRUE(stable_ok);
+    EXPECT_TRUE(out_ok.empty());
+
+    testing::internal::CaptureStdout();
+    bool unstable_ok = StabilityAnalyzer::checkAndWarnStability(1.5);
+    std::string out_warn = testing::internal::GetCapturedStdout();
+    EXPECT_FALSE(unstable_ok);
+    EXPECT_FALSE(out_warn.empty());
 }
