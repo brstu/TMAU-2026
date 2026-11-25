@@ -34,7 +34,7 @@ public:
                                  const InputSignal& signal) const;
 };
 
-// Model 1.10: y(tau+1) = a1*y(tau) + b1*u(tau) + b2*u(tau-2)
+/// Linear discrete model with distributed control window (Variant 20, 1.10).
 class DistributedControlWindow final : public Model {
 public:
     DistributedControlWindow(double a1, double b1, double b2);
@@ -47,7 +47,7 @@ private:
     double b2_;
 };
 
-// Model 2.4: y(tau+1) = a*y(tau)*cos(y(tau)) + b*ln(1 + |u(tau)|)
+/// Nonlinear discrete model with logarithmic interaction (Variant 20, 2.4).
 class LogarithmicInteraction final : public Model {
 public:
     LogarithmicInteraction(double a, double b);
@@ -59,7 +59,7 @@ private:
     double b_;
 };
 
-// Model 3.8: dy/dt = -a1*y - a2*y^2 + b*u (Euler method)
+/// Continuous linear-quadratic decay solved via Euler method (Variant 20, 3.8).
 class CombinedQuadraticDecay final : public Model {
 public:
     CombinedQuadraticDecay(double a1, double a2, double b);
