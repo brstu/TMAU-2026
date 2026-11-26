@@ -1,4 +1,4 @@
-set(LAB1 "${CMAKE_CURRENT_SOURCE_DIR}/../../../task_01/src")
+set(LAB1 "${CMAKE_CURRENT_SOURCE_DIR}/../../task_01/src")
 
 add_executable(task02_app
     "${LAB1}/main.cpp"
