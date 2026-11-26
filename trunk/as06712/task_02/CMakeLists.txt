@@ -1,6 +1,11 @@
-# Путь к папке src первой лабы (из папки task_02 выходим на уровень выше)
-set(TASK_01_SRC "${CMAKE_CURRENT_SOURCE_DIR}/../task_01/src")
+cmake_minimum_required(VERSION 3.15)
+project(TMAU LANGUAGES CXX)
 
-# Основная программа (собирается из исходников task_01)
-add_executable(task02_app "${TASK_01_SRC}/main.cpp")
-target_include_directories(task02_app PRIVATE src "${TASK_01_SRC}")
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+add_subdirectory(src)
+
+enable_testing()
+add_subdirectory(test)
