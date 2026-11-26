@@ -1,0 +1,14 @@
+<map id="src/csv_writer.hpp" name="src/csv_writer.hpp">
+<area shape="rect" id="Node000001" title="Экспорт результатов симуляции в CSV." alt="" coords="32,5,160,30"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,78,59,103"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="84,33,55,68,50,65,87,28"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="73,151,130,175"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="99,29,103,135,98,135,94,32"/>
+<area shape="rect" id="Node000004" href="$control__system_8hpp.html" title="Замкнутая система регулирования и режимы симуляции." alt="" coords="133,78,267,103"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="114,28,173,68,168,70,113,33"/>
+<area shape="poly" id="edge4_Node000004_Node000003" title=" " alt="" coords="186,102,131,144,129,139,181,104"/>
+<area shape="rect" id="Node000005" href="$model_8hpp.html" title="Абстрактный объект управления." alt="" coords="157,151,238,175"/>
+<area shape="poly" id="edge5_Node000004_Node000005" title=" " alt="" coords="201,101,201,137,196,134,198,105"/>
+<area shape="rect" id="Node000006" href="$pid_8hpp.html" title="Дискретный ПИД&#45;регулятор в инкрементной форме." alt="" coords="262,151,325,175"/>
+<area shape="poly" id="edge6_Node000004_Node000006" title=" " alt="" coords="216,101,269,141,263,141,215,106"/>
+</map>

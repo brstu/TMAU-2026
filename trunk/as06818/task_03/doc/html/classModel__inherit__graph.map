@@ -1,0 +1,9 @@
+<map id="Model" name="Model">
+<area shape="rect" id="Node000001" title="Объект управления (Plant)." alt="" coords="144,5,200,30"/>
+<area shape="rect" id="Node000002" href="$classDiffModel36.html" title="Модель 3.6 — дифференциальное уравнение кубического роста с управлением: dy/dt = a*y^3 + b*u." alt="" coords="5,78,96,103"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="141,40,72,80,69,75,136,37"/>
+<area shape="rect" id="Node000003" href="$classLinearModel18.html" title="Линейная модель 1.8 — обобщённая авторегрессионная: y[t+1] = a1*y[t] + a2*y[t&#45;1] + b1*u[t] + b2*u[t&#45;1..." alt="" coords="119,78,224,103"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="174,44,174,79,170,76,170,48"/>
+<area shape="rect" id="Node000004" href="$classNonlinearModel22.html" title="Нелинейная модель 2.2 — с насыщением исполнительного механизма: y[t+1] = a*y[t] + b*sat(u[t]),..." alt="" coords="249,78,374,103"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="209,35,291,77,286,78,208,40"/>
+</map>
