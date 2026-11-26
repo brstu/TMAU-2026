@@ -1,4 +1,5 @@
 import sys
+import re
 import os
 import subprocess
 
@@ -7,6 +8,14 @@ if len(sys.argv) < 2:
     sys.exit(1)
 
 fname = sys.argv[1]
+
+# Защита от command injection: разрешаем только безопасные имена
+if not re.match(r"^[A-Za-z0-9_.\-]+\.csv$", fname):
+    print(f"Недопустимое имя файла: {fname}")
+    sys.exit(1)
+if os.path.sep in fname or "/" in fname or "\\" in fname:
+    print("Путь не разрешён, только имя файла без директорий")
+    sys.exit(1)
 
 try:
     import pandas as pd
@@ -45,8 +54,9 @@ plt.savefig(out_png, dpi=150)
 plt.close()
 print(f"График сохранён: {out_png}")
 
-try:
+if sys.platform.startswith("win"):
     os.startfile(out_png)
-except AttributeError:
-    opener = "open" if sys.platform == "darwin" else "xdg-open"
-    subprocess.Popen([opener, out_png])
+elif sys.platform == "darwin":
+    subprocess.Popen(["open", out_png])
+else:
+    subprocess.Popen(["xdg-open", out_png])

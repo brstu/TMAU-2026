@@ -11,5 +11,9 @@ public:
 
     virtual const char* name() const = 0;
     // установка начальных условий
-    virtual void setInitialState(const std::vector<double>& init) {}
+    virtual void setInitialState(const std::vector<double>& init) {
+    // По умолчанию ничего не делает — переопределяется наследниками,
+    // если у модели есть начальные условия.
+    (void)init;
+}
 };

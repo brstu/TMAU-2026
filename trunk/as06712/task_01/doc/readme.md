@@ -10,7 +10,7 @@
 <p align="right">Выполнил:</p>
 <p align="right">Студент 3 курса</p>
 <p align="right">Группы АС-67</p>
-<p align="right">Лискович И. …</p>
+<p align="right">Лискович И.</p>
 <p align="right">Проверил:</p>
 <p align="right">Дворанинович Д. А.</p>
 <br><br><br><br><br>
@@ -18,31 +18,31 @@
 
 ---
 
-## Вариант 12
+## Вариант 3
 
-- Линейная модель: **Model 1.2**
-- Нелинейная модель: **Model 2.6**
-- Дифференциальное уравнение: **Model 3.10**
+- Линейная модель: **Model 1.3**
+- Нелинейная модель: **Model 2.5**
+- Дифференциальное уравнение: **Model 3.7**
 
 ## Реализованные модели
 
-### Model 1.2 (Система с чистым запаздыванием по управлению)
+### Model 1.3 (Second-Order Oscillatory/Inertial System)
 
-$$y_{\tau+1} = a \cdot y_{\tau} + b \cdot u_{\tau-k}, \quad k \ge 1$$
+$$y_{\tau+1} = a_1 \cdot y_{\tau} + a_2 \cdot y_{\tau-1} + b \cdot u_{\tau}$$
 
-Параметры: $a = 0.8$, $b = 0.5$, $k = 2$
+Параметры: $a_1 = 1.1$, $a_2 = -0.5$, $b = 0.5$
 
-### Model 2.6 (Асимметричная полиномиальная модель с обратной связью)
+### Model 2.5 (Signum Friction and Exponential Growth)
 
-$$y_{\tau+1} = a_1 \cdot y_{\tau}^3 - a_2 \cdot y_{\tau-1} + b \cdot u_{\tau}^2$$
+$$y_{\tau+1} = a \cdot y_{\tau} + b \cdot \text{sign}(u_{\tau}) \cdot \left(1 - e^{-|u_{\tau}|}\right)$$
 
-Параметры: $a_1 = 0.01$, $a_2 = 0.3$, $b = 1.0$
+Параметры: $a = 0.8$, $b = 2.0$
 
-### Model 3.10 (Дифференциальное уравнение с внешним смещением)
+### Model 3.7 (Exponential Scaling Process)
 
-$$\frac{dy}{dt} = -a \cdot y + b + u \quad\Rightarrow\quad y_{\tau+1} = y_{\tau} + \Delta t \cdot (-a \cdot y_{\tau} + b + u_{\tau})$$
+$$\frac{dy}{dt} = -e^a \cdot y + b \cdot u \quad\Rightarrow\quad y_{\tau+1} = y_{\tau} + \Delta t \cdot \left(-e^a \cdot y_{\tau} + b \cdot u_{\tau}\right)$$
 
-Параметры: $a = 0.5$, $b = 1.0$, $\Delta t = 0.1$
+Параметры: $a = 0.0$, $b = 2.0$, $\Delta t = 0.1$
 
 ## Входные воздействия
 
@@ -53,38 +53,38 @@ $$\frac{dy}{dt} = -a \cdot y + b + u \quad\Rightarrow\quad y_{\tau+1} = y_{\tau}
 ## ООП Архитектура
 
 Создан абстрактный базовый класс `Model` с чистыми виртуальными методами
-`step()` и `reset()`, а также методом `name()` для идентификации модели.
+`step()` и `reset()`, а также методом `name()`.
 
 От базового класса наследуются:
-- `LinearModel12` — система с задержкой
-- `NonlinearModel26` — нелинейная полиномиальная
-- `ODE310` — дифференциальное уравнение
+- `LinearModel13` — линейная система второго порядка
+- `NonlinearModel25` — нелинейная модель с sign и exp
+- `ODE37` — дифференциальное уравнение
 
 ## Результаты моделирования
 
-### 1. Переходные процессы линейной модели (Model 1.2)
+### 1. Переходные процессы линейной модели (Model 1.3)
 
-![Model 1.2 — ступенчатое воздействие](plot_Model_1_2_step.png)
+![Model 1.3 step](out_Model_1_3_step.png)
 
-![Model 1.2 — импульсное воздействие](plot_Model_1_2_impulse.png)
+![Model 1.3 impulse](out_Model_1_3_impulse.png)
 
-![Model 1.2 — гармоническое воздействие](plot_Model_1_2_harmonic.png)
+![Model 1.3 harmonic](out_Model_1_3_harmonic.png)
 
-### 2. Переходные процессы нелинейной модели (Model 2.6)
+### 2. Переходные процессы нелинейной модели (Model 2.5)
 
-![Model 2.6 — ступенчатое воздействие](plot_Model_2_6_step.png)
+![Model 2.5 step](out_Model_2_5_step.png)
 
-![Model 2.6 — импульсное воздействие](plot_Model_2_6_impulse.png)
+![Model 2.5 impulse](out_Model_2_5_impulse.png)
 
-![Model 2.6 — гармоническое воздействие](plot_Model_2_6_harmonic.png)
+![Model 2.5 harmonic](out_Model_2_5_harmonic.png)
 
-### 3. Переходные процессы дифференциальной модели (Model 3.10)
+### 3. Переходные процессы дифференциальной модели (Model 3.7)
 
-![Model 3.10 — ступенчатое воздействие](plot_Model_3_10_step.png)
+![Model 3.7 step](out_Model_3_7_step.png)
 
-![Model 3.10 — импульсное воздействие](plot_Model_3_10_impulse.png)
+![Model 3.7 impulse](out_Model_3_7_impulse.png)
 
-![Model 3.10 — гармоническое воздействие](plot_Model_3_10_harmonic.png)
+![Model 3.7 harmonic](out_Model_3_7_harmonic.png)
 
 ## UML Диаграмма классов
 
@@ -98,29 +98,27 @@ classDiagram
         +setInitialState(vector~double~ init) void
     }
 
-    class LinearModel12 {
-        -double a_
-        -double b_
-        -int k_
-        -double y_
-        -deque~double~ uHistory_
-        +step(double u) double
-        +reset() void
-        +name() const char*
-    }
-
-    class NonlinearModel26 {
+    class LinearModel13 {
         -double a1_
         -double a2_
         -double b_
-        -double y_
-        -double yPrev_
+        -double y_curr_
+        -double y_prev_
         +step(double u) double
         +reset() void
         +name() const char*
     }
 
-    class ODE310 {
+    class NonlinearModel25 {
+        -double a_
+        -double b_
+        -double y_
+        +step(double u) double
+        +reset() void
+        +name() const char*
+    }
+
+    class ODE37 {
         -double a_
         -double b_
         -double dt_
@@ -142,10 +140,12 @@ classDiagram
         +run(SignalGenerator signal) vector~double~
         +printTable(vector~double~ y, SignalGenerator signal) void
         +exportCSV(vector~double~ y, SignalGenerator signal, string fname) void
+        +modelName() const char*
     }
 
-    Model <|-- LinearModel12
-    Model <|-- NonlinearModel26
-    Model <|-- ODE310
+    Model <|-- LinearModel13
+    Model <|-- NonlinearModel25
+    Model <|-- ODE37
+
     Simulator --> Model : owns
-    Simulator --> SignalGenerator : uses
+    Simulator ..> SignalGenerator : uses
