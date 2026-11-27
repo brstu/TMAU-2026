@@ -2,10 +2,18 @@
 #include <cstddef>
 #include <filesystem>
 #include <fstream>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
 namespace io {
+
+// Специализированное исключение для защиты от Path Traversal
+class PathTraversalException : public std::runtime_error {
+public:
+    explicit PathTraversalException(const std::string& msg) 
+        : std::runtime_error(msg) {}
+};
 
 inline void writeCsv(const std::string& path,
                      const std::string& columnName,
@@ -16,7 +24,7 @@ inline void writeCsv(const std::string& path,
     std::filesystem::path resolved = std::filesystem::weakly_canonical(target);
     
     if (resolved.string().rfind(cwd.string(), 0) != 0) {
-        throw std::runtime_error("Path traversal detected: " + path);
+        throw PathTraversalException("Path traversal detected: " + path);
     }
 
     std::ofstream out(resolved);

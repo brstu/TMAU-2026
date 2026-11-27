@@ -38,12 +38,12 @@ TEST(StabilityTest, RootsOfCharacteristicEquation) {
     // Полином с известными корнями 0.2, -0.3, 0.5:
     // z^3 - 0.4*z^2 + 0.11*z - 0.03  ==>  a1 = 0.4, a2 = 0.11, a3 = -0.03
     const auto roots = StabilityAnalyzer::cubicRoots(0.4, 0.11, -0.03);
-    std::vector<double> realParts{roots.z1.real(), roots.z2.real(), roots.z3.real()};
+    std::vector realParts{ roots.z1.real(), roots.z2.real(), roots.z3.real() }; // Исправлено здесь
     std::sort(realParts.begin(), realParts.end());
 
     EXPECT_NEAR(realParts[0], -0.3, 1e-8);
-    EXPECT_NEAR(realParts[1],  0.2, 1e-8);
-    EXPECT_NEAR(realParts[2],  0.5, 1e-8);
+    EXPECT_NEAR(realParts[1], 0.2, 1e-8);
+    EXPECT_NEAR(realParts[2], 0.5, 1e-8);
     EXPECT_NEAR(std::abs(roots.z1.imag()), 0.0, 1e-8);
     EXPECT_NEAR(std::abs(roots.z2.imag()), 0.0, 1e-8);
     EXPECT_NEAR(std::abs(roots.z3.imag()), 0.0, 1e-8);
@@ -57,8 +57,8 @@ TEST(StabilityTest, ComplexRootsInsideUnitCircle) {
     const double m1 = std::abs(roots.z1);
     const double m2 = std::abs(roots.z2);
     const double m3 = std::abs(roots.z3);
-    EXPECT_NEAR(std::min({m1, m2, m3}), 0.4472136, 1e-6);
-    EXPECT_NEAR(std::max({m1, m2, m3}), 0.5, 1e-6);
+    EXPECT_NEAR(std::min({ m1, m2, m3 }), 0.4472136, 1e-6);
+    EXPECT_NEAR(std::max({ m1, m2, m3 }), 0.5, 1e-6);
 }
 
 TEST(StabilityTest, JuryMatchesRootCriterion) {
@@ -75,7 +75,7 @@ TEST(StabilityTest, JuryMatchesRootCriterion) {
 
     for (const auto& [a1, a2, a3] : cases) {
         EXPECT_EQ(StabilityAnalyzer::isStable(a1, a2, a3),
-                  StabilityAnalyzer::isStableJury(a1, a2, a3));
+            StabilityAnalyzer::isStableJury(a1, a2, a3));
     }
 }
 

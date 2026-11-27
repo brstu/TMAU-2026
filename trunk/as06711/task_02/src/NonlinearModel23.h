@@ -1,8 +1,8 @@
 #pragma once
 #include "Model.h"
 
-// Модель 2.3 (вариант 19):
-// y[k+1] = a1*y[k] - b1*(y[k-1])^2 + c1*u[k]
+// Модель 2.3 (вариант 19).
+// Формула: y[k+1] = a1*y[k] - b1*(y[k-1])^2 + c1*u[k]
 class NonlinearModel23 : public Model {
 public:
     NonlinearModel23(double a1, double b1, double c1)

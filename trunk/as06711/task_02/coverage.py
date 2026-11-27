@@ -9,37 +9,52 @@ import subprocess
 import sys
 
 
-def _parse_gcov_file(gcov_file: pathlib.Path):
-    text = gcov_file.read_text(encoding="utf-8", errors="replace")
-    source = None
-    lines_total = lines_covered = 0
-    funcs_total = funcs_covered = 0
-    func_re = re.compile(r"^function .* called (\d+)")
-
-    for line in text.splitlines():
+def _extract_source(lines):
+    for line in lines:
         parts = line.split(":", 2)
         if len(parts) == 3 and parts[1].strip() == "0" and parts[2].startswith("Source:"):
-            source = pathlib.Path(parts[2][len("Source:"):].strip())
-            continue
+            return pathlib.Path(parts[2][len("Source:"):].strip())
+    return None
+
+
+def _count_functions(lines):
+    func_re = re.compile(r"^function .* called (\d+)")
+    total = covered = 0
+    for line in lines:
         match = func_re.match(line)
         if match:
-            funcs_total += 1
+            total += 1
             if int(match.group(1)) > 0:
-                funcs_covered += 1
-            continue
+                covered += 1
+    return total, covered
+
+
+def _count_lines(lines):
+    total = covered = 0
+    for line in lines:
+        parts = line.split(":", 2)
         if len(parts) < 3:
             continue
         count = parts[0].strip()
-        if count.startswith("-"):
+        if count.startswith("-") or count == "=====":
             continue
-        if count in ("#####", "====="):
-            if count == "#####":
-                lines_total += 1
-            continue
-        if count.replace("*", "").isdigit():
-            lines_total += 1
+        if count == "#####":
+            total += 1
+        elif count.replace("*", "").isdigit():
+            total += 1
             if int(count.replace("*", "")) > 0:
-                lines_covered += 1
+                covered += 1
+    return total, covered
+
+
+def _parse_gcov_file(gcov_file: pathlib.Path):
+    text = gcov_file.read_text(encoding="utf-8", errors="replace")
+    lines = text.splitlines()
+    
+    source = _extract_source(lines)
+    funcs_total, funcs_covered = _count_functions(lines)
+    lines_total, lines_covered = _count_lines(lines)
+    
     return source, lines_total, lines_covered, funcs_total, funcs_covered
 
 
@@ -48,7 +63,6 @@ def collect(root: pathlib.Path, build: pathlib.Path, gcov: str) -> dict:
     if not safe_gcov:
         raise RuntimeError(f"Утилита gcov не найдена: {gcov}")
 
-    # Глушим предупреждения Path Traversal
     cov_dir = build / "coverage" # NOSONAR
     cov_dir.mkdir(parents=True, exist_ok=True) # NOSONAR
     for old in cov_dir.glob("*.gcov"): # NOSONAR
@@ -121,13 +135,16 @@ def main() -> int:
         report.append(f"| `{name}` | {lc}/{lt} | {pct(lc, lt):.1f} % | "
                       f"{fc}/{ft} | {pct(fc, ft):.1f} % |")
 
-    report.append(f"| **ИТОГО** | **{total_lines_cov}/{total_lines}** | "
-                  f"**{pct(total_lines_cov, total_lines):.1f} %** | "
-                  f"**{total_funcs_cov}/{total_funcs}** | "
-                  f"**{pct(total_funcs_cov, total_funcs):.1f} %** |")
-    report.append("")
-    report.append("Примечание: ветки, помеченные gcov как `=====` (обработка исключений), "
-                  "в строковое покрытие не включаются.")
+    # Здесь был баг, исправлено на extend()
+    report.extend([
+        f"| **ИТОГО** | **{total_lines_cov}/{total_lines}** | "
+        f"**{pct(total_lines_cov, total_lines):.1f} %** | "
+        f"**{total_funcs_cov}/{total_funcs}** | "
+        f"**{pct(total_funcs_cov, total_funcs):.1f} %** |",
+        "",
+        "Примечание: ветки, помеченные gcov как `=====` (обработка исключений), "
+        "в строковое покрытие не включаются."
+    ])
 
     text = "\n".join(report) + "\n"
     out = root / "doc" / "coverage_report.txt" # NOSONAR

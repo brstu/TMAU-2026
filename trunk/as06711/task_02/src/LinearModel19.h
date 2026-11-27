@@ -1,8 +1,8 @@
 #pragma once
 #include "Model.h"
 
-// Модель 1.9 (вариант 19):
-// y[k+1] = a1*y[k] + a2*y[k-1] + a3*y[k-2] + b1*u[k]
+// Модель 1.9 (вариант 19).
+// Вычисляет следующий шаг: a1*y_curr + a2*y_prev1 + a3*y_prev2 + b1*u
 class LinearModel19 : public Model {
 public:
     LinearModel19(double a1, double a2, double a3, double b1)
@@ -28,9 +28,15 @@ public:
     const char* name() const override { return "Model_1_9"; }
 
     void setInitialState(const std::vector<double>& init) override {
-        y_curr_  = init.size() > 0 ? init[0] : 0.0;
-        y_prev1_ = init.size() > 1 ? init[1] : 0.0;
-        y_prev2_ = init.size() > 2 ? init[2] : 0.0;
+        if (!init.empty()) {
+            y_curr_ = init[0];
+        }
+        if (init.size() > 1) {
+            y_prev1_ = init[1];
+        }
+        if (init.size() > 2) {
+            y_prev2_ = init[2];
+        }
     }
 
 private:
