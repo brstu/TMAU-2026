@@ -14,12 +14,12 @@ struct AnalysisResult {
 
 // Analytical stability check for variant 4, model 1.4.
 // Free process: y[k+1] = a*y[k]  =>  z - a = 0  =>  z = a.
-// The system is asymptotically stable iff |a| < 1.
+// The system is asymptotically stable iff |a| < 1; |a| = 1 is not stable.
 // `b` is accepted for API completeness: it cancels out in the free process.
 AnalysisResult analyzeLinearModel14(double a, double b = 0.0);
 
-// Convenience predicate used by main.cpp and unit tests.
-bool isStable(double a, double eps = 1e-9);
+// Convenience predicate used by unit tests: strict |a| < 1 criterion.
+bool isStable(double a);
 
 } // namespace stability
 

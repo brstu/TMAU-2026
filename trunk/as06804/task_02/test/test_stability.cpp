@@ -61,6 +61,18 @@ TEST(StabilityAnalyzerTest, IsStableHelperMatchesAnalyticCriterion) {
     EXPECT_FALSE(isStable(1.000001));
 }
 
+TEST(StabilityAnalyzerTest, NearUnitCircleUsesStrictCriterion) {
+    const auto inside = analyzeLinearModel14(0.9999999995);
+    EXPECT_TRUE(inside.stable);
+    EXPECT_TRUE(isStable(0.9999999995));
+    EXPECT_NE(inside.message.find("STABLE"), std::string::npos);
+
+    const auto outside = analyzeLinearModel14(1.0000000005);
+    EXPECT_FALSE(outside.stable);
+    EXPECT_FALSE(isStable(1.0000000005));
+    EXPECT_NE(outside.message.find("UNSTABLE"), std::string::npos);
+}
+
 TEST(StabilityAnalyzerTest, StableMessageContainsStatus) {
     const auto result = analyzeLinearModel14(0.25);
     EXPECT_FALSE(result.message.empty());

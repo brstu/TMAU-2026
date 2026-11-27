@@ -12,8 +12,9 @@ set "MINGW_BIN=C:\mingw32\bin"
 if defined MINGW_BIN_OVERRIDE set "MINGW_BIN=%MINGW_BIN_OVERRIDE%"
 set "PATH=%MINGW_BIN%;%PATH%"
 
-set "CMAKE_EXE=%MINGW_BIN%\cmake.exe"
-if not exist "!CMAKE_EXE!" (
+set "CMAKE_EXE="
+if exist "!MINGW_BIN!\cmake.exe" set "CMAKE_EXE=!MINGW_BIN!\cmake.exe"
+if not defined CMAKE_EXE (
     where cmake >nul 2>nul && set "CMAKE_EXE=cmake"
 )
 if not defined CMAKE_EXE (
@@ -22,12 +23,18 @@ if not defined CMAKE_EXE (
     exit /b 1
 )
 
-set "MAKE_EXE=%MINGW_BIN%\mingw32-make.exe"
+set "CC_EXE=!MINGW_BIN!\gcc.exe"
+if not exist "!CC_EXE!" set "CC_EXE=gcc"
+set "CXX_EXE=!MINGW_BIN!\g++.exe"
+if not exist "!CXX_EXE!" set "CXX_EXE=g++"
+set "MAKE_EXE=!MINGW_BIN!\mingw32-make.exe"
 if not exist "!MAKE_EXE!" set "MAKE_EXE=mingw32-make"
-set "GCOV_EXE=%MINGW_BIN%\gcov.exe"
+set "GCOV_EXE=!MINGW_BIN!\gcov.exe"
 if not exist "!GCOV_EXE!" set "GCOV_EXE=gcov"
 
 echo [OK] CMake : !CMAKE_EXE!
+echo [OK] C     : !CC_EXE!
+echo [OK] C++   : !CXX_EXE!
 echo [OK] Make  : !MAKE_EXE!
 echo [OK] gcov  : !GCOV_EXE!
 echo.
@@ -60,8 +67,8 @@ rem --- Configure -----------------------------------------------------------
 echo [1/4] Configuring...
 "!CMAKE_EXE!" -S src -B build -G "MinGW Makefiles" ^
     -DCMAKE_MAKE_PROGRAM="!MAKE_EXE!" ^
-    -DCMAKE_C_COMPILER="%MINGW_BIN%\gcc.exe" ^
-    -DCMAKE_CXX_COMPILER="%MINGW_BIN%\g++.exe" ^
+    -DCMAKE_C_COMPILER="!CC_EXE!" ^
+    -DCMAKE_CXX_COMPILER="!CXX_EXE!" ^
     -DCMAKE_BUILD_TYPE=Debug ^
     -DTASK02_BUILD_TESTS=ON ^
     -DTASK02_ENABLE_COVERAGE=ON ^
@@ -134,5 +141,4 @@ if !TEST_RESULT! EQU 0 (
 )
 echo =============================================
 pause
-endlocal
-exit /b !TEST_RESULT!
+endlocal & exit /b %TEST_RESULT%
