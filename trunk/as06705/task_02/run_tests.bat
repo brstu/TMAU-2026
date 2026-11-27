@@ -46,7 +46,7 @@ mkdir build_tests
 cd build_tests
 
 echo [1/3] CMake configure...
-"!CMAKE_EXE!" .. -G "!GENERATOR!" -A x64
+"!CMAKE_EXE!" ../src -G "!GENERATOR!" -A x64
 if %ERRORLEVEL% NEQ 0 (
     echo ERROR: configure failed.
     cd .. & pause & exit /b 1

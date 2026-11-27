@@ -3,14 +3,14 @@
 #include "SimulationRunner.hpp"
 #include "StabilityAnalyzer.hpp"
 
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <memory>
+#include <limits>
+#include <sstream>
 #include <array>
 #include <cstdlib>
-#include <fstream>
-#include <iostream>
-#include <limits>
-#include <memory>
-#include <sstream>
-#include <string>
 
 #ifdef _WIN32
 #  define NOMINMAX
@@ -18,252 +18,186 @@
 #  include <windows.h>
 #endif
 
-namespace {
+class SimulationApp {
+public:
+    void run() {
+#ifdef _WIN32
+        SetConsoleOutputCP(CP_UTF8);
+        SetConsoleCP(CP_UTF8);
+#endif
+        std::cout << "Lab 1, variant 6 (App version)\n";
 
-    double askDouble(const std::string& label) {
-        double v = 0.0;
-        for (;;) {
-            std::cout << label;
-            if (std::cin >> v) {
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                return v;
+        bool active = true;
+        while (active) {
+            displayMenu();
+            std::string choice = getStringInput("Choice: ");
+            if (choice == "q" || choice == "Q" || choice == "exit" || choice == "Quit") {
+                active = false;
             }
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            std::cout << "  Invalid number, try again." << std::endl;
-        }
-    }
-
-    int askInt(const std::string& label) {
-        int v = 0;
-        for (;;) {
-            std::cout << label;
-            if (std::cin >> v) {
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                return v;
+            else if (choice == "0") {
+                execModel16();
+                execModel28();
+                execModel310();
             }
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            std::cout << "  Invalid number, try again." << std::endl;
-        }
-    }
-
-    int askSignalChoice() {
-        for (;;) {
-            std::cout << "Signal (1=step, 2=impulse, 3=harmonic): ";
-            int c = 0;
-            if (std::cin >> c) {
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                if (c >= 1 && c <= 3) return c;
+            else if (choice == "1") {
+                execModel16();
+            }
+            else if (choice == "2") {
+                execModel28();
+            }
+            else if (choice == "3") {
+                execModel310();
             }
             else {
-                std::cin.clear();
+                std::cout << "  Invalid choice.\n";
+            }
+        }
+        std::cout << "\nBye.\n";
+    }
+
+private:
+    void displayMenu() const {
+        std::cout << "\n--- MENU ---\n"
+            << "  1 - Model 1.6\n"
+            << "  2 - Model 2.8\n"
+            << "  3 - Model 3.10\n"
+            << "  0 - all\n"
+            << "  q - quit\n";
+    }
+
+    std::string getStringInput(const std::string& prompt) const {
+        std::cout << prompt;
+        std::string s;
+        std::getline(std::cin, s);
+
+        size_t first = s.find_first_not_of(" \t\r\n");
+        if (first == std::string::npos) return "";
+        size_t last = s.find_last_not_of(" \t\r\n");
+        return s.substr(first, last - first + 1);
+    }
+
+    int getIntInput(const std::string& prompt) const {
+        int val = 0;
+        while (true) {
+            std::cout << prompt;
+            if (std::cin >> val) {
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                return val;
             }
-            std::cout << "  Enter 1, 2 or 3." << std::endl;
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "  Invalid integer, retry.\n";
         }
     }
 
-    int askModel() {
-        for (;;) {
-            std::cout << std::endl;
-            std::cout << "--- MENU ---" << std::endl;
-            std::cout << "  1 - Model 1.6" << std::endl;
-            std::cout << "  2 - Model 2.8" << std::endl;
-            std::cout << "  3 - Model 3.10" << std::endl;
-            std::cout << "  0 - all" << std::endl;
-            std::cout << "  q - quit" << std::endl;
-            std::cout << "Choice: ";
-
-            std::string line;
-            if (!std::getline(std::cin, line)) return -1;
-
-            const size_t b = line.find_first_not_of(" \t\r\n");
-            const size_t e = line.find_last_not_of(" \t\r\n");
-            if (b == std::string::npos) {
-                std::cout << "  Empty, try again." << std::endl;
-                continue;
+    double getDoubleInput(const std::string& prompt) const {
+        double val = 0.0;
+        while (true) {
+            std::cout << prompt;
+            if (std::cin >> val) {
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                return val;
             }
-            const std::string tok = line.substr(b, e - b + 1);
-
-            if (tok == "q" || tok == "Q" ||
-                tok == "quit" || tok == "Quit" ||
-                tok == "exit" || tok == "Exit") {
-                return -1;
-            }
-
-            try {
-                const int v = std::stoi(tok);
-                if (v == 0) return 0;
-                if (v >= 1 && v <= 3) return v;
-            }
-            catch (...) {}
-
-            std::cout << "  Invalid choice, try again." << std::endl;
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "  Invalid double, retry.\n";
         }
     }
 
-    std::string findRenderScript() {
-        const std::array<std::string, 6> cs = {
-            "render_plot.py",
-            "..\\render_plot.py",
-            "../render_plot.py",
-            "..\\..\\render_plot.py",
-            "../../render_plot.py",
-            "src\\render_plot.py"
-        };
-        for (const auto& c : cs) {
-            std::ifstream f(c);
-            if (f.good()) return c;
+    int getSignalChoice() const {
+        int c = 0;
+        while (c < 1 || c > 3) {
+            c = getIntInput("Signal (1=step, 2=impulse, 3=harmonic): ");
         }
-        return "";
+        return c;
     }
 
-    void invokePlot(const std::string& csvName) {
-        const std::string script = findRenderScript();
-        if (script.empty()) {
-            return;
-        }
-
-        if (std::system("py -3 --version >nul 2>nul") != 0) {
-            std::cout << "WARNING: 'py -3' not available "
-                "(install Python with 'Add to PATH')" << std::endl;
-            return;
-        }
-
-        const std::string cmd =
-            "py -3 \"" + script + "\" " + csvName + " >nul 2>nul";
-        if (std::system(cmd.c_str()) != 0) {
-            std::cout << "WARNING: plot failed "
-                "(py -3 -m pip install matplotlib)" << std::endl;
-            return;
-        }
-
-        std::string png = csvName;
-        const size_t dot = png.rfind(".csv");
-        if (dot != std::string::npos) {
-            png = png.substr(0, dot) + ".png";
-        }
-
-        std::string toOpen;
-        std::ifstream probe(png);
-        if (probe.good()) {
-            toOpen = png;
-        }
-        else {
-            const std::string stem = png.substr(0, png.rfind(".png"));
-            for (int i = 1; i < 10; ++i) {
-                const std::string cand = stem + "_" + std::to_string(i) + ".png";
-                std::ifstream c(cand);
-                if (c.good()) { toOpen = cand; break; }
-            }
-        }
-
-        if (!toOpen.empty()) {
-            const std::string openCmd =
-                "start \"\" \"" + toOpen + "\" >nul 2>nul";
-            std::system(openCmd.c_str());
-        }
-    }
-
-    void finish(const Trace& tr, const std::string& csvName) {
+    void outputResults(const Trace& tr, const std::string& baseName, const std::string& sigId) {
         Runner::show(tr);
-        Runner::dumpCsv(tr, csvName);
+        std::string csvFile = "out_" + baseName + "_" + sigId + ".csv";
+        Runner::dumpCsv(tr, csvFile);
 
         if (Runner::diverged(tr)) {
-            std::cout << "WARNING: solution diverged "
-                "(model unstable)" << std::endl;
+            std::cout << "WARNING: solution diverged (model unstable)\n";
         }
-
-        invokePlot(csvName);
+        tryPlot(csvFile);
     }
 
-    void flowThirdOrder() {
-        std::cout << "\n--- Model 1.6 ---" << std::endl;
-        const int steps = askInt("Steps n: ");
-        const int sigChoice = askSignalChoice();
-        auto sig = makeSignal(sigChoice, 1.0);
+    void tryPlot(const std::string& csvName) {
+        const std::array<std::string, 5> searchPaths = {
+            "render_plot.py", "..\\render_plot.py", "../render_plot.py", "src\\render_plot.py", "..\\..\\render_plot.py"
+        };
+        std::string script = "";
+        for (const auto& p : searchPaths) {
+            if (std::ifstream(p).good()) {
+                script = p;
+                break;
+            }
+        }
+        if (script.empty()) return;
 
-        const double a1 = askDouble("  a1 = ");
-        const double a2 = askDouble("  a2 = ");
-        const double a3 = askDouble("  a3 = ");
-        const double b = askDouble("  b  = ");
+        if (std::system("py -3 --version >nul 2>nul") != 0) return;
 
-        // === НОВОЕ (ЛР2): анализ устойчивости ДО симуляции ===
-        const auto stab = stability::analyzeModel16(a1, a2, a3);
-        std::cout << "Stability: " << stab.message << std::endl;
+        std::string cmd = "py -3 \"" + script + "\" " + csvName + " >nul 2>nul";
+        if (std::system(cmd.c_str()) != 0) return;
+
+        std::string png = csvName.substr(0, csvName.rfind(".csv")) + ".png";
+        if (std::ifstream(png).good()) {
+            std::system(("start \"\" \"" + png + "\" >nul 2>nul").c_str());
+        }
+    }
+
+    void execModel16() {
+        std::cout << "\n[Model 1.6]\n";
+        int n = getIntInput("Steps n: ");
+        auto sig = makeSignal(getSignalChoice(), 1.0);
+
+        double a1 = getDoubleInput("  a1 = ");
+        double a2 = getDoubleInput("  a2 = ");
+        double a3 = getDoubleInput("  a3 = ");
+        double b = getDoubleInput("  b  = ");
+
+        auto stab = stability::analyzeModel16(a1, a2, a3);
+        std::cout << "Stability: " << stab.message << "\n";
         if (!stab.stable) {
-            std::cout << "WARNING: system is divergent - simulation may "
-                "produce unbounded values.\n";
+            std::cout << "WARNING: system is divergent!\n";
         }
 
-        Runner r(std::make_unique<ThirdOrderLinear>(a1, a2, a3, b), steps);
-        const Trace tr = r.execute(*sig);
-        finish(tr, std::string("out_model16_") + sig->id() + ".csv");
+        Runner r(std::make_unique<ThirdOrderLinear>(a1, a2, a3, b), n);
+        outputResults(r.execute(*sig), "model16", sig->id());
     }
 
-    void flowLogistic() {
-        std::cout << "\n--- Model 2.8 ---" << std::endl;
-        const int steps = askInt("Steps n: ");
-        const int sigChoice = askSignalChoice();
-        auto sig = makeSignal(sigChoice, 1.0);
+    void execModel28() {
+        std::cout << "\n[Model 2.8]\n";
+        int n = getIntInput("Steps n: ");
+        auto sig = makeSignal(getSignalChoice(), 1.0);
 
-        const double a = askDouble("  a  = ");
-        const double b = askDouble("  b  = ");
-        const double c = askDouble("  c  = ");
-        const double y0 = askDouble("  y0 = ");
+        double a = getDoubleInput("  a  = ");
+        double b = getDoubleInput("  b  = ");
+        double c = getDoubleInput("  c  = ");
+        double y0 = getDoubleInput("  y0 = ");
 
-        Runner r(std::make_unique<LogisticMap>(a, b, c, y0), steps);
-        const Trace tr = r.execute(*sig);
-        finish(tr, std::string("out_model28_") + sig->id() + ".csv");
+        Runner r(std::make_unique<LogisticMap>(a, b, c, y0), n);
+        outputResults(r.execute(*sig), "model28", sig->id());
     }
 
-    void flowODE() {
-        std::cout << "\n--- Model 3.10 ---" << std::endl;
-        const int steps = askInt("Steps n: ");
-        const int sigChoice = askSignalChoice();
-        auto sig = makeSignal(sigChoice, 1.0);
+    void execModel310() {
+        std::cout << "\n[Model 3.10]\n";
+        int n = getIntInput("Steps n: ");
+        auto sig = makeSignal(getSignalChoice(), 1.0);
 
-        const double a = askDouble("  a  = ");
-        const double b = askDouble("  b  = ");
-        const double dt = askDouble("  dt = ");
-        const double y0 = askDouble("  y0 = ");
+        double a = getDoubleInput("  a  = ");
+        double b = getDoubleInput("  b  = ");
+        double dt = getDoubleInput("  dt = ");
+        double y0 = getDoubleInput("  y0 = ");
 
-        Runner r(std::make_unique<OffsetODE>(a, b, dt, y0), steps);
-        const Trace tr = r.execute(*sig);
-        finish(tr, std::string("out_model310_") + sig->id() + ".csv");
+        Runner r(std::make_unique<OffsetODE>(a, b, dt, y0), n);
+        outputResults(r.execute(*sig), "model310", sig->id());
     }
-
-}
+};
 
 int main() {
-#ifdef _WIN32
-    SetConsoleOutputCP(CP_UTF8);
-    SetConsoleCP(CP_UTF8);
-#endif
-
-    std::cout << "Lab 1, variant 6" << std::endl;
-
-    for (;;) {
-        const int choice = askModel();
-        if (choice == -1) break;
-
-        if (choice == 0) {
-            flowThirdOrder();
-            flowLogistic();
-            flowODE();
-        }
-        else if (choice == 1) {
-            flowThirdOrder();
-        }
-        else if (choice == 2) {
-            flowLogistic();
-        }
-        else if (choice == 3) {
-            flowODE();
-        }
-    }
-
-    std::cout << "\nBye." << std::endl;
+    SimulationApp app;
+    app.run();
     return 0;
 }
