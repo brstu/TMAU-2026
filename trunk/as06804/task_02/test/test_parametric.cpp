@@ -99,7 +99,7 @@ struct ConvergenceCase {
 class ConvergenceParametricTest : public testing::TestWithParam<ConvergenceCase> {};
 
 TEST_P(ConvergenceParametricTest, FreeProcessBehaviorMatchesExpectation) {
-    const auto c = GetParam();
+    const auto& c = GetParam();
     LinearModel model(c.a, 1.0, c.y0, 0.1);
     VectorSignal signal(std::vector<double>(static_cast<std::size_t>(c.steps), 0.0));
     std::ostringstream sink;
@@ -134,7 +134,7 @@ class EulerParametricTest : public testing::TestWithParam<EulerCase> {};
 
 TEST_P(EulerParametricTest, EulerStepIsCloseToAnalyticalSolution) {
     const auto c = GetParam();
-    const int steps = static_cast<int>(std::lround(1.0 / c.dt));
+    const auto steps = static_cast<int>(std::lround(1.0 / c.dt));
 
     DiffEqModel model(c.a1, 0.0, 1.0, 0.0, c.dt);
     StepSignal signal;
@@ -168,7 +168,7 @@ struct SignalModeCase {
 class SignalModeParametricTest : public testing::TestWithParam<SignalModeCase> {};
 
 TEST_P(SignalModeParametricTest, FactorySignalFeedsSimulation) {
-    const auto c = GetParam();
+    const auto& c = GetParam();
     auto signal = makeSignal(c.type);
     LinearModel model(0.5, 1.0, 0.0, 0.1);
     std::ostringstream sink;

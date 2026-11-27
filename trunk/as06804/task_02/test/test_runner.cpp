@@ -89,15 +89,15 @@ TEST(RunnerTest, WritesCsvWithHeaderAndSamples) {
         return std::make_tuple(std::stod(time), std::stod(input_value), std::stod(output_value));
     };
 
-    const auto row0 = parseRow(lines[1]);
-    EXPECT_NEAR(std::get<0>(row0), 0.0, 1e-9);
-    EXPECT_NEAR(std::get<1>(row0), 1.0, 1e-9);
-    EXPECT_NEAR(std::get<2>(row0), 0.1, 1e-9);
+    const auto [time0, input0, output0] = parseRow(lines[1]);
+    EXPECT_NEAR(time0, 0.0, 1e-9);
+    EXPECT_NEAR(input0, 1.0, 1e-9);
+    EXPECT_NEAR(output0, 0.1, 1e-9);
 
-    const auto row1 = parseRow(lines[2]);
-    EXPECT_NEAR(std::get<0>(row1), 0.1, 1e-9);
-    EXPECT_NEAR(std::get<1>(row1), 1.0, 1e-9);
-    EXPECT_NEAR(std::get<2>(row1), 0.2, 1e-9);
+    const auto [time1, input1, output1] = parseRow(lines[2]);
+    EXPECT_NEAR(time1, 0.1, 1e-9);
+    EXPECT_NEAR(input1, 1.0, 1e-9);
+    EXPECT_NEAR(output1, 0.2, 1e-9);
 }
 
 TEST(RunnerTest, DetectsDivergentProcess) {

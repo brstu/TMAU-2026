@@ -128,8 +128,8 @@ int main() {
         std::cout << "WARNING: divergence detected during simulation.\n";
     }
 
-    const std::string csv_name = makeCsvName(model_name, signal_choice);
-    if (writeCsv(csv_name, record)) {
+    if (const std::string csv_name = makeCsvName(model_name, signal_choice);
+        writeCsv(csv_name, record)) {
         std::cout << "Data saved to " << csv_name << '\n';
     } else {
         std::cout << "Could not write " << csv_name << '\n';

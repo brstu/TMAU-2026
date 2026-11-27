@@ -8,7 +8,7 @@ namespace stability {
 struct AnalysisResult {
     bool stable = false;
     double root = 0.0;      // root of the characteristic equation on the Z-plane
-    double radius = 0.0;    // |z|
+    double radius = 0.0;    // spectral radius of the characteristic root
     std::string message;
 };
 
