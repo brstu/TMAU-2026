@@ -11,8 +11,8 @@ namespace io {
 // Специализированное исключение для защиты от Path Traversal
 class PathTraversalException : public std::runtime_error {
 public:
-    explicit PathTraversalException(const std::string& msg) 
-        : std::runtime_error(msg) {}
+    // Наследуем конструкторы базового класса std::runtime_error (решение для SonarCloud)
+    using std::runtime_error::runtime_error;
 };
 
 inline void writeCsv(const std::string& path,
