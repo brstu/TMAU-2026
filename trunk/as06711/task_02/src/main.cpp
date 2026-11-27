@@ -1,13 +1,15 @@
-#include <iostream>
-#include <vector>
-#include <iomanip>
-#include <fstream>
-#include <string>
-#include <limits>
+// ============================================================================
+// Лабораторная работа №2, вариант 19.
+// Приложение собирает коэффициенты выбранной модели, прогоняет её через
+// генератор входа и печатает траекторию. Дополнительно пишет CSV.
+// ============================================================================
 #include <cstdlib>
+#include <iostream>
 #include <memory>
+#include <string>
+#include <vector>
 
-#include "Model.h"
+#include "CsvWriter.h"
 #include "LinearModel19.h"
 #include "NonlinearModel23.h"
 #include "ODE37.h"
@@ -15,120 +17,82 @@
 #include "Simulator.h"
 #include "StabilityAnalyzer.h"
 
-using namespace std;
+namespace app {
 
-namespace {
+    struct Options {
+        int modelId = 1;
+        int horizon = 10;
+        double alpha = 1.0;
+        double beta = 1.0;
+        InputType wave = InputType::STEP;
+        std::string csvPath = "doc/lab2_trace.csv";
+    };
 
-int readBoundedInt(const string& question, int low, int high) {
-    int number;
-    for (;;) {
-        cout << question;
-        if (cin >> number && number >= low && number <= high) return number;
-        cout << "[Error] Invalid input! Please enter an integer between "
-             << low << " and " << high << "." << endl;
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    std::unique_ptr<Model> buildModel(const Options& opt) {
+        switch (opt.modelId) {
+        case 1:
+            return std::make_unique<LinearModel19>(
+                0.4 * opt.alpha, 0.3 * opt.alpha, 0.1 * opt.alpha, opt.beta);
+        case 2:
+            return std::make_unique<NonlinearModel23>(opt.alpha, 0.1, opt.beta);
+        case 3:
+            return std::make_unique<ODE37>(opt.alpha, opt.beta, 0.1);
+        default:
+            return nullptr;
+        }
     }
-}
 
-double readReal(const string& question) {
-    double number;
-    for (;;) {
-        cout << question;
-        if (cin >> number) return number;
-        cout << "[Error] Invalid input! Please enter a valid number." << endl;
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    InputType parseWave(int code) {
+        switch (code) {
+        case 2:  return InputType::IMPULSE;
+        case 3:  return InputType::HARMONIC;
+        default: return InputType::STEP;
+        }
     }
-}
 
-struct SignalChoice {
-    InputType kind;
-    string    label;
-};
+    void printVector(const std::vector<double>& ys) {
+        std::cout << '[';
+        for (std::size_t i = 0; i < ys.size(); ++i) {
+            if (i) std::cout << "; ";
+            std::cout << ys[i];
+        }
+        std::cout << "]\n";
+    }
 
-SignalChoice pickSignal(int menuIndex) {
-    if (menuIndex == 2) return { InputType::IMPULSE,  "Impulse" };
-    if (menuIndex == 3) return { InputType::HARMONIC, "Harmonic" };
-    return { InputType::STEP, "Step" };
-}
-
-} // namespace
+} // namespace app
 
 int main() {
-    cout << "=== Interactive Model Configuration (Variant 19, Lab 2) ===" << endl;
+    app::Options opts;
 
-    const int    steps = readBoundedInt("Enter number of steps (n) [1-100]: ", 1, 100);
-    const double a     = readReal("Enter coefficient a: ");
-    const double b     = readReal("Enter coefficient b: ");
+    std::cout << "Model id (1=Linear19, 2=Nonlinear23, 3=ODE37): ";
+    std::cin >> opts.modelId;
+    std::cout << "Horizon: ";
+    std::cin >> opts.horizon;
+    std::cout << "alpha, beta: ";
+    std::cin >> opts.alpha >> opts.beta;
 
-    // Коэффициенты линейной модели 1.9 из ЛР №1 (вариант 19)
-    const double a1 = a * 0.4;
-    const double a2 = a * 0.3;
-    const double a3 = a * 0.1;
-    const double b1 = b;
+    std::cout << "Wave (1=step, 2=impulse, 3=harmonic): ";
+    int waveCode = 1;
+    std::cin >> waveCode;
+    opts.wave = app::parseWave(waveCode);
 
-    cout << "\nSelect model to calculate:" << endl;
-    cout << "1. Linear Model 1.9" << endl;
-    cout << "2. Nonlinear Model 2.3" << endl;
-    cout << "3. Differential Equation 3.7" << endl;
-    const int modelChoice = readBoundedInt("Enter choice (1-3): ", 1, 3);
-
-    cout << "\nSelect input signal:" << endl;
-    cout << "1. Step" << endl;
-    cout << "2. Impulse" << endl;
-    cout << "3. Harmonic" << endl;
-    const int sigChoice = readBoundedInt("Enter choice (1-3): ", 1, 3);
-    const SignalChoice picked = pickSignal(sigChoice);
-
-    // Анализ устойчивости до начала симуляции (LinModel 1.9).
-    StabilityAnalyzer::warnIfUnstable(a1, a2, a3);
-
-    unique_ptr<Model> model;
-    string modelTag;
-    switch (modelChoice) {
-    case 1:
-        model = make_unique<LinearModel19>(a1, a2, a3, b1);
-        modelTag = "Linear_1_9";
-        break;
-    case 2:
-        model = make_unique<NonlinearModel23>(a, 0.1, b);
-        modelTag = "Nonlinear_2_3";
-        break;
-    default:
-        model = make_unique<ODE37>(a, b, 0.1);
-        modelTag = "DiffEquation_3_7";
-        break;
+    if (opts.modelId == 1) {
+        StabilityAnalyzer::warnIfUnstable(
+            0.4 * opts.alpha, 0.3 * opts.alpha, 0.1 * opts.alpha);
     }
 
-    Simulator simulator(std::move(model), steps);
-    SignalGenerator signal(picked.kind, 1.0);
-    const vector<double> y = simulator.run(signal);
-
-#ifdef _WIN32
-    system("if not exist doc mkdir doc");
-#else
-    system("mkdir -p doc");
-#endif
-
-    const string csvPath = "doc/" + modelTag + "_" + picked.label + ".csv";
-    ofstream report(csvPath);
-    if (!report.is_open()) {
-        cout << "[Error] Не удалось создать файл: " << csvPath << endl;
-        return 1;
+    auto mdl = app::buildModel(opts);
+    if (!mdl) {
+        std::cerr << "Unknown model id: " << opts.modelId << '\n';
+        return EXIT_FAILURE;
     }
 
-    report << "Step,u,y\n";
-    cout << "\n>>> Data for " << modelTag << " (" << picked.label << " signal):\n";
-    cout << setw(6) << "Step" << setw(12) << "u(t)" << setw(14) << "y(t)" << endl;
+    SignalGenerator gen(opts.wave, 1.0);
+    Simulator engine(std::move(mdl), opts.horizon);
+    const std::vector<double> trace = engine.run(gen);
 
-    for (int step = 0; step < steps; ++step) {
-        const double u = signal.get(step);
-        report << step << "," << u << "," << y[step] << "\n";
-        cout << setw(6) << step << setw(12) << fixed << setprecision(4)
-             << u << setw(14) << y[step] << endl;
-    }
-    report.close();
+    app::printVector(trace);
+    io::writeCsv(opts.csvPath, "y", trace);
 
-    return 0;
+    return EXIT_SUCCESS;
 }
