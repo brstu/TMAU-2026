@@ -1,0 +1,42 @@
+
+# C++ & Сборка (CMake / MSBuild)
+build/
+bin/
+out/
+*.exe
+*.dll
+*.so
+*.dylib
+*.obj
+*.o
+*.pch
+*.idb
+*.pdb
+*.ilk
+
+# VS Code (Настройки редактора)
+.vscode/
+.history/
+*.code-workspace
+
+# Visual Studio / MSBuild
+.vs/
+*.vcxproj
+*.vcxproj.user
+*.vcxproj.filters
+*.sln
+
+# Временные файлы проекта и Python
+*.csv
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
+
+# Автоматически генерируемые отчёты о покрытии кода (gcovr)
+trunk/as06805/task_02/doc/coverage_report.html
+trunk/as06805/task_02/doc/coverage_report.txt
+
+# Вендорённый Google Test и служебные скрипты (локально, не в репозитории)
+trunk/as06805/task_02/third_party/
+trunk/as06805/task_02/tools/
