@@ -1,4 +1,4 @@
-# --- Приложение ----------------------------------------------------------
+# --- Лабораторная работа №2, вариант 19 -------------------------------------
 add_executable(as06711_task02_app
     main.cpp
 )
@@ -10,7 +10,7 @@ target_include_directories(as06711_task02_app PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}"
 )
 
-# --- Тесты (Google Test / Google Mock через FetchContent) ----------------
+# --- Тесты (указываем путь в папку test/) -----------------------------------
 include(FetchContent)
 
 FetchContent_Declare(
@@ -25,8 +25,8 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 
 add_executable(as06711_task02_tests
-    test_models.cpp
-    test_stability.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../test/test_models.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../test/test_stability.cpp
 )
 target_link_libraries(as06711_task02_tests PRIVATE
     GTest::gtest_main
