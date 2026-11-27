@@ -31,6 +31,7 @@ public:
         while (active) {
             displayMenu();
             std::string choice = getStringInput("Choice: ");
+
             if (choice == "q" || choice == "Q" || choice == "exit" || choice == "Quit") {
                 active = false;
             }
@@ -112,7 +113,7 @@ private:
         return c;
     }
 
-    void outputResults(const Trace& tr, const std::string& baseName, const std::string& sigId) {
+    void outputResults(const Trace& tr, const std::string& baseName, const std::string& sigId) const {
         Runner::show(tr);
         std::string csvFile = "out_" + baseName + "_" + sigId + ".csv";
         Runner::dumpCsv(tr, csvFile);
@@ -123,31 +124,35 @@ private:
         tryPlot(csvFile);
     }
 
-    void tryPlot(const std::string& csvName) {
+    void tryPlot(const std::string& csvName) const {
         const std::array<std::string, 5> searchPaths = {
             "render_plot.py", "..\\render_plot.py", "../render_plot.py", "src\\render_plot.py", "..\\..\\render_plot.py"
         };
-        std::string script = "";
+
+        std::string script;
         for (const auto& p : searchPaths) {
             if (std::ifstream(p).good()) {
                 script = p;
                 break;
             }
         }
-        if (script.empty()) return;
 
+        if (script.empty()) return;
         if (std::system("py -3 --version >nul 2>nul") != 0) return;
 
-        std::string cmd = "py -3 \"" + script + "\" " + csvName + " >nul 2>nul";
-        if (std::system(cmd.c_str()) != 0) return;
+        if (const std::string cmd = "py -3 \"" + script + "\" " + csvName + " >nul 2>nul";
+            std::system(cmd.c_str()) != 0) {
+            return;
+        }
 
         std::string png = csvName.substr(0, csvName.rfind(".csv")) + ".png";
         if (std::ifstream(png).good()) {
-            std::system(("start \"\" \"" + png + "\" >nul 2>nul").c_str());
+            const std::string openCmd = R"(start "" ")" + png + R"(" >nul 2>nul)";
+            std::system(openCmd.c_str());
         }
     }
 
-    void execModel16() {
+    void execModel16() const {
         std::cout << "\n[Model 1.6]\n";
         int n = getIntInput("Steps n: ");
         auto sig = makeSignal(getSignalChoice(), 1.0);
@@ -167,7 +172,7 @@ private:
         outputResults(r.execute(*sig), "model16", sig->id());
     }
 
-    void execModel28() {
+    void execModel28() const {
         std::cout << "\n[Model 2.8]\n";
         int n = getIntInput("Steps n: ");
         auto sig = makeSignal(getSignalChoice(), 1.0);
@@ -181,7 +186,7 @@ private:
         outputResults(r.execute(*sig), "model28", sig->id());
     }
 
-    void execModel310() {
+    void execModel310() const {
         std::cout << "\n[Model 3.10]\n";
         int n = getIntInput("Steps n: ");
         auto sig = makeSignal(getSignalChoice(), 1.0);
