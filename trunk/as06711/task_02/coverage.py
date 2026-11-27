@@ -4,74 +4,75 @@
 import argparse
 import pathlib
 import re
+import shutil
 import subprocess
 import sys
 
 
-def collect(root: pathlib.Path, build: pathlib.Path, gcov: str) -> dict:
-    # Защита от Command Injection (S2076) и Path Traversal (S2083)
-    cwd = pathlib.Path.cwd().resolve()
-    resolved_build = (cwd / build).resolve()
-    
-    if not str(resolved_build).startswith(str(cwd)):
-        raise ValueError("Build path must be within the current directory")
+def _parse_gcov_file(gcov_file: pathlib.Path):
+    text = gcov_file.read_text(encoding="utf-8", errors="replace")
+    source = None
+    lines_total = lines_covered = 0
+    funcs_total = funcs_covered = 0
+    func_re = re.compile(r"^function .* called (\d+)")
 
-    cov_dir = resolved_build / "coverage"
+    for line in text.splitlines():
+        parts = line.split(":", 2)
+        if len(parts) == 3 and parts[1].strip() == "0" and parts[2].startswith("Source:"):
+            source = pathlib.Path(parts[2][len("Source:"):].strip())
+            continue
+        match = func_re.match(line)
+        if match:
+            funcs_total += 1
+            if int(match.group(1)) > 0:
+                funcs_covered += 1
+            continue
+        if len(parts) < 3:
+            continue
+        count = parts[0].strip()
+        if count.startswith("-"):
+            continue
+        if count in ("#####", "====="):
+            if count == "#####":
+                lines_total += 1
+            continue
+        if count.replace("*", "").isdigit():
+            lines_total += 1
+            if int(count.replace("*", "")) > 0:
+                lines_covered += 1
+    return source, lines_total, lines_covered, funcs_total, funcs_covered
+
+
+def collect(root: pathlib.Path, build: pathlib.Path, gcov: str) -> dict:
+    # Защита от Command Injection (SonarCloud)
+    safe_gcov = shutil.which(gcov)
+    if not safe_gcov:
+        raise RuntimeError(f"Утилита gcov не найдена: {gcov}")
+
+    cov_dir = build / "coverage"
     cov_dir.mkdir(parents=True, exist_ok=True)
     for old in cov_dir.glob("*.gcov"):
         old.unlink()
 
-    gcda_files = sorted((resolved_build / "test" / "CMakeFiles" / "task02_tests.dir").glob("*.gcda"))
+    gcda_files = sorted((build / "test" / "CMakeFiles" / "task02_tests.dir").glob("*.gcda"))
     if not gcda_files:
         raise RuntimeError("Не найдены .gcda файлы – тесты не запускались с ENABLE_COVERAGE=ON")
 
     for gcda in gcda_files:
-        # subprocess с shell=False и списком аргументов безопасен
-        subprocess.run([gcov, "-b", "-c", "-f", str(gcda)],
-                       cwd=cov_dir, capture_output=True, text=True, check=True)
+        safe_gcda = gcda.resolve()
+        subprocess.run([str(safe_gcov), "-b", "-c", "-f", str(safe_gcda)],
+                       cwd=cov_dir, capture_output=True, text=True, check=True, shell=False)
 
     stats = {}
-    func_re = re.compile(r"^function .* called (\d+)")
-
     for gcov_file in cov_dir.glob("*.gcov"):
-        text = gcov_file.read_text(encoding="utf-8", errors="replace")
-        source = None
-        lines_total = lines_covered = 0
-        funcs_total = funcs_covered = 0
-
-        for line in text.splitlines():
-            parts = line.split(":", 2)
-            if len(parts) == 3 and parts[1].strip() == "0" \
-                    and parts[2].startswith("Source:"):
-                source = pathlib.Path(parts[2][len("Source:"):].strip())
-                continue
-            match = func_re.match(line)
-            if match:
-                funcs_total += 1
-                if int(match.group(1)) > 0:
-                    funcs_covered += 1
-                continue
-            parts = line.split(":", 2)
-            if len(parts) < 3:
-                continue
-            count = parts[0].strip()
-            if count.startswith("-"):
-                continue
-            if count in ("#####", "====="):
-                if count == "#####":
-                    lines_total += 1
-                continue
-            if count.replace("*", "").isdigit():
-                lines_total += 1
-                if int(count.replace("*", "")) > 0:
-                    lines_covered += 1
-
+        source, lines_total, lines_covered, funcs_total, funcs_covered = _parse_gcov_file(gcov_file)
+        
         if source is None:
             continue
         try:
             source.relative_to(root / "src")
         except ValueError:
-            continue  # системные заголовки и GoogleTest не учитываем
+            continue
 
         name = source.name
         item = stats.setdefault(name, [0, 0, 0, 0])
@@ -102,11 +103,13 @@ def main() -> int:
         return 100.0 * covered / total if total else 0.0
 
     report = []
-    report.append("ОТЧЁТ О ПОКРЫТИИ КОДОМ (gcov, ENABLE_COVERAGE=ON)")
-    report.append(f"Инструмент: {args.gcov}")
-    report.append("")
-    report.append("| Модуль | Строки | Покрытие строк | Функции | Покрытие функций |")
-    report.append("| :--- | ---: | ---: | ---: | ---: |")
+    report.extend([
+        "ОТЧЁТ О ПОКРЫТИИ КОДОМ (gcov, ENABLE_COVERAGE=ON)",
+        f"Инструмент: {args.gcov}",
+        "",
+        "| Модуль | Строки | Покрытие строк | Функции | Покрытие функций |",
+        "| :--- | ---: | ---: | ---: | ---: |"
+    ])
 
     total_lines = total_lines_cov = total_funcs = total_funcs_cov = 0
     for name in sorted(stats):
