@@ -1,3 +1,5 @@
+get_filename_component(LAB1_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../task_01" ABSOLUTE)
+
 add_library(core_lib STATIC
     StabilityAnalyzer.cpp
     ${LAB1_DIR}/src/Model1_1.cpp
