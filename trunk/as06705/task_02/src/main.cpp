@@ -20,7 +20,7 @@
 
 class SimulationApp {
 public:
-    void run() {
+    void run() const {
 #ifdef _WIN32
         SetConsoleOutputCP(CP_UTF8);
         SetConsoleCP(CP_UTF8);
@@ -202,7 +202,7 @@ private:
 };
 
 int main() {
-    SimulationApp app;
+    const SimulationApp app;
     app.run();
     return 0;
 }
