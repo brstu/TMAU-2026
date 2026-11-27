@@ -9,16 +9,24 @@ import sys
 
 
 def collect(root: pathlib.Path, build: pathlib.Path, gcov: str) -> dict:
-    cov_dir = build / "coverage"
+    # Защита от Command Injection (S2076) и Path Traversal (S2083)
+    cwd = pathlib.Path.cwd().resolve()
+    resolved_build = (cwd / build).resolve()
+    
+    if not str(resolved_build).startswith(str(cwd)):
+        raise ValueError("Build path must be within the current directory")
+
+    cov_dir = resolved_build / "coverage"
     cov_dir.mkdir(parents=True, exist_ok=True)
     for old in cov_dir.glob("*.gcov"):
         old.unlink()
 
-    gcda_files = sorted((build / "test" / "CMakeFiles" / "task02_tests.dir").glob("*.gcda"))
+    gcda_files = sorted((resolved_build / "test" / "CMakeFiles" / "task02_tests.dir").glob("*.gcda"))
     if not gcda_files:
         raise RuntimeError("Не найдены .gcda файлы – тесты не запускались с ENABLE_COVERAGE=ON")
 
     for gcda in gcda_files:
+        # subprocess с shell=False и списком аргументов безопасен
         subprocess.run([gcov, "-b", "-c", "-f", str(gcda)],
                        cwd=cov_dir, capture_output=True, text=True, check=True)
 
