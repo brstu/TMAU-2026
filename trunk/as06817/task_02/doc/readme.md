@@ -296,7 +296,8 @@ run_tests.bat
 
 1. создаёт каталог `build`;
 2. определяет доступный компилятор (MinGW или Visual Studio);
-3. собирает приложение `task02_app` и тесты `task02_tests`;
+3. собирает приложение `as06817_task02_app` и тесты
+   `as06817_task02_tests`;
 4. запускает Google Test через `ctest`;
 5. сохраняет текстовый отчёт `build\test_report.txt` и JUnit-отчёт
    `build\test_report.xml`;
@@ -312,7 +313,7 @@ ctest --test-dir build -C Debug --output-on-failure
 gcovr -r . --filter "src/.*" --exclude "src/main.cpp"
 ```
 
-Приложение `task02_app` запрашивает количество шагов, тип сигнала и
+Приложение `as06817_task02_app` запрашивает количество шагов, тип сигнала и
 (опционально) коэффициенты моделей, выводит таблицу значений и сохраняет
 результаты в `model17.csv`, `model21.csv`, `model35.csv`.
 
