@@ -32,13 +32,16 @@ target_link_libraries(aaaaa PRIVATE simcore)
 # Тесты
 enable_testing()
 include(FetchContent)
+
+set(CMAKE_POLICY_VERSION_MINIMUM 3.5 CACHE STRING "" FORCE)
+
 FetchContent_Declare(
     googletest
-    URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip
+    # ОБНОВЛЕНО: 1.15.2 требует CMake >= 3.13, что спасает от ошибки "Compatibility with CMake < 3.5"
+    URL https://github.com/google/googletest/archive/refs/tags/v1.15.2.zip
 )
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
-
 # Тесты лежат в папке ../test (поднимаемся на уровень выше из src)
 add_executable(sim_tests
     ../test/test_models.cpp
