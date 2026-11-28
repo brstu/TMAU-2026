@@ -42,11 +42,7 @@ std::string stabilityMessage(StabilityStatus status) {
 StabilityStatus checkModelBeforeSimulation(const Model110& model) {
     StabilityStatus status = checkStability(model.getA1());
 
-    if (status != StabilityStatus::Stable) {
-        std::cout << stabilityMessage(status) << std::endl;
-    } else {
-        std::cout << stabilityMessage(status) << std::endl;
-    }
+    std::cout << stabilityMessage(status) << std::endl;
 
     return status;
 }

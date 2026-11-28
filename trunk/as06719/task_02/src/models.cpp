@@ -17,7 +17,7 @@ std::vector<double> Model110::calculate(
         throw std::invalid_argument("N must be non-negative");
     }
 
-    std::vector<double> y(N + 1, 0.0);
+    std::vector y(N + 1, 0.0);
 
     for (int t = 0; t < N; t++) {
         double currentInput =
@@ -62,7 +62,7 @@ std::vector<double> Model22::calculate(
         throw std::invalid_argument("N must be non-negative");
     }
 
-    std::vector<double> y(N + 1, 0.0);
+    std::vector y(N + 1, 0.0);
 
     for (int t = 0; t < N; t++) {
         double input =
@@ -96,7 +96,7 @@ std::vector<double> Model34::calculate(
         throw std::invalid_argument("N must be non-negative");
     }
 
-    std::vector<double> y(N + 1, 0.0);
+    std::vector y(N + 1, 0.0);
 
     // Начальное условие из ЛР №1
     y[0] = 1.0;

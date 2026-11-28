@@ -16,9 +16,9 @@ int main() {
     checkModelBeforeSimulation(model);
 
     // Ступенчатый входной сигнал.
-    std::vector<double> u(N, 1.0);
+    std::vector u(N, 1.0);
 
-    std::vector<double> y = model.calculate(u, N);
+    auto y = model.calculate(u, N);
 
     std::cout << "\nSimulation results:\n";
 

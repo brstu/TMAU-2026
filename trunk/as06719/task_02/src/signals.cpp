@@ -1,3 +1,4 @@
+
 #include "signals.h"
 
 #include <cmath>
@@ -19,8 +20,8 @@ std::vector<double> impulseSignal(int N, double amplitude) {
 
     std::vector<double> signal(N, 0.0);
 
-    if (N > 0) {
-        signal[0] = amplitude;
+    if (!signal.empty()) {
+        signal.front() = amplitude;
     }
 
     return signal;
