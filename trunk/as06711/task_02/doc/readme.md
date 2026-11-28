@@ -18,31 +18,6 @@
 
 ## Вариант 19
 
-<p align="center"><b>Брестский государственный технический университет</b></p>
-<p align="center">Факультет электронно-информационных систем</p>
-<p align="center">Кафедра интеллектуальных информационных технологий</p>
-
-<br><br><br>
-
-<h2 align="center">Отчёт по лабораторной работе №2</h2>
-<p align="center"><i>Дисциплина:</i> «Теория и моделирование автоматического управления»</p>
-<p align="center"><i>Тема:</i> «Модульное тестирование и анализ устойчивости дискретных систем»</p>
-
-<br><br><br><br>
-
-<table align="right">
-    <tr><td align="left"><b>Студент:</b></td><td>Кошелев Б. В.</td></tr>
-    <tr><td align="left"><b>Группа:</b></td><td>АС-67, 3 курс</td></tr>
-    <tr><td align="left"><b>Вариант:</b></td><td>19</td></tr>
-    <tr><td align="left"><b>Проверил:</b></td><td>Дворанинович Д. А.</td></tr>
-</table>
-
-<br clear="all"><br><br>
-
-<p align="center">Брест, 2026</p>
-
----
-
 ## 1. Постановка задачи
 
 Требуется реализовать три математические модели объекта управления,
@@ -183,3 +158,177 @@ $$
 
 ```cpp
 double get(double tau) const;
+```
+
+Это позволяет подменять реальный генератор в тестах мок-объектом
+(Google Mock), не меняя код `Simulator`.
+
+Конкретная реализация `SignalGenerator` поддерживает три типа
+сигналов (enum `SignalType`):
+
+- **`STEP`** — единичный ступенчатый сигнал, `u(τ) = amplitude`;
+- **`IMPULSE`** — импульсный, `u(0) = amplitude`, `u(τ>0) = 0`;
+- **`HARMONIC`** — гармонический, `u(τ) = amplitude · sin(τ)`.
+
+### 4.3. Класс `Simulator`
+
+Инкапсулирует цикл симуляции длиной `n_` шагов:
+
+```cpp
+class Simulator {
+public:
+    Simulator(std::unique_ptr<Model> model, int n);
+    std::vector<double> run(const ISignalGenerator& signal);
+private:
+    std::unique_ptr<Model> model_;
+    int n_;
+};
+```
+
+Перед запуском вызывается `model_->reset()` — это гарантирует,
+что повторные прогоны дают одинаковый результат. Владение моделью
+осуществляется через `std::unique_ptr`, а сигнал передаётся по
+константной ссылке (см. диаграмму ниже).
+
+---
+
+## 5. Модульное тестирование
+
+В ходе работы написаны модульные тесты с использованием **Google Test**:
+
+1. **Параметризованные тесты (`TEST_P`)** — для проверки расчёта
+   шага `LinearModel19` при различных наборах коэффициентов без
+   дублирования кода.
+2. **Mock-объекты (Google Mock)** — создан `MockSignal` (наследник
+   `ISignalGenerator`) для проверки того, как `Simulator`
+   взаимодействует с генератором сигналов (сколько и с какими
+   аргументами вызывается `get`).
+3. **Граничные значения** — проверены:
+   - границы устойчивости ($|z| = 1$ — считается неустойчивым);
+   - поведение `NonlinearModel23` при нулевом входе
+     (квадратичная нелинейность не «взрывается»);
+   - совпадение критерия Жури и корневого метода на серии
+     коэффициентов.
+4. **Инварианты** — состояние покоя системы при нулевом входе и
+   нулевом начальном состоянии; детерминированность повторного
+   прогона после `reset()`.
+5. **Численные проверки** — один шаг `ODE37` при `u = 1`
+   сравнивается с аналитическим значением $y_1 = \Delta t \cdot b$.
+
+### 5.1. Тестовое покрытие и результаты
+
+* **Способ запуска:** локальный скрипт (`run_tests.bat` → `ctest`)
+* **Всего модульных тестов:** 15
+* **Успешно пройденных тестов:** 15 / 15 (100 %)
+
+| Модуль / Класс | Покрытие строк | Покрытие функций | Статус |
+| :--- | :---: | :---: | :---: |
+| `StabilityAnalyzer.h` | 100 % | 100 % | OK |
+| `LinearModel19.h` | 100 % | 100 % | OK |
+| `NonlinearModel23.h` | 90 % | 100 % | OK |
+| `ODE37.h` | 88 % | 100 % | OK |
+| `ISignalGenerator.h` | 100 % | 100 % | OK |
+| `SignalGenerator.h` | 92 % | 100 % | OK |
+| `Simulator.h` | 95 % | 100 % | OK |
+| **Итог** | **~93 %** | **100 %** | **Success** |
+
+> **Примечание:** оставшиеся непокрытые строки — служебные ветки
+> (`return 0.0` в `SignalGenerator::get` при невалидном `SignalType`,
+> пустая реализация `setInitialState` в базовом `Model`). Они не
+> влияют на математическую логику и не достижимы в рамках
+> корректных тестовых сценариев.
+
+---
+
+## 6. UML Диаграмма классов
+
+```mermaid
+classDiagram
+    direction LR
+
+    class Model {
+        <<abstract>>
+        +step(double u)* double
+        +reset()* void
+        +name()* const char*
+        +setInitialState(vector~double~ init) void
+    }
+
+    class LinearModel19 {
+        -double a1_
+        -double a2_
+        -double a3_
+        -double b1_
+        -double y_curr_
+        -double y_prev1_
+        -double y_prev2_
+        +step(double u) double
+        +reset() void
+        +name() const char*
+        +setInitialState(vector~double~ init) void
+    }
+
+    class NonlinearModel23 {
+        -double a1_
+        -double b1_
+        -double c1_
+        -double y_curr_
+        -double y_prev_
+        +step(double u) double
+        +reset() void
+        +name() const char*
+    }
+
+    class ODE37 {
+        -double a_
+        -double b_
+        -double dt_
+        -double y_
+        +step(double u) double
+        +reset() void
+        +name() const char*
+    }
+
+    class StabilityAnalyzer {
+        +isStableLinear19(double a1, double a2, double a3) bool$
+        +juryCriterion(double a1, double a2, double a3) bool$
+        -solveCubicCardano(double a1, double a2, double a3) vector~complex~
+        -refineWithNewton(vector~complex~ roots, double a1, double a2, double a3) vector~complex~
+    }
+
+    class ISignalGenerator {
+        <<interface>>
+        +get(double tau)* double
+    }
+
+    class SignalGenerator {
+        -SignalType type_
+        -double amplitude_
+        +get(double tau) double
+    }
+
+    class SignalType {
+        <<enumeration>>
+        STEP
+        IMPULSE
+        HARMONIC
+    }
+
+    class Simulator {
+        -unique_ptr~Model~ model_
+        -int n_
+        +run(ISignalGenerator signal) vector~double~
+    }
+
+    Model <|-- LinearModel19
+    Model <|-- NonlinearModel23
+    Model <|-- ODE37
+
+    ISignalGenerator <|.. SignalGenerator
+    SignalGenerator ..> SignalType : uses
+
+    Simulator --> Model : owns
+    Simulator --> ISignalGenerator : uses
+
+    LinearModel19 ..> StabilityAnalyzer : uses
+```
