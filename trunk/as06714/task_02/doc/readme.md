@@ -8,12 +8,12 @@
 <p align="center">Тематика: Модульное тестирование, анализ полюсов дискретных моделей</p>
 <br><br><br><br><br>
 <p align="right">Выполнил студент:</p>
-<p align="right">Группа: АС-67</p>
+<p align="right">Группы АС-67</p>
 <p align="right">Никитин В. Н.</p>
 <p align="right">Преподаватель:</p>
 <p align="right">Дворанинович Д. А.</p>
 <br><br><br><br><br>
-<p align="center">Брест, 2026 год</p>
+<p align="center">Брест 2026</p>
 
 ---
 
