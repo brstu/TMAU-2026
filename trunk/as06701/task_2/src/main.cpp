@@ -274,7 +274,36 @@ static Config parseArgs(int argc, char** argv) {
     return c;
 }
 
-// ----- main ------
+// ------ Печать предуплеждений ------
+/**
+ * @brief Печатает предупреждения об устойчивости выбранных моделей в stderr.
+ * Вызывается до начала симуляции.
+ */
+static void printStabilityWarnings(const Config& cfg) {
+    if (cfg.models.count("15")) {
+        auto r = StabilityAnalyzer::analyzeModel15(cfg.m15_a1, cfg.m15_a2, cfg.m15_k);
+        if (!r.stable) {
+            std::cerr << "[STABILITY WARNING] " << r.reason
+            << " (max|z| = " << r.maxMagnitude << ")\n";
+        }
+    }
+    if (cfg.models.count("27")) {
+        auto r = StabilityAnalyzer::analyzeModel27(cfg.m27_a);
+        if (!r.stable) {
+            std::cerr << "[STABILITY WARNING] " << r.reason
+            << " (max|z| = " << r.maxMagnitude << ")\n";
+        }
+    }
+    if (cfg.models.count("39")) {
+        auto r = StabilityAnalyzer::analyzeModel39();
+        if (!r.stable) {
+            std::cerr << "[STABILITY WARNING] " << r.reason
+            << " (max|z| = " << r.maxMagnitude << ")\n";
+        }
+    }
+}
+
+// ------ main -------
 
 /**
  * @brief Точка входа.
