@@ -3,30 +3,30 @@
 <p align="center">Брестский государственный технический университет</p>
 <p align="center">Кафедра ИИТ</p>
 <br><br><br><br><br><br><br>
-<p align="center">Отчет по лабораторной работе №2</p>
+<p align="center">Отчет по практической работе №2</p>
 <p align="center">Дисциплина: Теория и методы автоматического управления</p>
 <p align="center">Тематика: Модульное тестирование и анализ устойчивости</p>
 <br><br><br><br><br>
 <p align="right">Выполнил студент:</p>
-<p align="right">Группа: АС-67 (3 курс)</p>
+<p align="right">Группы АС-67 (3 курс)</p>
 <p align="right">Швед М. С.</p>
 <p align="right">Преподаватель:</p>
 <p align="right">Дворанинович Д. А.</p>
 <br><br><br><br><br>
-<p align="center">Брест, 2026 год</p>
+<p align="center">Брест 2026 </p>
 
 ---
 
 # Вариант 15
 
-**Предыдущая работа:** лабораторная работа №1 (`trunk/as06720/task_01`)  
+**Предыдущая работа:** практическая работа №1 (`trunk/as06720/task_01`)  
 **Язык:** C++17, сборка CMake  
 **Тестовый фреймворк:** Google Test + Google Mock  
 **Покрытие:** gcov + gcovr
 
 ## 1. Цель работы
 
-Расширить программу из лабораторной работы №1 модулем анализа устойчивости
+Расширить программу из практической работы №1 модулем анализа устойчивости
 моделей и проверить её модульными тестами. Сборка, запуск тестов и
 формирование отчётов выполняются локально скриптом `run_tests.bat`.
 
@@ -209,16 +209,16 @@ $y_1 = 0.1$, $y_2 = 0.1 + 0.1 \cdot 0.9 = 0.19$, $y_3 = 0.19 + 0.1 \cdot 0.81 = 
 | | `Model15StabilityTest` (`TEST_P`) + `Model15StabilityTest2` | устойчивые, граничные ($z = 1$, $z = \pm 1$, $z = \pm i$) и неустойчивые наборы | 14 |
 | | `JuryAgreementTest` (`TEST_P`) | численный поиск корней совпадает с критерием Джури | 8 |
 | | `Model29StabilityTest`, `Model33StabilityTest` (`TEST_P`) | корни $z = a$ и $z = 1 - a\Delta t$, границы $a = \pm 1$ и $a\Delta t \in \{0, 2\}$ | 12 |
-| | `NonFiniteTest`, `Lab1AgreementTest` | `NaN`/$\infty$; совпадение с методами `isStable()` из ЛР №1 | 2 |
+| | `NonFiniteTest`, `Lab1AgreementTest` | `NaN`/$\infty$; совпадение с методами `isStable()` из ПР №1 | 2 |
 | | `WarningTest`, `ExceptionTest` | текст предупреждения; `UnstableSystemError` | 4 |
 | | `BehaviourTest` | устойчивые модели затухают, неустойчивые — расходятся | 2 |
-| `test_signals.cpp` | `SignalTest`, `SignalFactoryTest` | сигналы из ЛР №1 и выбор сигнала по пункту меню | 5 |
+| `test_signals.cpp` | `SignalTest`, `SignalFactoryTest` | сигналы из ПР №1 и выбор сигнала по пункту меню | 5 |
 | | `SimulatorMockTest` (Google Mock) | порядок вызовов `reset()` → `valueAt()` → `calculateNext()`; 0 шагов | 3 |
 | | `ControlModeMockTest` (Google Mock) | ступенчатый, импульсный и гармонический режимы через `MockInputSignal` | 4 |
 | | | **Итого** | **102** |
 
 Mock-объекты `MockInputSignal` и `MockModel` наследуются от интерфейсов
-`InputSignal` и `Model` из ЛР №1 (`MOCK_METHOD`). Через `MockInputSignal`
+`InputSignal` и `Model` из ПР №1 (`MOCK_METHOD`). Через `MockInputSignal`
 подаются ступенчатый, импульсный и гармонический сигналы, а реакция
 реальной модели сравнивается с ручным расчётом.
 
@@ -247,7 +247,7 @@ Mock-объекты `MockInputSignal` и `MockModel` наследуются от
 
 ## 8. Выводы
 
-- Программа из ЛР №1 дополнена модулем `StabilityAnalyzer`: для всех трёх
+- Программа из ПР №1 дополнена модулем `StabilityAnalyzer`: для всех трёх
   моделей составлено характеристическое уравнение на Z-плоскости и найдены
   его корни. Если введённые коэффициенты дают неустойчивый или граничный
   процесс, программа выводит предупреждение перед началом симуляции.
