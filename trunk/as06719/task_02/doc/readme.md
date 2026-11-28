@@ -85,6 +85,7 @@ $$
 task_02/
 │
 ├── src/
+│   ├── CMakeLists.txt
 │   ├── main.cpp
 │   ├── models.h
 │   ├── models.cpp
@@ -102,7 +103,6 @@ task_02/
 ├── doc/
 │   └── README.md
 │
-├── build_gcc/
 ├── CMakeLists.txt
 └── run_tests.bat
 ```
@@ -110,7 +110,6 @@ task_02/
 - `src/` — исходный код программы.
 - `test/` — модульные и параметризованные тесты.
 - `doc/` — документация проекта.
-- `build_gcc/` — каталог сборки.
 - `CMakeLists.txt` — конфигурация сборки проекта.
 - `run_tests.bat` — автоматизация сборки, тестирования и формирования отчётов.
 
