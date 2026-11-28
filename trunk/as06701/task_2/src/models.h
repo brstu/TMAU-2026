@@ -253,7 +253,7 @@ enum class InputType { Step, Impulse, Harmonic };
  * @param t Тип входа.
  * @return Строковое имя ("step", "impulse", "harmonic").
  */
-const char* inputName(InputType t) {
+inline const char* inputName(InputType t) {
     switch (t) {
         case InputType::Step:     return "step";
         case InputType::Impulse:  return "impulse";
@@ -272,7 +272,7 @@ const char* inputName(InputType t) {
  * - Impulse:  @f$ u_0 = 1 @f$, дальше 0.
  * - Harmonic: @f$ u_\tau = \sin(\tau) @f$.
  */
-double genInput(InputType t, int tau) {
+inline double genInput(InputType t, int tau) {
     switch (t) {
         case InputType::Step:     return 1.0;
         case InputType::Impulse:  return (tau == 0) ? 1.0 : 0.0;
