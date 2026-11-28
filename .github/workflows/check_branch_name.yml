@@ -2,8 +2,13 @@ name: Check branch name
 on:
   pull_request_target:
     types: [opened, synchronize, reopened]
+    # Не запускать, если изменены ТОЛЬКО .md файлы
+    paths-ignore:
+      - '**/*.md'
 jobs:
   check:
+    # Запускать задачу только если в названии PR нет [doc]
+    if: "!startsWith(github.event.pull_request.title, '[doc]')"
     runs-on: ubuntu-latest
     steps:
       - name: Get branch names

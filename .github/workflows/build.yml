@@ -3,10 +3,19 @@ on:
   push:
     branches:
       - main
+    # Не запускать при пуше только .md файлов
+    paths-ignore:
+      - '**/*.md'
   pull_request_target:
     types: [opened, synchronize, reopened]
+    # Не запускать при PR только с .md файлами
+    paths-ignore:
+      - '**/*.md'
+
 jobs:
   build:
+    # Проверка на [doc] в названии PR (для push-событий условие автоматически вернет true, так как pull_request равен null)
+    if: "github.event_name != 'pull_request_target' || !startsWith(github.event.pull_request.title, '[doc]')"
     name: Build and analyze
     runs-on: ubuntu-latest
     env:
