@@ -1,4 +1,3 @@
-
 #include "signals.h"
 
 #include <cmath>
@@ -18,7 +17,7 @@ std::vector<double> impulseSignal(int N, double amplitude) {
         throw std::invalid_argument("N must be non-negative");
     }
 
-    std::vector<double> signal(N, 0.0);
+    std::vector signal(N, 0.0);
 
     if (!signal.empty()) {
         signal.front() = amplitude;
