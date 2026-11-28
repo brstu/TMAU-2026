@@ -100,6 +100,8 @@ if %ERRORLEVEL% EQU 0 (
         
         if !ERRORLEVEL! EQU 0 (
             echo [OK] Coverage report: build_tests\coverage_html\index.html
+            rem === АВТОМАТИЧЕСКИ ОТКРЫВАЕМ ОТЧЕТ В БРАУЗЕРЕ ===
+            start "" "coverage_html\index.html"
         ) else (
             echo [WARN] OpenCppCoverage failed.
         )
