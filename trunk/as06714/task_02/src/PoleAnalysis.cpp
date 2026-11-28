@@ -1,6 +1,5 @@
 #include "PoleAnalysis.h"
 
-#include <cctype>
 #include <cmath>
 #include <limits>
 #include <ostream>
@@ -17,9 +16,10 @@ namespace stability {
             return text.str();
         }
 
-        PoleReport assemble(std::string tag, std::string polynomial, std::vector<double> poles) {
+        PoleReport assemble(Plant plant, std::string polynomial, std::vector<double> poles) {
             PoleReport report;
-            report.modelTag = std::move(tag);
+            report.plant = plant;
+            report.modelTag = plantTag(plant);
             report.polynomial = std::move(polynomial);
             report.poles = std::move(poles);
             report.spectralRadius = spectralRadius(report.poles);
@@ -54,16 +54,16 @@ namespace stability {
     PoleReport inspectModel1_7(double a) {
         // Двукратный нулевой полюс появляется из-за задержек входа на один и два такта;
         // он лежит внутри круга, поэтому сходимость определяет только полюс a
-        return assemble("Linear_1_7", "z^2 * (z - " + fmt(a) + ")", { 0.0, 0.0, a });
+        return assemble(Plant::Linear1_7, "z^2 * (z - " + fmt(a) + ")", { 0.0, 0.0, a });
     }
 
     PoleReport inspectModel2_9(double a) {
-        return assemble("Nonlinear_2_9", "z - " + fmt(a), { a });
+        return assemble(Plant::Sqrt2_9, "z - " + fmt(a), { a });
     }
 
     PoleReport inspectModel3_1(double a, double dt) {
         const double pole = 1.0 - a * dt;
-        return assemble("Euler_3_1", "z - " + fmt(pole) + "  (1 - a*dt)", { pole });
+        return assemble(Plant::Euler3_1, "z - " + fmt(pole) + "  (1 - a*dt)", { pole });
     }
 
     bool converges(const PoleReport& report) {
@@ -85,21 +85,38 @@ namespace stability {
         if (converges(report)) {
             return false;
         }
-        sink << "!!! Stability alarm for " << sanitizeForLog(report.modelTag)
-             << ": denominator " << sanitizeForLog(report.polynomial)
-             << ", spectral radius " << fmt(report.spectralRadius)
+        const std::streamsize oldPrecision = sink.precision(6);
+        sink << "!!! Stability alarm for " << plantTag(report.plant) << ": denominator ";
+        writeDenominator(report, sink);
+        sink << ", spectral radius " << report.spectralRadius
              << " -> " << verdictText(report.verdict) << '\n';
+        sink.precision(oldPrecision);
         return true;
     }
 
-    std::string sanitizeForLog(const std::string& text) {
-        std::string clean = text;
-        for (char& symbol : clean) {
-            if (std::iscntrl(static_cast<unsigned char>(symbol))) {
-                symbol = '_';
+    const char* plantTag(Plant plant) {
+        switch (plant) {
+        case Plant::Linear1_7:
+            return "Linear_1_7";
+        case Plant::Sqrt2_9:
+            return "Nonlinear_2_9";
+        default:
+            return "Euler_3_1";
+        }
+    }
+
+    void writeDenominator(const PoleReport& report, std::ostream& sink) {
+        const double pole = report.poles.empty() ? 0.0 : report.poles.back();
+        const std::streamsize oldPrecision = sink.precision(6);
+        if (report.plant == Plant::Linear1_7) {
+            sink << "z^2 * (z - " << pole << ")";
+        } else {
+            sink << "z - " << pole;
+            if (report.plant == Plant::Euler3_1) {
+                sink << "  (1 - a*dt)";
             }
         }
-        return clean;
+        sink.precision(oldPrecision);
     }
 
     void enforceConvergence(const PoleReport& report) {

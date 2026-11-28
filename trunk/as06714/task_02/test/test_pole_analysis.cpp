@@ -201,11 +201,20 @@ namespace {
         EXPECT_GT(tailAfterImpulse(m31, 80), 1e6);
     }
 
-    // Управляющие символы заменяются, обычный текст отчёта не меняется
-    TEST(Sanitize, ReplacesControlCharacters) {
-        EXPECT_EQ(stability::sanitizeForLog("a\nb\rc\td"), "a_b_c_d");
-        EXPECT_EQ(stability::sanitizeForLog("z^2 * (z - 0.6)"), "z^2 * (z - 0.6)");
-        EXPECT_EQ(stability::sanitizeForLog(""), "");
+    // Знаменатель, напечатанный из чисел, совпадает с текстом отчёта,
+    // а имя модели берётся из констант
+    TEST(SafeOutput, DenominatorAndTagFromConstants) {
+        const stability::PoleReport reports[] = {
+            stability::inspectModel1_7(0.6),
+            stability::inspectModel2_9(-1.25),
+            stability::inspectModel3_1(1.0, 0.1),
+        };
+        for (const auto& report : reports) {
+            std::ostringstream sink;
+            stability::writeDenominator(report, sink);
+            EXPECT_EQ(sink.str(), report.polynomial);
+            EXPECT_EQ(std::string(stability::plantTag(report.plant)), report.modelTag);
+        }
     }
 
 } // namespace
