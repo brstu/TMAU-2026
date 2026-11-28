@@ -27,7 +27,7 @@ target_include_directories(simcore PUBLIC .)
 
 # Приложение (main.cpp в этой же папке)
 add_executable(aaaaaa main.cpp)
-target_link_libraries(aaaaa PRIVATE simcore)
+target_link_libraries(aaaaaa PRIVATE simcore)
 
 # Тесты
 enable_testing()
