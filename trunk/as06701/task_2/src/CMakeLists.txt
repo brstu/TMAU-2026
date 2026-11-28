@@ -26,7 +26,7 @@ add_library(simcore STATIC stability_analyzer.cpp)
 target_include_directories(simcore PUBLIC .)
 
 # Приложение (main.cpp в этой же папке)
-add_executable(aaaaa main.cpp)
+add_executable(aaaaaa main.cpp)
 target_link_libraries(aaaaa PRIVATE simcore)
 
 # Тесты
