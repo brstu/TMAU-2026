@@ -27,13 +27,13 @@
  cd build_cov
  ctest -C Debug --output-on-failure > ..\report\tests_coverage_build.txt 2>&1 --output-junit build_cov/test_report.xml
  cd ..
- gcovr -r . --filter src/ --filter ../task_01/src --object-directory build_cov --exclude src/main.cpp --exclude ../task_01/main.cpp --txt report/coverage.txt --print-summary 
- cat report/coverage.txt
+ gcovr -r . --filter src/ --object-directory build_cov --exclude src/main.cpp --txt report\coverage.txt --html-details report\coverage.html --print-summary 
+  
  echo. 
+ if "%TESTS_RESULT%"=="0" (echo RESULT: ALL TESTS PASSED) else (echo RESULT: SOME TESTS FAILED, see report\tests.txt) 
  echo Reports: report\tests.txt, report\junit.xml, report\coverage.txt, report\coverage.html 
  pause 
  exit /b %TESTS_RESULT% 
- echo.
  :error 
  echo. 
  echo ERROR: a step failed. 
