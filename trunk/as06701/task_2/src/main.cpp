@@ -313,7 +313,7 @@ static void printStabilityWarnings(const Config& cfg) {
  */
 int main(int argc, char** argv) {
     Config cfg = parseArgs(argc, argv);
-
+    printStabilityWarnings(cfg); 
     std::ofstream fout(cfg.outFile);
     if (!fout) {
         std::cerr << "Cannot open " << cfg.outFile << "\n";
