@@ -61,7 +61,8 @@ namespace {
     }
 
     void showPoles(const stability::PoleReport& report) {
-        std::cout << "\n  Transfer function denominator: " << report.polynomial << "\n  Poles:";
+        std::cout << "\n  Transfer function denominator: "
+                  << stability::sanitizeForLog(report.polynomial) << "\n  Poles:";
         for (double pole : report.poles) {
             std::cout << ' ' << pole;
         }
@@ -87,7 +88,8 @@ namespace {
 
         std::ofstream table("as06714_trace.csv");
         table << "tau;u;y\n";
-        std::cout << "\n  " << experiment.second.modelTag << " / " << source.title() << '\n';
+        std::cout << "\n  " << stability::sanitizeForLog(experiment.second.modelTag)
+                  << " / " << stability::sanitizeForLog(source.title()) << '\n';
         for (size_t tau = 0; tau < trace.output.size(); ++tau) {
             std::cout << std::setw(6) << tau << std::setw(12) << std::setprecision(5)
                       << trace.input[tau] << std::setw(14) << trace.output[tau] << '\n';

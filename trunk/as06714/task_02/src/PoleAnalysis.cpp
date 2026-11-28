@@ -1,5 +1,6 @@
 #include "PoleAnalysis.h"
 
+#include <cctype>
 #include <cmath>
 #include <limits>
 #include <ostream>
@@ -84,11 +85,21 @@ namespace stability {
         if (converges(report)) {
             return false;
         }
-        sink << "!!! Stability alarm for " << report.modelTag
-             << ": denominator " << report.polynomial
+        sink << "!!! Stability alarm for " << sanitizeForLog(report.modelTag)
+             << ": denominator " << sanitizeForLog(report.polynomial)
              << ", spectral radius " << fmt(report.spectralRadius)
              << " -> " << verdictText(report.verdict) << '\n';
         return true;
+    }
+
+    std::string sanitizeForLog(const std::string& text) {
+        std::string clean = text;
+        for (char& symbol : clean) {
+            if (std::iscntrl(static_cast<unsigned char>(symbol))) {
+                symbol = '_';
+            }
+        }
+        return clean;
     }
 
     void enforceConvergence(const PoleReport& report) {

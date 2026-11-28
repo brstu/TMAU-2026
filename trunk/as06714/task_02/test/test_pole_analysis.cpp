@@ -201,4 +201,11 @@ namespace {
         EXPECT_GT(tailAfterImpulse(m31, 80), 1e6);
     }
 
+    // Управляющие символы заменяются, обычный текст отчёта не меняется
+    TEST(Sanitize, ReplacesControlCharacters) {
+        EXPECT_EQ(stability::sanitizeForLog("a\nb\rc\td"), "a_b_c_d");
+        EXPECT_EQ(stability::sanitizeForLog("z^2 * (z - 0.6)"), "z^2 * (z - 0.6)");
+        EXPECT_EQ(stability::sanitizeForLog(""), "");
+    }
+
 } // namespace

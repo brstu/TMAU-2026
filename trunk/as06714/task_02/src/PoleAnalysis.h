@@ -54,6 +54,10 @@ namespace stability {
     // Печатает тревожное сообщение для несходящейся модели; true, если оно было напечатано
     bool printAlarm(const PoleReport& report, std::ostream& sink);
 
+    // Заменяет управляющие символы (\n, \r и т.п.) на '_', чтобы строку нельзя было
+    // использовать для подделки вывода (защита от log injection)
+    std::string sanitizeForLog(const std::string& text);
+
     // Бросает DivergenceError, если модель не сходится
     void enforceConvergence(const PoleReport& report);
 
