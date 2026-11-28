@@ -53,7 +53,6 @@ echo  [3/3] Coverage report (gcovr)
 echo =======================================
 if not defined COV_FLAGS goto cov_no_gcc
 
-REM Исключаем .h файлы и main.cpp, чтобы получить чистое покрытие по логике
 pushd ..
 python -m gcovr -r . --filter ".*task_01/src/" --filter ".*task_02/src/" --exclude ".*main[.]cpp" --exclude ".*\.h" --print-summary task_02/build > task_02\coverage_report.txt
 popd
@@ -68,9 +67,16 @@ echo  Skipped: build not GCC, no gcov files.
 :cov_done
 
 if %RESULT% neq 0 goto error
+
 echo.
 echo  All tests passed! Reports: test_report.txt, coverage_report.txt, coverage.html
 echo.
+
+if exist coverage.html (
+    echo Opening coverage report in browser...
+    start "" coverage.html
+)
+
 pause
 exit /b 0
 
