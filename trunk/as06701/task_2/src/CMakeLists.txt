@@ -17,12 +17,12 @@ if(ENABLE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     add_link_options(--coverage)
 endif()
 
-# Основная библиотека
-add_library(simcore STATIC src/stability_analyzer.cpp)
-target_include_directories(simcore PUBLIC src)
+# Основная библиотека (файлы теперь лежат в этой же папке)
+add_library(simcore STATIC stability_analyzer.cpp)
+target_include_directories(simcore PUBLIC .)
 
-# Приложение
-add_executable(aaaaa src/main.cpp)
+# Приложение (main.cpp в этой же папке)
+add_executable(aaaaa main.cpp)
 target_link_libraries(aaaaa PRIVATE simcore)
 
 # Тесты
@@ -35,13 +35,16 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
+# Тесты лежат в папке ../test (поднимаемся на уровень выше из src)
 add_executable(sim_tests
-    test/test_models.cpp
-    test/test_stability.cpp
-    test/test_inputs.cpp
+    ../test/test_models.cpp
+    ../test/test_stability.cpp
+    ../test/test_inputs.cpp
 )
 target_link_libraries(sim_tests PRIVATE simcore GTest::gtest_main GTest::gmock)
-target_include_directories(sim_tests PRIVATE src test)
+
+# Указываем компилятору искать заголовки в src и test
+target_include_directories(sim_tests PRIVATE . ../test)
 
 include(GoogleTest)
 gtest_discover_tests(sim_tests)
