@@ -1,5 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
-project(DiscreteSimRoot)
+cmake_minimum_required(VERSION 3.14...3.28)
+project(DiscreteSimRoot CXX)
 
-# Перенаправляем сборку в папку src
 add_subdirectory(src)
